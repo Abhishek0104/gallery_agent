@@ -1,0 +1,13 @@
+# LLM client config — read only by llm.py.
+# Responses are cached on disk, keyed by (provider, model, effort, system, prompt, schema, seed).
+provider: anthropic
+cache_dir: data/cache/llm
+fallbacks: default          # server-side refusal fallback (Anthropic beta); null to disable
+
+roles:
+  generation:               # personas, query pool, intent filler, user simulator, teacher
+    model: claude-opus-5
+    effort: high
+    max_tokens: 16000
+  judge:                    # later: faithfulness / naturalness / query-purity judges
+    model: null             # pick a different model than generation when judges are built

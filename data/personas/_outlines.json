@@ -1,0 +1,23 @@
+[
+  {
+    "persona_id": "persona_01",
+    "region": "canada",
+    "household": "couple",
+    "owner": {
+      "gender": "m",
+      "age": 38
+    },
+    "relations": [
+      "wife",
+      "friend",
+      "friend",
+      "friend",
+      "brother"
+    ],
+    "pet": {
+      "status": "unnamed",
+      "species": "parrot"
+    },
+    "tricky_name": "apostrophe"
+  }
+]

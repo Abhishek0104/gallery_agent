@@ -1,0 +1,34 @@
+You are writing one realistic persona: the owner of a smartphone photo gallery. It will be used to
+generate training conversations for an on-device gallery assistant ("show me photos of <name> at the
+beach", "move these to the <trip> album"). Names you choose will be typed and spoken by users, so they
+should look like what someone really calls their family and friends.
+
+## Outline — follow exactly
+- Region: $region. Name style: $name_style
+- Household: $household. The owner is a $age-year-old $gender.
+- People who appear in the owner's photos. Give each one a name; keep every relation word and the order unchanged:
+$relations
+- Pet: $pet
+- Name shape: $tricky
+
+## Fields to write
+- owner_name: the owner's first name.
+- people: `name` is what the owner calls this person when talking: a first name or a family nickname.
+  Never a surname alone, a title, or a relation word ("Mom", "Nani" are not names).
+  People sharing a relation word (e.g. two daughters) are different people with different names.
+- pets: $pet_field
+- home_city: one of: $home_cities
+- places_visited: 3-6 trips this household plausibly took (domestic and international). Examples for
+  this region: $destinations. Do not include the home city.
+- albums: 2-6 album names as they would appear in this person's phone gallery. Mix trips, events,
+  people and practical albums, e.g. "<trip> 2024", "<name>'s 5th birthday", "Wedding", "Receipts". Max 30 characters.
+- interests: 3-5 hobbies or things this person photographs, each 1-3 words (e.g. "trekking",
+  "home baking", "street food"). No place names and no people's names.
+
+## Rules
+- Every name (owner, people, pet) is unique within this persona.
+- No name may be, or contain, a place name or a relation word (avoid names like "Georgia", "Florence",
+  "Paris", "Ma", "Bro").
+- Do not use any of these names; other personas already use them: $used_names
+- Names can come from any culture; everything else is plain English.
+$feedback

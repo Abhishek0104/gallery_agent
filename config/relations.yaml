@@ -1,0 +1,20 @@
+# Canonical relation -> words a user may say for it (plurals included).
+# Personas store only the canonical word. The model copies whatever the user said;
+# the app resolves any alias to the same group. Validators accept any alias.
+wife:           [wife, missus]
+husband:        [husband, hubby]
+partner:        [partner, girlfriend, boyfriend, fiance, fiancee]
+son:            [son, sons]
+daughter:       [daughter, daughters]
+mom:            [mom, mum, mother, mommy, mummy, mama, ma]
+dad:            [dad, father, daddy, papa, pa]
+brother:        [brother, bro, brothers]
+sister:         [sister, sis, sisters]
+grandson:       [grandson, grandsons]
+granddaughter:  [granddaughter, granddaughters]
+grandma:        [grandma, grandmother, granny, nani, dadi]
+grandpa:        [grandpa, grandfather, nana, dada]
+friend:         [friend, friends, buddy, buddies, mate, mates, bestie]
+colleague:      [colleague, colleagues, coworker, coworkers, workmate]
+roommate:       [roommate, roommates, flatmate, flatmates]
+cousin:         [cousin, cousins]

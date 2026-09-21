@@ -1,0 +1,54 @@
+# Per-region pools. Personas carry only `region`; everything regional is looked up here.
+#   home_cities   — the LLM picks the persona's home city from this list
+#   destinations  — typical trips (the LLM may add others); also part of the gazetteer
+#   festivals     — for date hints ("during Diwali") in the spec sampler
+#   date_phrases  — region-flavored date expressions for the spec sampler
+#   names         — style guidance for the LLM (names may be non-English; all text stays English)
+india:
+  home_cities: [Bengaluru, Mumbai, Delhi, Pune, Hyderabad, Chennai, Kolkata, Jaipur, Kochi, Ahmedabad, Lucknow, Chandigarh]
+  destinations: [Goa, Manali, Shimla, Mysuru, Ooty, Coorg, Munnar, Rishikesh, Udaipur, Leh, Darjeeling, Pondicherry, Varanasi, Andaman, Kashmir, Dubai, Singapore, Bali, Thailand, London]
+  festivals: [Diwali, Holi, Onam, Pongal, Durga Puja, Ganesh Chaturthi, Navratri, Eid, Christmas, Raksha Bandhan, Lohri, Baisakhi]
+  date_phrases: [last Diwali, during Holi, last Onam, this Navratri, last summer vacation, during the monsoon, last Christmas]
+  names: "Indian names from varied states and communities (Hindi, Tamil, Bengali, Punjabi, Malayali, Marathi, Muslim, Christian); family nicknames are common"
+
+us:
+  home_cities: [Austin, Seattle, Chicago, Denver, Boston, San Diego, Atlanta, Portland, Phoenix, Minneapolis, Nashville, Raleigh]
+  destinations: [Yosemite, Yellowstone, Hawaii, Maui, New York, Miami, Lake Tahoe, Grand Canyon, Cancun, Orlando, Las Vegas, Napa, Zion, Chicago, Paris]
+  festivals: [Thanksgiving, Christmas, Halloween, Fourth of July, Easter, Hanukkah, Memorial Day, Labor Day]
+  date_phrases: [last Thanksgiving, over the Fourth of July, last Halloween, spring break, over Labor Day weekend, last Christmas]
+  names: "American names of mixed backgrounds (Anglo, Hispanic, Black, Asian-American, Jewish); nicknames like Mike or Liz are common"
+
+uk:
+  home_cities: [Manchester, Leeds, Bristol, Edinburgh, Glasgow, Birmingham, Brighton, Cardiff, Liverpool, Oxford]
+  destinations: [Cornwall, Lake District, the Cotswolds, Snowdonia, the Highlands, Isle of Skye, Barcelona, Lisbon, Tenerife, Paris, Amsterdam, Mallorca, Rome]
+  festivals: [Christmas, Easter, Bonfire Night, Boxing Day, Diwali, Eid]
+  date_phrases: [last bank holiday, Boxing Day, half term, last Easter, on Bonfire Night, last Christmas]
+  names: "British names of mixed backgrounds (English, Scottish, Irish, Welsh, South Asian, Caribbean, Polish)"
+
+australia:
+  home_cities: [Sydney, Melbourne, Brisbane, Perth, Adelaide]
+  destinations: [Gold Coast, Byron Bay, Uluru, Great Barrier Reef, Tasmania, Cairns, Bali, New Zealand, Fiji, Queenstown]
+  festivals: [Christmas, Australia Day, Easter, Anzac Day, Lunar New Year]
+  date_phrases: [last Australia Day, over the summer holidays, last Easter long weekend, Christmas at the beach]
+  names: "Australian names of mixed backgrounds (Anglo, Greek, Italian, Vietnamese, Chinese, Lebanese)"
+
+canada:
+  home_cities: [Toronto, Vancouver, Calgary, Ottawa, Montreal, Halifax]
+  destinations: [Banff, Jasper, Whistler, Niagara Falls, Quebec City, Tofino, Vancouver Island, Florida, Mexico, Cuba]
+  festivals: [Canada Day, Thanksgiving, Christmas, Diwali, Lunar New Year, Halloween]
+  date_phrases: [last Canada Day, over March break, last Thanksgiving, last winter]
+  names: "Canadian names of mixed backgrounds (Anglo, French, South Asian, Chinese, Filipino)"
+
+singapore:
+  home_cities: [Singapore]
+  destinations: [Bali, Bangkok, Phuket, Tokyo, Seoul, Penang, Kuala Lumpur, Taiwan, Hong Kong, Sydney]
+  festivals: [Chinese New Year, Hari Raya, Deepavali, Christmas, Mid-Autumn Festival]
+  date_phrases: [last Chinese New Year, during Hari Raya, last Deepavali, over the June holidays]
+  names: "Singaporean names (Chinese with English given names, Malay, Tamil, Eurasian)"
+
+uae:
+  home_cities: [Dubai, Abu Dhabi, Sharjah]
+  destinations: [Oman, Muscat, Georgia, Baku, Maldives, Kerala, Istanbul, Salalah, Jebel Jais, Ras Al Khaimah]
+  festivals: [Eid, Ramadan, UAE National Day, Diwali, Christmas]
+  date_phrases: [last Eid, during Ramadan, last National Day, over the summer break]
+  names: "UAE residents of mixed backgrounds (Emirati, Indian, Pakistani, Filipino, Lebanese, British expats)"
