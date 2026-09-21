@@ -1,0 +1,60 @@
+{
+  "persona_id": "persona_09",
+  "version": 1,
+  "region": "uk",
+  "household": "couple",
+  "owner": {
+    "name": "Sophie",
+    "gender": "f",
+    "age": 26,
+    "home_city": "Bristol"
+  },
+  "people": [
+    {
+      "name": "Tomasz",
+      "relation": "husband"
+    },
+    {
+      "name": "Aisha",
+      "relation": "friend"
+    },
+    {
+      "name": "Callum",
+      "relation": "friend"
+    },
+    {
+      "name": "Fiona",
+      "relation": "mom"
+    },
+    {
+      "name": "Graham",
+      "relation": "dad"
+    }
+  ],
+  "pets": [],
+  "places_visited": [
+    "Cornwall",
+    "Lisbon",
+    "Snowdonia",
+    "Amsterdam"
+  ],
+  "albums": [
+    "Cornwall Trip",
+    "Wedding Photos",
+    "House Renovation",
+    "Tomasz Birthday"
+  ],
+  "interests": [
+    "rock climbing",
+    "vegan cooking",
+    "indie gigs"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_09/a0",
+    "cache_key": "b7824978f7ff47e09c8557e3"
+  }
+}

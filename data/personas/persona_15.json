@@ -1,0 +1,65 @@
+{
+  "persona_id": "persona_15",
+  "version": 1,
+  "region": "us",
+  "household": "parents_of_adults",
+  "owner": {
+    "name": "Sarah",
+    "gender": "f",
+    "age": 48,
+    "home_city": "Denver"
+  },
+  "people": [
+    {
+      "name": "Miguel",
+      "relation": "husband"
+    },
+    {
+      "name": "Rachel",
+      "relation": "daughter"
+    },
+    {
+      "name": "Mia",
+      "relation": "daughter"
+    },
+    {
+      "name": "Lily",
+      "relation": "granddaughter"
+    },
+    {
+      "name": "Rebecca",
+      "relation": "sister"
+    }
+  ],
+  "pets": [
+    {
+      "name": "Whiskers",
+      "species": "cat"
+    }
+  ],
+  "places_visited": [
+    "Yellowstone",
+    "Maui",
+    "New York",
+    "Cancun"
+  ],
+  "albums": [
+    "Maui 2023",
+    "Lily's 1st Birthday",
+    "Garden Remodel",
+    "Recipes to try"
+  ],
+  "interests": [
+    "hiking",
+    "gardening",
+    "knitting"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_15/a0",
+    "cache_key": "331a3caecb5332b769c1926f"
+  }
+}

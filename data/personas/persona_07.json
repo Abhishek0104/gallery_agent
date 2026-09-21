@@ -1,0 +1,68 @@
+{
+  "persona_id": "persona_07",
+  "version": 1,
+  "region": "uae",
+  "household": "multigenerational",
+  "owner": {
+    "name": "Nadine",
+    "gender": "f",
+    "age": 36,
+    "home_city": "Dubai"
+  },
+  "people": [
+    {
+      "name": "Tariq",
+      "relation": "husband"
+    },
+    {
+      "name": "Elias",
+      "relation": "son"
+    },
+    {
+      "name": "Ziad",
+      "relation": "son"
+    },
+    {
+      "name": "Hala",
+      "relation": "mom"
+    },
+    {
+      "name": "Fadi",
+      "relation": "dad"
+    },
+    {
+      "name": "Layla",
+      "relation": "grandma"
+    },
+    {
+      "name": "Marie-Claire",
+      "relation": "cousin"
+    }
+  ],
+  "pets": [],
+  "places_visited": [
+    "Istanbul",
+    "Baku",
+    "Jebel Jais",
+    "Salalah"
+  ],
+  "albums": [
+    "Istanbul Trip 2023",
+    "Elias Birthday",
+    "Desert Safari",
+    "Work Receipts"
+  ],
+  "interests": [
+    "desert camping",
+    "fine dining",
+    "interior design"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_07/a0",
+    "cache_key": "2bc71d2b330efcab8d304072"
+  }
+}

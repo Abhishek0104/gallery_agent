@@ -1,0 +1,105 @@
+{
+  "personas": {
+    "persona_01": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_02": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_03": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_04": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_05": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_06": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_07": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_08": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_09": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_10": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_11": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_12": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_13": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_14": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_15": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_16": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_17": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_18": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_19": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    },
+    "persona_20": {
+      "accepted": true,
+      "attempts": 1,
+      "last_violations": []
+    }
+  },
+  "rejections_by_check": {}
+}

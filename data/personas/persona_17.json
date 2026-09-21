@@ -1,0 +1,73 @@
+{
+  "persona_id": "persona_17",
+  "version": 1,
+  "region": "india",
+  "household": "young_family",
+  "owner": {
+    "name": "Saurabh",
+    "gender": "m",
+    "age": 35,
+    "home_city": "Pune"
+  },
+  "people": [
+    {
+      "name": "Pooja",
+      "relation": "wife"
+    },
+    {
+      "name": "Ayaan",
+      "relation": "son"
+    },
+    {
+      "name": "Kabir",
+      "relation": "son"
+    },
+    {
+      "name": "Kiran",
+      "relation": "mom"
+    },
+    {
+      "name": "Ashok",
+      "relation": "dad"
+    },
+    {
+      "name": "Harish",
+      "relation": "friend"
+    },
+    {
+      "name": "Ali-Reza",
+      "relation": "friend"
+    }
+  ],
+  "pets": [
+    {
+      "name": "Chintu",
+      "species": "cat"
+    }
+  ],
+  "places_visited": [
+    "Goa",
+    "Coorg",
+    "Dubai",
+    "Singapore"
+  ],
+  "albums": [
+    "Goa 2023",
+    "Kabirs 1st Birthday",
+    "Office Party",
+    "Tax Docs"
+  ],
+  "interests": [
+    "cricket",
+    "street food",
+    "indie music"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_17/a0",
+    "cache_key": "cf3f765f6f292d517257b852"
+  }
+}

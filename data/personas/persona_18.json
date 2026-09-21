@@ -1,0 +1,66 @@
+{
+  "persona_id": "persona_18",
+  "version": 1,
+  "region": "us",
+  "household": "parents_of_adults",
+  "owner": {
+    "name": "Linda",
+    "gender": "f",
+    "age": 58,
+    "home_city": "Denver"
+  },
+  "people": [
+    {
+      "name": "Greg",
+      "relation": "husband"
+    },
+    {
+      "name": "Megan",
+      "relation": "daughter"
+    },
+    {
+      "name": "Julia",
+      "relation": "daughter"
+    },
+    {
+      "name": "Christopher",
+      "relation": "grandson"
+    },
+    {
+      "name": "Steve",
+      "relation": "brother"
+    }
+  ],
+  "pets": [
+    {
+      "name": "Barnaby",
+      "species": "parrot"
+    }
+  ],
+  "places_visited": [
+    "Yosemite",
+    "New York",
+    "Cancun",
+    "Yellowstone"
+  ],
+  "albums": [
+    "Christopher 1st bday",
+    "Cancun 2023",
+    "Garden Projects",
+    "Tax Receipts"
+  ],
+  "interests": [
+    "gardening",
+    "knitting",
+    "bird watching",
+    "baking"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_18/a0",
+    "cache_key": "97a508834a2dfdfdc753f15b"
+  }
+}

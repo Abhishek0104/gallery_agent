@@ -21,5 +21,408 @@
       "species": "rabbit"
     },
     "tricky_name": "apostrophe"
+  },
+  {
+    "persona_id": "persona_02",
+    "region": "uk",
+    "household": "multigenerational",
+    "owner": {
+      "gender": "f",
+      "age": 34
+    },
+    "relations": [
+      "husband",
+      "daughter",
+      "daughter",
+      "mom",
+      "dad",
+      "grandma",
+      "cousin"
+    ],
+    "pet": {
+      "status": "named",
+      "species": "rabbit"
+    },
+    "tricky_name": "none"
+  },
+  {
+    "persona_id": "persona_03",
+    "region": "us",
+    "household": "parents_of_adults",
+    "owner": {
+      "gender": "f",
+      "age": 53
+    },
+    "relations": [
+      "husband",
+      "son",
+      "son",
+      "friend"
+    ],
+    "pet": {
+      "status": "unnamed",
+      "species": "cat"
+    },
+    "tricky_name": "two_word"
+  },
+  {
+    "persona_id": "persona_04",
+    "region": "singapore",
+    "household": "single",
+    "owner": {
+      "gender": "f",
+      "age": 35
+    },
+    "relations": [
+      "friend",
+      "friend",
+      "friend",
+      "colleague"
+    ],
+    "pet": {
+      "status": "named",
+      "species": "cat"
+    },
+    "tricky_name": "none"
+  },
+  {
+    "persona_id": "persona_05",
+    "region": "india",
+    "household": "young_family",
+    "owner": {
+      "gender": "f",
+      "age": 41
+    },
+    "relations": [
+      "husband",
+      "daughter",
+      "daughter",
+      "dad",
+      "brother",
+      "friend"
+    ],
+    "pet": {
+      "status": "named",
+      "species": "dog"
+    },
+    "tricky_name": "long"
+  },
+  {
+    "persona_id": "persona_06",
+    "region": "india",
+    "household": "couple",
+    "owner": {
+      "gender": "m",
+      "age": 25
+    },
+    "relations": [
+      "wife",
+      "friend",
+      "friend",
+      "dad",
+      "sister"
+    ],
+    "pet": {
+      "status": "named",
+      "species": "dog"
+    },
+    "tricky_name": "none"
+  },
+  {
+    "persona_id": "persona_07",
+    "region": "uae",
+    "household": "multigenerational",
+    "owner": {
+      "gender": "f",
+      "age": 36
+    },
+    "relations": [
+      "husband",
+      "son",
+      "son",
+      "mom",
+      "dad",
+      "grandma",
+      "cousin"
+    ],
+    "pet": {
+      "status": "none",
+      "species": null
+    },
+    "tricky_name": "hyphenated"
+  },
+  {
+    "persona_id": "persona_08",
+    "region": "india",
+    "household": "student",
+    "owner": {
+      "gender": "f",
+      "age": 23
+    },
+    "relations": [
+      "friend",
+      "friend",
+      "friend",
+      "mom"
+    ],
+    "pet": {
+      "status": "named",
+      "species": "dog"
+    },
+    "tricky_name": "none"
+  },
+  {
+    "persona_id": "persona_09",
+    "region": "uk",
+    "household": "couple",
+    "owner": {
+      "gender": "f",
+      "age": 26
+    },
+    "relations": [
+      "husband",
+      "friend",
+      "friend",
+      "mom",
+      "dad"
+    ],
+    "pet": {
+      "status": "none",
+      "species": null
+    },
+    "tricky_name": "none"
+  },
+  {
+    "persona_id": "persona_10",
+    "region": "india",
+    "household": "student",
+    "owner": {
+      "gender": "f",
+      "age": 22
+    },
+    "relations": [
+      "friend",
+      "friend",
+      "mom",
+      "roommate"
+    ],
+    "pet": {
+      "status": "none",
+      "species": null
+    },
+    "tricky_name": "none"
+  },
+  {
+    "persona_id": "persona_11",
+    "region": "india",
+    "household": "young_family",
+    "owner": {
+      "gender": "f",
+      "age": 35
+    },
+    "relations": [
+      "husband",
+      "daughter",
+      "daughter",
+      "mom",
+      "sister",
+      "friend",
+      "friend"
+    ],
+    "pet": {
+      "status": "none",
+      "species": null
+    },
+    "tricky_name": "nickname"
+  },
+  {
+    "persona_id": "persona_12",
+    "region": "india",
+    "household": "single",
+    "owner": {
+      "gender": "m",
+      "age": 33
+    },
+    "relations": [
+      "friend",
+      "friend",
+      "friend",
+      "mom"
+    ],
+    "pet": {
+      "status": "unnamed",
+      "species": "dog"
+    },
+    "tricky_name": "nickname"
+  },
+  {
+    "persona_id": "persona_13",
+    "region": "australia",
+    "household": "multigenerational",
+    "owner": {
+      "gender": "m",
+      "age": 48
+    },
+    "relations": [
+      "wife",
+      "son",
+      "son",
+      "mom",
+      "dad",
+      "grandma"
+    ],
+    "pet": {
+      "status": "unnamed",
+      "species": "cat"
+    },
+    "tricky_name": "none"
+  },
+  {
+    "persona_id": "persona_14",
+    "region": "india",
+    "household": "single",
+    "owner": {
+      "gender": "f",
+      "age": 30
+    },
+    "relations": [
+      "friend",
+      "friend",
+      "sister"
+    ],
+    "pet": {
+      "status": "none",
+      "species": null
+    },
+    "tricky_name": "hyphenated"
+  },
+  {
+    "persona_id": "persona_15",
+    "region": "us",
+    "household": "parents_of_adults",
+    "owner": {
+      "gender": "f",
+      "age": 48
+    },
+    "relations": [
+      "husband",
+      "daughter",
+      "daughter",
+      "granddaughter",
+      "sister"
+    ],
+    "pet": {
+      "status": "named",
+      "species": "cat"
+    },
+    "tricky_name": "none"
+  },
+  {
+    "persona_id": "persona_16",
+    "region": "india",
+    "household": "young_family",
+    "owner": {
+      "gender": "f",
+      "age": 33
+    },
+    "relations": [
+      "husband",
+      "son",
+      "son",
+      "friend",
+      "friend"
+    ],
+    "pet": {
+      "status": "named",
+      "species": "dog"
+    },
+    "tricky_name": "two_word"
+  },
+  {
+    "persona_id": "persona_17",
+    "region": "india",
+    "household": "young_family",
+    "owner": {
+      "gender": "m",
+      "age": 35
+    },
+    "relations": [
+      "wife",
+      "son",
+      "son",
+      "mom",
+      "dad",
+      "friend",
+      "friend"
+    ],
+    "pet": {
+      "status": "named",
+      "species": "cat"
+    },
+    "tricky_name": "hyphenated"
+  },
+  {
+    "persona_id": "persona_18",
+    "region": "us",
+    "household": "parents_of_adults",
+    "owner": {
+      "gender": "f",
+      "age": 58
+    },
+    "relations": [
+      "husband",
+      "daughter",
+      "daughter",
+      "grandson",
+      "brother"
+    ],
+    "pet": {
+      "status": "named",
+      "species": "parrot"
+    },
+    "tricky_name": "long"
+  },
+  {
+    "persona_id": "persona_19",
+    "region": "india",
+    "household": "multigenerational",
+    "owner": {
+      "gender": "m",
+      "age": 36
+    },
+    "relations": [
+      "wife",
+      "daughter",
+      "daughter",
+      "mom",
+      "dad",
+      "grandpa"
+    ],
+    "pet": {
+      "status": "none",
+      "species": null
+    },
+    "tricky_name": "apostrophe"
+  },
+  {
+    "persona_id": "persona_20",
+    "region": "us",
+    "household": "young_family",
+    "owner": {
+      "gender": "m",
+      "age": 28
+    },
+    "relations": [
+      "wife",
+      "son",
+      "son",
+      "dad",
+      "friend"
+    ],
+    "pet": {
+      "status": "named",
+      "species": "dog"
+    },
+    "tricky_name": "two_word"
   }
 ]

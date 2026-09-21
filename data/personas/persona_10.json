@@ -1,0 +1,57 @@
+{
+  "persona_id": "persona_10",
+  "version": 1,
+  "region": "india",
+  "household": "student",
+  "owner": {
+    "name": "Sneha",
+    "gender": "f",
+    "age": 22,
+    "home_city": "Pune"
+  },
+  "people": [
+    {
+      "name": "Isha",
+      "relation": "friend"
+    },
+    {
+      "name": "Varun",
+      "relation": "friend"
+    },
+    {
+      "name": "Anjali",
+      "relation": "mom"
+    },
+    {
+      "name": "Pallavi",
+      "relation": "roommate"
+    }
+  ],
+  "pets": [],
+  "places_visited": [
+    "Goa",
+    "Munnar",
+    "Dubai",
+    "Coorg"
+  ],
+  "albums": [
+    "Goa 2023",
+    "Hostel Life",
+    "Notes and Boards",
+    "Isha Birthday"
+  ],
+  "interests": [
+    "street photography",
+    "cafe hopping",
+    "indie gigs",
+    "sketching"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_10/a0",
+    "cache_key": "63fd5350ba39c6ac41593eab"
+  }
+}

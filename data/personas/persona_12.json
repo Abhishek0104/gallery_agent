@@ -1,0 +1,61 @@
+{
+  "persona_id": "persona_12",
+  "version": 1,
+  "region": "india",
+  "household": "single",
+  "owner": {
+    "name": "Gaurav",
+    "gender": "m",
+    "age": 33,
+    "home_city": "Pune"
+  },
+  "people": [
+    {
+      "name": "Bunty",
+      "relation": "friend"
+    },
+    {
+      "name": "Vivek",
+      "relation": "friend"
+    },
+    {
+      "name": "Zoya",
+      "relation": "friend"
+    },
+    {
+      "name": "Kusum",
+      "relation": "mom"
+    }
+  ],
+  "pets": [
+    {
+      "name": null,
+      "species": "dog"
+    }
+  ],
+  "places_visited": [
+    "Goa",
+    "Bali",
+    "Coorg",
+    "Rishikesh"
+  ],
+  "albums": [
+    "Goa trip 2023",
+    "Zoya's Wedding",
+    "Gym progress",
+    "Screenshots"
+  ],
+  "interests": [
+    "street food",
+    "motorcycling",
+    "indie music"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_12/a0",
+    "cache_key": "861501708515d30f42c3788f"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "persona_id": "persona_16",
+  "version": 1,
+  "region": "india",
+  "household": "young_family",
+  "owner": {
+    "name": "Akhila",
+    "gender": "f",
+    "age": 33,
+    "home_city": "Kochi"
+  },
+  "people": [
+    {
+      "name": "Nitin",
+      "relation": "husband"
+    },
+    {
+      "name": "Sai Krishna",
+      "relation": "son"
+    },
+    {
+      "name": "Pranav",
+      "relation": "son"
+    },
+    {
+      "name": "Manju",
+      "relation": "friend"
+    },
+    {
+      "name": "Deepak",
+      "relation": "friend"
+    }
+  ],
+  "pets": [
+    {
+      "name": "Kaiser",
+      "species": "dog"
+    }
+  ],
+  "places_visited": [
+    "Munnar",
+    "Goa",
+    "Bali",
+    "Singapore"
+  ],
+  "albums": [
+    "Singapore 2023",
+    "Pranavs 1st Birthday",
+    "Home Renovation",
+    "Screenshots"
+  ],
+  "interests": [
+    "indoor plants",
+    "baking",
+    "traditional sarees"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_16/a0",
+    "cache_key": "c560bdf184a576319afdfd43"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "persona_id": "persona_04",
+  "version": 1,
+  "region": "singapore",
+  "household": "single",
+  "owner": {
+    "name": "Cheryl",
+    "gender": "f",
+    "age": 35,
+    "home_city": "Singapore"
+  },
+  "people": [
+    {
+      "name": "Amira",
+      "relation": "friend"
+    },
+    {
+      "name": "Jianing",
+      "relation": "friend"
+    },
+    {
+      "name": "Karthik",
+      "relation": "friend"
+    },
+    {
+      "name": "Desmond",
+      "relation": "colleague"
+    }
+  ],
+  "pets": [
+    {
+      "name": "Milo",
+      "species": "cat"
+    }
+  ],
+  "places_visited": [
+    "Bali",
+    "Tokyo",
+    "Penang",
+    "Bangkok"
+  ],
+  "albums": [
+    "Tokyo 2024",
+    "Amira Wedding",
+    "Work Events",
+    "Receipts"
+  ],
+  "interests": [
+    "cafe hopping",
+    "bouldering",
+    "yoga",
+    "street photography"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_04/a0",
+    "cache_key": "0dbd4b5ae0b323e27dee0cca"
+  }
+}

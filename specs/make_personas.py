@@ -82,7 +82,7 @@ def clean(name):
     return name.replace("\u2019", "'").strip() if name else name
 
 
-def to_persona(o, c):
+def to_persona(o, c, meta):
     return {
         "persona_id": o["persona_id"], "version": VERSION,
         "region": o["region"], "household": o["household"],
@@ -93,6 +93,7 @@ def to_persona(o, c):
         "places_visited": c["places_visited"],
         "albums": c["albums"],
         "interests": c["interests"],
+        "generation": meta,
     }
 
 
@@ -110,8 +111,8 @@ def generate(max_attempts, dry_run=False, limit=None):
         feedback, persona = (), None
         for attempt in range(max_attempts):
             prompt = build_prompt(o, used, feedback)
-            c = llm.json(prompt, PersonaContent, seed=f"{o['persona_id']}/a{attempt}")
-            candidate = to_persona(o, c)
+            res = llm.json(prompt, PersonaContent, seed=f"{o['persona_id']}/a{attempt}")
+            candidate = to_persona(o, res.output, res.meta)
             feedback = validate(candidate, o, used)
             report["rejections_by_check"].update(check for check, _ in feedback)
             if not feedback:

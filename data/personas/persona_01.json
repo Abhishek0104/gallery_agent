@@ -1,0 +1,75 @@
+{
+  "persona_id": "persona_01",
+  "version": 1,
+  "region": "canada",
+  "household": "couple",
+  "owner": {
+    "name": "Chloe",
+    "gender": "f",
+    "age": 35,
+    "home_city": "Vancouver"
+  },
+  "people": [
+    {
+      "name": "D'Arcy",
+      "relation": "husband"
+    },
+    {
+      "name": "Priya",
+      "relation": "friend"
+    },
+    {
+      "name": "Wei",
+      "relation": "friend"
+    },
+    {
+      "name": "Mateo",
+      "relation": "friend"
+    },
+    {
+      "name": "Sylvie",
+      "relation": "mom"
+    },
+    {
+      "name": "Arthur",
+      "relation": "dad"
+    },
+    {
+      "name": "Luc",
+      "relation": "brother"
+    }
+  ],
+  "pets": [
+    {
+      "name": null,
+      "species": "rabbit"
+    }
+  ],
+  "places_visited": [
+    "Whistler",
+    "Tofino",
+    "Maui",
+    "Tokyo"
+  ],
+  "albums": [
+    "Whistler Ski Trip",
+    "Tofino 2023",
+    "Wedding Day",
+    "House Renovation",
+    "Receipts"
+  ],
+  "interests": [
+    "hiking",
+    "baking",
+    "pottery",
+    "snowboarding"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_01/a0",
+    "cache_key": "8350d9ec6006a8beee57e31f"
+  }
+}

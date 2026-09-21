@@ -1,0 +1,62 @@
+{
+  "persona_id": "persona_08",
+  "version": 1,
+  "region": "india",
+  "household": "student",
+  "owner": {
+    "name": "Shruti",
+    "gender": "f",
+    "age": 23,
+    "home_city": "Pune"
+  },
+  "people": [
+    {
+      "name": "Aditya",
+      "relation": "friend"
+    },
+    {
+      "name": "Riya",
+      "relation": "friend"
+    },
+    {
+      "name": "Tanya",
+      "relation": "friend"
+    },
+    {
+      "name": "Smita",
+      "relation": "mom"
+    }
+  ],
+  "pets": [
+    {
+      "name": "Bruno",
+      "species": "dog"
+    }
+  ],
+  "places_visited": [
+    "Goa",
+    "Lonavala",
+    "Bali",
+    "Coorg"
+  ],
+  "albums": [
+    "Goa 2023",
+    "College Fest",
+    "Food Snaps",
+    "Bruno being Bruno"
+  ],
+  "interests": [
+    "cafe hopping",
+    "sketching",
+    "street fashion",
+    "live music"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_08/a0",
+    "cache_key": "fd5ff30f6c84c70cb9ee3189"
+  }
+}

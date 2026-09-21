@@ -1,0 +1,65 @@
+{
+  "persona_id": "persona_19",
+  "version": 1,
+  "region": "india",
+  "household": "multigenerational",
+  "owner": {
+    "name": "Roshan",
+    "gender": "m",
+    "age": 36,
+    "home_city": "Kochi"
+  },
+  "people": [
+    {
+      "name": "Jo'Ann",
+      "relation": "wife"
+    },
+    {
+      "name": "Reba",
+      "relation": "daughter"
+    },
+    {
+      "name": "Neva",
+      "relation": "daughter"
+    },
+    {
+      "name": "Omana",
+      "relation": "mom"
+    },
+    {
+      "name": "Kurian",
+      "relation": "dad"
+    },
+    {
+      "name": "Varghese",
+      "relation": "grandpa"
+    }
+  ],
+  "pets": [],
+  "places_visited": [
+    "Munnar",
+    "Goa",
+    "Ooty",
+    "Dubai",
+    "Singapore"
+  ],
+  "albums": [
+    "Munnar 2024",
+    "Reba's 5th birthday",
+    "Wedding",
+    "Receipts"
+  ],
+  "interests": [
+    "football",
+    "seafood cooking",
+    "architecture"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_19/a0",
+    "cache_key": "aeb6291f58edc845623cf47c"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "persona_id": "persona_13",
+  "version": 1,
+  "region": "australia",
+  "household": "multigenerational",
+  "owner": {
+    "name": "Marco",
+    "gender": "m",
+    "age": 48,
+    "home_city": "Melbourne"
+  },
+  "people": [
+    {
+      "name": "Eleni",
+      "relation": "wife"
+    },
+    {
+      "name": "Leo",
+      "relation": "son"
+    },
+    {
+      "name": "Max",
+      "relation": "son"
+    },
+    {
+      "name": "Rosa",
+      "relation": "mom"
+    },
+    {
+      "name": "Antonio",
+      "relation": "dad"
+    },
+    {
+      "name": "Carmela",
+      "relation": "grandma"
+    }
+  ],
+  "pets": [
+    {
+      "name": null,
+      "species": "cat"
+    }
+  ],
+  "places_visited": [
+    "Bali",
+    "Hobart",
+    "Gold Coast",
+    "Phuket"
+  ],
+  "albums": [
+    "Bali 2023",
+    "Leo's Graduation",
+    "Garden Renovation",
+    "Receipts"
+  ],
+  "interests": [
+    "classic cars",
+    "espresso making",
+    "woodworking",
+    "family barbecues"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_13/a0",
+    "cache_key": "aba25703ac9039d4b0036c8d"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "persona_id": "persona_14",
+  "version": 1,
+  "region": "india",
+  "household": "single",
+  "owner": {
+    "name": "Swati",
+    "gender": "f",
+    "age": 30,
+    "home_city": "Pune"
+  },
+  "people": [
+    {
+      "name": "Mary-Ann",
+      "relation": "friend"
+    },
+    {
+      "name": "Kunal",
+      "relation": "friend"
+    },
+    {
+      "name": "Rashmi",
+      "relation": "sister"
+    }
+  ],
+  "pets": [],
+  "places_visited": [
+    "Goa",
+    "Bali",
+    "Rishikesh",
+    "Dubai"
+  ],
+  "albums": [
+    "Goa 2023",
+    "Rashmi Graduation",
+    "Cafe Hopping",
+    "Office Receipts"
+  ],
+  "interests": [
+    "pottery",
+    "street art",
+    "indoor plants",
+    "indie music"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_14/a0",
+    "cache_key": "698831aa34494d1516f9fbb4"
+  }
+}

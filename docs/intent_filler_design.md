@@ -162,7 +162,8 @@ All steps are filled in **one call** so the episode tells one coherent story
 Reject the spec if any check fails:
 1. Every argument matches the registry schema; handles reference earlier outputs.
 2. `effect` ∈ the episode's effect list.
-3. `people` values ∈ {`me`} ∪ persona names ∪ persona relations ∪ named pets.
+3. `people` values ∈ {`me`} ∪ persona names ∪ persona relations ∪ named pets, after alias → canonical
+   normalization via `config/relations.yaml` (same mapping as the tool wrapper).
 4. Sampled slot pattern was respected (no extra or missing search args).
 5. **Query purity:** `query` contains no names, relations, places or date expressions
    (string checks against persona + gazetteer + date regexes; LLM judge as a second pass).

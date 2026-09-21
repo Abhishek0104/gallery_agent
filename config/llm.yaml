@@ -11,7 +11,7 @@ cache_dir: data/cache/llm
 roles:
   generation:               # personas, query pool, intent filler, user simulator, teacher
     provider: gemini
-    model: gemini-3-pro-preview
+    model: gemini-3.1-pro-preview
     thinking: high
     max_tokens: 16000
   judge:                    # later: faithfulness / naturalness / query-purity judges
@@ -19,4 +19,4 @@ roles:
     model: null
 
 anthropic:
-  fallbacks: default        # server-side refusal fallback (beta); null to disable
+  fallbacks: null           # no silent model switching: a failed request fails loudly

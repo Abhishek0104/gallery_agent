@@ -1,0 +1,67 @@
+{
+  "persona_id": "persona_06",
+  "version": 1,
+  "region": "india",
+  "household": "couple",
+  "owner": {
+    "name": "Siddharth",
+    "gender": "m",
+    "age": 25,
+    "home_city": "Bengaluru"
+  },
+  "people": [
+    {
+      "name": "Meera",
+      "relation": "wife"
+    },
+    {
+      "name": "Arjun",
+      "relation": "friend"
+    },
+    {
+      "name": "Faizan",
+      "relation": "friend"
+    },
+    {
+      "name": "Prakash",
+      "relation": "dad"
+    },
+    {
+      "name": "Divya",
+      "relation": "sister"
+    }
+  ],
+  "pets": [
+    {
+      "name": "Milo",
+      "species": "dog"
+    }
+  ],
+  "places_visited": [
+    "Coorg",
+    "Goa",
+    "Singapore",
+    "Munnar"
+  ],
+  "albums": [
+    "Coorg Weekend",
+    "Our Wedding",
+    "Milo",
+    "Diwali 2023",
+    "Receipts"
+  ],
+  "interests": [
+    "cricket",
+    "street food",
+    "pc gaming",
+    "sneakers"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_06/a0",
+    "cache_key": "d67bb5d1032247a4903384a0"
+  }
+}

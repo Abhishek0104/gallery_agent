@@ -1,0 +1,62 @@
+{
+  "persona_id": "persona_03",
+  "version": 1,
+  "region": "us",
+  "household": "parents_of_adults",
+  "owner": {
+    "name": "Laura",
+    "gender": "f",
+    "age": 53,
+    "home_city": "Denver"
+  },
+  "people": [
+    {
+      "name": "David",
+      "relation": "husband"
+    },
+    {
+      "name": "John Paul",
+      "relation": "son"
+    },
+    {
+      "name": "Kevin",
+      "relation": "son"
+    },
+    {
+      "name": "Maria",
+      "relation": "friend"
+    }
+  ],
+  "pets": [
+    {
+      "name": null,
+      "species": "cat"
+    }
+  ],
+  "places_visited": [
+    "Yosemite",
+    "Cancun",
+    "Las Vegas",
+    "Hawaii"
+  ],
+  "albums": [
+    "Hawaii 2022",
+    "John Paul's Graduation",
+    "Receipts",
+    "Garden remodel"
+  ],
+  "interests": [
+    "hiking",
+    "knitting",
+    "indoor plants",
+    "baking bread"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_03/a0",
+    "cache_key": "0c7a17386a9a65e567450369"
+  }
+}

@@ -36,6 +36,12 @@ Orchestrator LLM is text-only; vision lives behind tools (SigLIP search, interna
 - **People:** `"me"` is a reserved value for the gallery owner (I / me / myself / selfies).
   Names and relations are copied as spoken ("Riya", "daughter"). **The app resolves relations**
   (e.g., `daughter → {Riya, Priya}`); the model never resolves them itself.
+- **Relation normalization (tool wrapper):** the gallery accepts only canonical relation words.
+  The model keeps copying relations as spoken ("mum", "hubby", "my daughters"); the tool wrapper maps
+  each alias to its canonical word via `config/relations.yaml` (`mum → mom`) before calling the gallery.
+  Names, `me` and unknown words pass through unchanged. The alias list lives only in that file, so adding an
+  alias is a config edit, not a retrain. Validators and the verifier compare `people` values after the same
+  normalization.
   **"my" means ownership, not people:** "my Goa photos" → no people filter; "photos of me in Goa" → `people=["me"]`.
 - **People matching semantics:** the `people` list is an **AND across elements**; each element resolves to a
   group that is an **OR across its members**. `["me", "daughter"]` → me AND (Riya OR Priya).

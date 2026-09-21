@@ -1,0 +1,73 @@
+{
+  "persona_id": "persona_02",
+  "version": 1,
+  "region": "uk",
+  "household": "multigenerational",
+  "owner": {
+    "name": "Gemma",
+    "gender": "f",
+    "age": 34,
+    "home_city": "Bristol"
+  },
+  "people": [
+    {
+      "name": "Kacper",
+      "relation": "husband"
+    },
+    {
+      "name": "Freya",
+      "relation": "daughter"
+    },
+    {
+      "name": "Zara",
+      "relation": "daughter"
+    },
+    {
+      "name": "Susan",
+      "relation": "mom"
+    },
+    {
+      "name": "Ian",
+      "relation": "dad"
+    },
+    {
+      "name": "Margaret",
+      "relation": "grandma"
+    },
+    {
+      "name": "Declan",
+      "relation": "cousin"
+    }
+  ],
+  "pets": [
+    {
+      "name": "Barnaby",
+      "species": "rabbit"
+    }
+  ],
+  "places_visited": [
+    "Cornwall",
+    "Tenerife",
+    "Lake District",
+    "Lisbon"
+  ],
+  "albums": [
+    "Cornwall 2023",
+    "Freya 1st Birthday",
+    "Garden Reno",
+    "Receipts"
+  ],
+  "interests": [
+    "pottery",
+    "baking",
+    "houseplants"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_02/a0",
+    "cache_key": "3556e13df01e80e508fc30b6"
+  }
+}

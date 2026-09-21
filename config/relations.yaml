@@ -1,6 +1,7 @@
 # Canonical relation -> words a user may say for it (plurals included).
-# Personas store only the canonical word. The model copies whatever the user said;
-# the app resolves any alias to the same group. Validators accept any alias.
+# The gallery accepts only canonical words. The model copies whatever the user said; the tool
+# wrapper normalizes alias -> canonical before calling the gallery (docs/registry_decisions.md §2).
+# Personas store only the canonical word. Validators and the verifier normalize the same way.
 wife:           [wife, missus]
 husband:        [husband, hubby]
 partner:        [partner, girlfriend, boyfriend, fiance, fiancee]

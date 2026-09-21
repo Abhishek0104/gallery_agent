@@ -1,0 +1,69 @@
+{
+  "persona_id": "persona_05",
+  "version": 1,
+  "region": "india",
+  "household": "young_family",
+  "owner": {
+    "name": "Nandini",
+    "gender": "f",
+    "age": 41,
+    "home_city": "Pune"
+  },
+  "people": [
+    {
+      "name": "Rohan",
+      "relation": "husband"
+    },
+    {
+      "name": "Kavya",
+      "relation": "daughter"
+    },
+    {
+      "name": "Ananya",
+      "relation": "daughter"
+    },
+    {
+      "name": "Venkateshwaran",
+      "relation": "dad"
+    },
+    {
+      "name": "Rahul",
+      "relation": "brother"
+    },
+    {
+      "name": "Saima",
+      "relation": "friend"
+    }
+  ],
+  "pets": [
+    {
+      "name": "Sheru",
+      "species": "dog"
+    }
+  ],
+  "places_visited": [
+    "Goa",
+    "Coorg",
+    "Munnar",
+    "Dubai"
+  ],
+  "albums": [
+    "Goa Trip 2023",
+    "Kavya 5th Birthday",
+    "Diwali Snaps",
+    "Home Renovation"
+  ],
+  "interests": [
+    "terrace gardening",
+    "knitting",
+    "street photography"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_05/a0",
+    "cache_key": "2d919ac52eca5defd73e197f"
+  }
+}

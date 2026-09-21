@@ -1,0 +1,66 @@
+{
+  "persona_id": "persona_20",
+  "version": 1,
+  "region": "us",
+  "household": "young_family",
+  "owner": {
+    "name": "Brian",
+    "gender": "m",
+    "age": 28,
+    "home_city": "Denver"
+  },
+  "people": [
+    {
+      "name": "Mary Beth",
+      "relation": "wife"
+    },
+    {
+      "name": "Jonah",
+      "relation": "son"
+    },
+    {
+      "name": "Liam",
+      "relation": "son"
+    },
+    {
+      "name": "Robert",
+      "relation": "dad"
+    },
+    {
+      "name": "Carlos",
+      "relation": "friend"
+    }
+  ],
+  "pets": [
+    {
+      "name": "Buster",
+      "species": "dog"
+    }
+  ],
+  "places_visited": [
+    "Yellowstone",
+    "Cancun",
+    "Zion",
+    "Miami"
+  ],
+  "albums": [
+    "Cancun 2023",
+    "Jonah Birthday",
+    "House Projects",
+    "Receipts"
+  ],
+  "interests": [
+    "mountain biking",
+    "woodworking",
+    "hiking",
+    "board games"
+  ],
+  "generation": {
+    "provider": "gemini",
+    "model": "gemini-3.1-pro-preview",
+    "served_model": "gemini-3.1-pro-preview",
+    "thinking": "high",
+    "seed": "persona_20/a0",
+    "cache_key": "313c5e9a97ff1687430f3ed3"
+  }
+}
