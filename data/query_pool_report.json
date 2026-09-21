@@ -1,0 +1,1438 @@
+{
+  "raw": 1810,
+  "length_mismatch": 0,
+  "rejected_by_check": {},
+  "rejected": [],
+  "exact_duplicates": 115,
+  "near_duplicates": [
+    [
+      "unwrapping gifts",
+      "opening presents",
+      0.94
+    ],
+    [
+      "blowing out birthday candles",
+      "blowing candles",
+      0.952
+    ],
+    [
+      "cutting the layered cake",
+      "cutting cake",
+      0.874
+    ],
+    [
+      "lighting the bright fireworks",
+      "lighting sparklers",
+      0.873
+    ],
+    [
+      "crowd tossing confetti in the air",
+      "tossing confetti",
+      0.872
+    ],
+    [
+      "kicking ball",
+      "kicking a soccer ball",
+      0.933
+    ],
+    [
+      "blowing out candles on a cake",
+      "blowing candles",
+      0.921
+    ],
+    [
+      "baking cookies",
+      "baking",
+      0.886
+    ],
+    [
+      "chopping vegetables",
+      "chopping vegetables for soup",
+      0.87
+    ],
+    [
+      "roasting marshmallows over fire",
+      "roasting marshmallows",
+      0.936
+    ],
+    [
+      "reading",
+      "reading books",
+      0.893
+    ],
+    [
+      "packing backpack",
+      "packing luggage",
+      0.897
+    ],
+    [
+      "flying kite",
+      "flying a colorful kite",
+      0.882
+    ],
+    [
+      "riding a school bus",
+      "boarding a school bus",
+      0.895
+    ],
+    [
+      "tossing pancakes",
+      "flipping pancakes",
+      0.941
+    ],
+    [
+      "clinking pint glasses together",
+      "clinking glasses",
+      0.889
+    ],
+    [
+      "applying henna",
+      "applying mehndi on hands",
+      0.914
+    ],
+    [
+      "cuddling",
+      "hugging",
+      0.896
+    ],
+    [
+      "kissing on the cheek",
+      "kissing",
+      0.88
+    ],
+    [
+      "holding hands while walking",
+      "holding hands",
+      0.883
+    ],
+    [
+      "holding a giant stuffed teddy bear",
+      "hugging a large teddy",
+      0.889
+    ],
+    [
+      "high fiving",
+      "high five",
+      0.897
+    ],
+    [
+      "holding a baby",
+      "holding a newborn baby",
+      0.942
+    ],
+    [
+      "throwing a ball",
+      "throwing a ball for a dog",
+      0.891
+    ],
+    [
+      "fist bumping",
+      "fist bump",
+      0.944
+    ],
+    [
+      "carrying a large box",
+      "carrying a heavy box",
+      0.948
+    ],
+    [
+      "work badge",
+      "employee badge",
+      0.945
+    ],
+    [
+      "government issued id",
+      "id card",
+      0.881
+    ],
+    [
+      "physical driver license",
+      "driver license",
+      0.883
+    ],
+    [
+      "certified copy of birth certificate",
+      "birth certificate",
+      0.927
+    ],
+    [
+      "bus ticket",
+      "train ticket",
+      0.888
+    ],
+    [
+      "international driving permit",
+      "international driving permit paper booklet",
+      0.894
+    ],
+    [
+      "public transit pass",
+      "transit pass",
+      0.947
+    ],
+    [
+      "invoice",
+      "receipt",
+      0.904
+    ],
+    [
+      "restaurant receipt",
+      "receipt",
+      0.9
+    ],
+    [
+      "insurance card",
+      "health insurance card",
+      0.932
+    ],
+    [
+      "vaccine card",
+      "vaccination record",
+      0.92
+    ],
+    [
+      "pharmacy receipt",
+      "pharmacy purchase receipt",
+      0.946
+    ],
+    [
+      "handwritten lecture notes",
+      "class notes",
+      0.872
+    ],
+    [
+      "grocery list",
+      "grocery bill",
+      0.876
+    ],
+    [
+      "train pass",
+      "train ticket",
+      0.911
+    ],
+    [
+      "raffle ticket",
+      "lottery ticket",
+      0.879
+    ],
+    [
+      "government issued birth certificate",
+      "birth certificate",
+      0.927
+    ],
+    [
+      "physical paper train ticket",
+      "train ticket",
+      0.878
+    ],
+    [
+      "scanned copy of marriage certificate",
+      "marriage certificate",
+      0.888
+    ],
+    [
+      "paper boarding pass with barcode",
+      "printed airline boarding pass",
+      0.877
+    ],
+    [
+      "electricity bill",
+      "electricity usage bill",
+      0.913
+    ],
+    [
+      "printed train ticket",
+      "train ticket",
+      0.892
+    ],
+    [
+      "printed out boarding pass",
+      "printed airline boarding pass",
+      0.941
+    ],
+    [
+      "health insurance id card",
+      "health insurance card",
+      0.956
+    ],
+    [
+      "official state voter registration card",
+      "voter registration card",
+      0.924
+    ],
+    [
+      "itemized hospital medical billing paper statement",
+      "detailed hospital stay itemized bill",
+      0.894
+    ],
+    [
+      "grocery shop till receipt",
+      "supermarket checkout receipt",
+      0.89
+    ],
+    [
+      "tax return",
+      "tax form",
+      0.909
+    ],
+    [
+      "prescription receipt",
+      "prescription",
+      0.887
+    ],
+    [
+      "supermarket self checkout grocery receipt",
+      "supermarket checkout receipt",
+      0.871
+    ],
+    [
+      "handwritten pub trivia answer sheet",
+      "handwritten pub quiz team score sheet",
+      0.879
+    ],
+    [
+      "health card",
+      "health insurance card",
+      0.907
+    ],
+    [
+      "grocery receipt",
+      "grocery bill",
+      0.915
+    ],
+    [
+      "lease agreement",
+      "tenancy agreement",
+      0.893
+    ],
+    [
+      "identity card",
+      "id card",
+      0.923
+    ],
+    [
+      "transit card",
+      "transit pass",
+      0.942
+    ],
+    [
+      "airport flight boarding pass",
+      "printed airline boarding pass",
+      0.887
+    ],
+    [
+      "national id",
+      "national identity card",
+      0.929
+    ],
+    [
+      "lab report",
+      "lab results",
+      0.931
+    ],
+    [
+      "residential property lease agreement",
+      "standard residential lease agreement contract",
+      0.884
+    ],
+    [
+      "private health insurance card",
+      "health insurance card",
+      0.898
+    ],
+    [
+      "beach",
+      "calm beach",
+      0.873
+    ],
+    [
+      "sunset over the ocean",
+      "sunrise over the ocean",
+      0.879
+    ],
+    [
+      "night traffic",
+      "traffic jam",
+      0.895
+    ],
+    [
+      "thick morning fog",
+      "dense fog",
+      0.885
+    ],
+    [
+      "starry night sky",
+      "starry night",
+      0.946
+    ],
+    [
+      "indoor pool",
+      "swimming pool",
+      0.881
+    ],
+    [
+      "street food",
+      "street food vendor cart",
+      0.877
+    ],
+    [
+      "monsoon rain",
+      "rain",
+      0.877
+    ],
+    [
+      "rainy street",
+      "rainy city street",
+      0.918
+    ],
+    [
+      "food court",
+      "shopping mall food court",
+      0.882
+    ],
+    [
+      "highrise apartments",
+      "high rise apartment buildings",
+      0.908
+    ],
+    [
+      "train station",
+      "subway station",
+      0.887
+    ],
+    [
+      "desert dunes",
+      "sand dunes",
+      0.92
+    ],
+    [
+      "puppy",
+      "dog",
+      0.952
+    ],
+    [
+      "dog sleeping",
+      "dog",
+      0.906
+    ],
+    [
+      "kitten",
+      "cat",
+      0.924
+    ],
+    [
+      "orange cat",
+      "cat",
+      0.904
+    ],
+    [
+      "cat sleeping",
+      "cat",
+      0.908
+    ],
+    [
+      "black cat",
+      "cat",
+      0.915
+    ],
+    [
+      "fluffy cat",
+      "cat",
+      0.899
+    ],
+    [
+      "tabby cat",
+      "cat",
+      0.899
+    ],
+    [
+      "kitten jumping",
+      "cat jumping",
+      0.951
+    ],
+    [
+      "cat climbing",
+      "cat climbing tree",
+      0.907
+    ],
+    [
+      "rabbit hopping on grass",
+      "white rabbit hopping in the grass",
+      0.89
+    ],
+    [
+      "sneakers",
+      "running shoes",
+      0.882
+    ],
+    [
+      "oversized vintage graphic tee",
+      "graphic tee",
+      0.881
+    ],
+    [
+      "matching athletic track suit",
+      "track suit",
+      0.877
+    ],
+    [
+      "holding a clutch bag",
+      "holding a formal clutch",
+      0.944
+    ],
+    [
+      "red saree",
+      "silk saree",
+      0.881
+    ],
+    [
+      "wearing a white kurta",
+      "wearing kurta",
+      0.889
+    ],
+    [
+      "kids in fancy dress",
+      "kids in fancy clothes",
+      0.892
+    ],
+    [
+      "wearing a graphic tee",
+      "graphic tee",
+      0.874
+    ],
+    [
+      "wearing a football kit",
+      "wearing a football jersey",
+      0.928
+    ],
+    [
+      "girl with zinc cream",
+      "zinc cream",
+      0.882
+    ],
+    [
+      "wearing wide brim hats",
+      "wearing a sun hat",
+      0.917
+    ],
+    [
+      "wearing a rashie and board shorts",
+      "wearing a blue rashie",
+      0.876
+    ],
+    [
+      "scooter",
+      "motorcycle",
+      0.882
+    ],
+    [
+      "flat screen television set",
+      "large flat screen television set",
+      0.908
+    ],
+    [
+      "red double decker bus",
+      "red bus",
+      0.893
+    ],
+    [
+      "avocado on sourdough toast",
+      "avocado toast",
+      0.906
+    ]
+  ],
+  "review_band": [
+    [
+      "raising a glass",
+      "clinking glasses",
+      0.853
+    ],
+    [
+      "popping a party popper",
+      "popping champagne",
+      0.831
+    ],
+    [
+      "clinking wine glasses across a table",
+      "clinking glasses",
+      0.869
+    ],
+    [
+      "kicking a soccer ball",
+      "playing soccer",
+      0.869
+    ],
+    [
+      "playing a board game",
+      "playing chess",
+      0.848
+    ],
+    [
+      "playing a video game",
+      "playing a board game",
+      0.825
+    ],
+    [
+      "scoring a goal in soccer",
+      "playing soccer",
+      0.839
+    ],
+    [
+      "riding bikes",
+      "riding a mountain bike",
+      0.832
+    ],
+    [
+      "blowing bubbles",
+      "blowing balloons",
+      0.822
+    ],
+    [
+      "catching a baseball",
+      "throwing a baseball pitch",
+      0.838
+    ],
+    [
+      "running around with water guns",
+      "running through the sprinklers",
+      0.835
+    ],
+    [
+      "doing laundry",
+      "washing dishes",
+      0.833
+    ],
+    [
+      "doing yoga on floor",
+      "doing a yoga pose",
+      0.855
+    ],
+    [
+      "reading a paperback book",
+      "reading books",
+      0.86
+    ],
+    [
+      "eating at the dining table",
+      "eating breakfast",
+      0.832
+    ],
+    [
+      "setting up camp",
+      "pitching tent",
+      0.86
+    ],
+    [
+      "drinking coffee",
+      "drinking coffee on couch",
+      0.828
+    ],
+    [
+      "pouring wine",
+      "pouring a glass of red wine",
+      0.855
+    ],
+    [
+      "doing homework",
+      "studying",
+      0.847
+    ],
+    [
+      "working at a desk",
+      "working on a laptop",
+      0.856
+    ],
+    [
+      "giving a slide presentation",
+      "presenting",
+      0.858
+    ],
+    [
+      "riding scooter",
+      "riding a scooter down a hill",
+      0.857
+    ],
+    [
+      "playing cricket",
+      "playing tennis",
+      0.821
+    ],
+    [
+      "eating burgers",
+      "eating pizza",
+      0.821
+    ],
+    [
+      "grilling",
+      "grilling burgers",
+      0.861
+    ],
+    [
+      "playing baseball",
+      "playing cricket",
+      0.85
+    ],
+    [
+      "cheering at a game",
+      "cheering loudly",
+      0.859
+    ],
+    [
+      "opening presents by decorated tree",
+      "opening presents",
+      0.853
+    ],
+    [
+      "queuing for a bus",
+      "queuing up",
+      0.844
+    ],
+    [
+      "eating pie",
+      "eating pizza",
+      0.84
+    ],
+    [
+      "bushwalking",
+      "hiking",
+      0.822
+    ],
+    [
+      "kicking footy",
+      "kicking a soccer ball",
+      0.84
+    ],
+    [
+      "pouring beer",
+      "pouring wine",
+      0.842
+    ],
+    [
+      "pouring syrup",
+      "pouring syrup on waffles",
+      0.864
+    ],
+    [
+      "pouring maple syrup on hot pancakes",
+      "pouring syrup on waffles",
+      0.85
+    ],
+    [
+      "holding umbrella",
+      "carrying a wet umbrella",
+      0.831
+    ],
+    [
+      "serving hot food on large platters",
+      "serving food on plates",
+      0.83
+    ],
+    [
+      "kissing",
+      "hugging",
+      0.836
+    ],
+    [
+      "giving a piggyback ride",
+      "piggyback",
+      0.861
+    ],
+    [
+      "walking while holding hands together",
+      "holding hands",
+      0.843
+    ],
+    [
+      "holding flowers",
+      "giving flowers",
+      0.846
+    ],
+    [
+      "hugging dog",
+      "hugging",
+      0.854
+    ],
+    [
+      "playing with a puppy",
+      "holding puppy",
+      0.831
+    ],
+    [
+      "galloping on a horse",
+      "riding horse",
+      0.842
+    ],
+    [
+      "walking arm in arm",
+      "walking while holding hands together",
+      0.829
+    ],
+    [
+      "walking together",
+      "walking while holding hands together",
+      0.859
+    ],
+    [
+      "eating at a restaurant table",
+      "at a dinner table",
+      0.834
+    ],
+    [
+      "student id",
+      "id card",
+      0.852
+    ],
+    [
+      "national identity card",
+      "id card",
+      0.868
+    ],
+    [
+      "open passport pages",
+      "passport",
+      0.827
+    ],
+    [
+      "laminated identification card",
+      "id card",
+      0.85
+    ],
+    [
+      "corporate access badge",
+      "employee badge",
+      0.849
+    ],
+    [
+      "biometric page of a passport",
+      "passport",
+      0.825
+    ],
+    [
+      "train ticket",
+      "boarding pass",
+      0.835
+    ],
+    [
+      "baggage claim check",
+      "luggage tag",
+      0.865
+    ],
+    [
+      "grocery bill",
+      "receipt",
+      0.823
+    ],
+    [
+      "electricity usage bill",
+      "utility bill",
+      0.84
+    ],
+    [
+      "veterinary medical bill",
+      "medical bill",
+      0.854
+    ],
+    [
+      "toll booth cash payment slip",
+      "toll receipt",
+      0.845
+    ],
+    [
+      "prescription",
+      "medical bill",
+      0.826
+    ],
+    [
+      "doctor note",
+      "medical bill",
+      0.86
+    ],
+    [
+      "health record",
+      "vaccination record",
+      0.837
+    ],
+    [
+      "medical insurance claim form",
+      "health insurance card",
+      0.835
+    ],
+    [
+      "prescription bottle label text",
+      "prescription",
+      0.855
+    ],
+    [
+      "hospital discharge summary sheet",
+      "hospital discharge and payment receipt",
+      0.86
+    ],
+    [
+      "blood panel lab report",
+      "lab results",
+      0.866
+    ],
+    [
+      "business card",
+      "id card",
+      0.824
+    ],
+    [
+      "tax form",
+      "tax invoice",
+      0.838
+    ],
+    [
+      "math exam paper",
+      "math homework",
+      0.823
+    ],
+    [
+      "whiteboard notes",
+      "whiteboard diagram",
+      0.853
+    ],
+    [
+      "flash cards",
+      "index cards",
+      0.828
+    ],
+    [
+      "lecture notes on paper",
+      "class notes",
+      0.834
+    ],
+    [
+      "movie ticket",
+      "concert ticket",
+      0.865
+    ],
+    [
+      "marriage certificate",
+      "birth certificate",
+      0.857
+    ],
+    [
+      "printed airline boarding pass",
+      "boarding pass",
+      0.864
+    ],
+    [
+      "admission ticket for museum",
+      "printed museum entrance ticket with barcode",
+      0.852
+    ],
+    [
+      "stamped marriage license paper",
+      "marriage certificate",
+      0.836
+    ],
+    [
+      "framed academic degree on wall",
+      "framed university degree certificate",
+      0.86
+    ],
+    [
+      "aadhaar card",
+      "id card",
+      0.848
+    ],
+    [
+      "pan card",
+      "aadhaar card",
+      0.853
+    ],
+    [
+      "marksheet",
+      "report card",
+      0.842
+    ],
+    [
+      "restaurant food bill",
+      "grocery bill",
+      0.834
+    ],
+    [
+      "grocery store printed receipt",
+      "supermarket checkout receipt",
+      0.868
+    ],
+    [
+      "board examination high school marksheet",
+      "marksheet",
+      0.832
+    ],
+    [
+      "notarized house rent agreement stamp paper",
+      "property registration stamp paper",
+      0.849
+    ],
+    [
+      "handwritten meeting whiteboard notes",
+      "whiteboard notes",
+      0.836
+    ],
+    [
+      "nhs prescription",
+      "prescription",
+      0.827
+    ],
+    [
+      "utility bill payment reminder",
+      "utility bill",
+      0.824
+    ],
+    [
+      "medicare card",
+      "health insurance card",
+      0.838
+    ],
+    [
+      "printed concert ticket barcode",
+      "concert ticket",
+      0.826
+    ],
+    [
+      "hospital emergency room discharge summary",
+      "hospital discharge summary sheet",
+      0.838
+    ],
+    [
+      "apartment rental application form",
+      "apartment rental inspection checklist",
+      0.856
+    ],
+    [
+      "medical certificate",
+      "doctor note",
+      0.848
+    ],
+    [
+      "parking coupon",
+      "parking ticket",
+      0.837
+    ],
+    [
+      "tax assessment",
+      "tax form",
+      0.825
+    ],
+    [
+      "clinic medical certificate paper",
+      "medical certificate",
+      0.868
+    ],
+    [
+      "salary certificate",
+      "payslip",
+      0.821
+    ],
+    [
+      "toll tag",
+      "toll receipt",
+      0.827
+    ],
+    [
+      "traffic fine",
+      "parking ticket",
+      0.823
+    ],
+    [
+      "water and electricity bill",
+      "utility bill",
+      0.863
+    ],
+    [
+      "paid street parking ticket",
+      "parking ticket",
+      0.845
+    ],
+    [
+      "stamped entry permit paper",
+      "entry permit",
+      0.841
+    ],
+    [
+      "barcode sticker for toll gate",
+      "toll tag",
+      0.839
+    ],
+    [
+      "lake",
+      "river",
+      0.825
+    ],
+    [
+      "sand dunes",
+      "desert sand",
+      0.867
+    ],
+    [
+      "waves crashing on rocks",
+      "ocean waves",
+      0.828
+    ],
+    [
+      "floating in a pool",
+      "swimming pool",
+      0.825
+    ],
+    [
+      "traffic jam",
+      "busy street",
+      0.828
+    ],
+    [
+      "empty subway car",
+      "subway station",
+      0.821
+    ],
+    [
+      "narrow cobblestone alley",
+      "alleyway",
+      0.843
+    ],
+    [
+      "rainbow",
+      "rainbow in the clouds",
+      0.855
+    ],
+    [
+      "golden hour",
+      "sunset",
+      0.854
+    ],
+    [
+      "dark storm clouds",
+      "cloudy sky",
+      0.831
+    ],
+    [
+      "heavy rain falling",
+      "rain",
+      0.837
+    ],
+    [
+      "lightning strike in distance",
+      "lightning in dark sky",
+      0.837
+    ],
+    [
+      "shopping mall",
+      "grocery store",
+      0.826
+    ],
+    [
+      "busy local grocery store",
+      "grocery store",
+      0.83
+    ],
+    [
+      "dark movie theater seats",
+      "movie theater",
+      0.863
+    ],
+    [
+      "shopping mall food court",
+      "shopping mall",
+      0.855
+    ],
+    [
+      "sunset over the ocean horizon",
+      "sunrise over the ocean",
+      0.832
+    ],
+    [
+      "night market",
+      "street market",
+      0.84
+    ],
+    [
+      "coffee shop",
+      "cozy cafe",
+      0.86
+    ],
+    [
+      "underground train station platform",
+      "crowded underground train station platform",
+      0.863
+    ],
+    [
+      "sunset over sand dunes",
+      "sand dunes",
+      0.833
+    ],
+    [
+      "tall modern glass skyscrapers",
+      "skyscrapers",
+      0.841
+    ],
+    [
+      "dog toy",
+      "dog",
+      0.85
+    ],
+    [
+      "dog running",
+      "dog",
+      0.837
+    ],
+    [
+      "dog leash",
+      "dog",
+      0.824
+    ],
+    [
+      "sleeping puppy",
+      "dog",
+      0.854
+    ],
+    [
+      "dog bone",
+      "dog",
+      0.829
+    ],
+    [
+      "dog sticking head out car window",
+      "dog looking out window",
+      0.834
+    ],
+    [
+      "calico cat",
+      "cat",
+      0.869
+    ],
+    [
+      "cat looking out window",
+      "cat",
+      0.822
+    ],
+    [
+      "cat on laptop",
+      "cat",
+      0.833
+    ],
+    [
+      "dog swimming",
+      "dog swimming in lake",
+      0.83
+    ],
+    [
+      "dog catching a ball",
+      "dog chasing a ball",
+      0.848
+    ],
+    [
+      "kitten hiding in box",
+      "cat in a box",
+      0.85
+    ],
+    [
+      "evening gown",
+      "cocktail dress",
+      0.849
+    ],
+    [
+      "sweatpants",
+      "yoga pants",
+      0.843
+    ],
+    [
+      "track suit",
+      "sweatpants",
+      0.82
+    ],
+    [
+      "ripped blue denim jeans",
+      "blue jeans",
+      0.846
+    ],
+    [
+      "wearing a baseball cap",
+      "baseball cap",
+      0.842
+    ],
+    [
+      "hoop earrings",
+      "pearl earrings",
+      0.839
+    ],
+    [
+      "reading glasses",
+      "sunglasses",
+      0.834
+    ],
+    [
+      "wearing a bow tie",
+      "bow tie",
+      0.869
+    ],
+    [
+      "princess dress",
+      "ballgown",
+      0.83
+    ],
+    [
+      "wearing kurta",
+      "kurta pajama",
+      0.83
+    ],
+    [
+      "gold bangles",
+      "gold necklace",
+      0.836
+    ],
+    [
+      "silk dupatta",
+      "silk saree",
+      0.827
+    ],
+    [
+      "floral lehenga",
+      "lehenga",
+      0.867
+    ],
+    [
+      "sherwani",
+      "kurta pajama",
+      0.839
+    ],
+    [
+      "woman wearing a beanie",
+      "man in a beanie",
+      0.843
+    ],
+    [
+      "man in a suit",
+      "man in a tuxedo",
+      0.845
+    ],
+    [
+      "trench coat",
+      "winter coat",
+      0.852
+    ],
+    [
+      "football shirt",
+      "football team sports jersey",
+      0.85
+    ],
+    [
+      "kids in school blazers",
+      "school children in matching uniform blazers",
+      0.842
+    ],
+    [
+      "wearing a knitted beanie",
+      "woman wearing a beanie",
+      0.83
+    ],
+    [
+      "kids in school uniforms",
+      "kids in school blazers",
+      0.828
+    ],
+    [
+      "boys wearing footy shorts and singlets",
+      "footy shorts",
+      0.856
+    ],
+    [
+      "wearing a winter coat",
+      "wearing a puffer jacket",
+      0.868
+    ],
+    [
+      "man in a toque",
+      "man in a beanie",
+      0.821
+    ],
+    [
+      "puffer jacket with hood",
+      "wearing a puffer jacket",
+      0.823
+    ],
+    [
+      "school pinafore",
+      "school uniform",
+      0.825
+    ],
+    [
+      "dressed in winter coats",
+      "wearing a winter coat",
+      0.869
+    ],
+    [
+      "motorcycle",
+      "bicycle",
+      0.82
+    ],
+    [
+      "yacht",
+      "sailboat",
+      0.829
+    ],
+    [
+      "steam locomotive train",
+      "train",
+      0.825
+    ],
+    [
+      "red pickup",
+      "pickup truck",
+      0.838
+    ],
+    [
+      "iced coffee",
+      "ice cream",
+      0.835
+    ]
+  ],
+  "kept_by_category": {
+    "actions": 310,
+    "relational": 118,
+    "documents": 282,
+    "scenes": 264,
+    "pets": 106,
+    "clothing": 235,
+    "objects": 273
+  },
+  "length_by_category": {
+    "actions": {
+      "short": 116,
+      "medium": 127,
+      "long": 67
+    },
+    "relational": {
+      "short": 39,
+      "medium": 50,
+      "long": 29
+    },
+    "documents": {
+      "short": 94,
+      "medium": 125,
+      "long": 63
+    },
+    "scenes": {
+      "short": 96,
+      "medium": 111,
+      "long": 57
+    },
+    "pets": {
+      "short": 36,
+      "medium": 46,
+      "long": 24
+    },
+    "clothing": {
+      "short": 90,
+      "medium": 94,
+      "long": 51
+    },
+    "objects": {
+      "short": 105,
+      "medium": 111,
+      "long": 57
+    }
+  },
+  "kept": 1588
+}

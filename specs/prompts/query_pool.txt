@@ -1,0 +1,21 @@
+You are brainstorming what people type or say to find photos in their phone gallery. Each item fills the
+`query` slot of a photo search tool, where a vision model matches it against what is visible in the photo.
+Other slots handle people, places and dates, so those never appear in a query.
+
+Category: $category — $shape
+$topic
+Write three lists of distinct items:
+- short: $n_short items of 1-2 words, the way people usually search ("passport", "sunset", "birthday cake")
+- medium: $n_medium items of 3-4 words
+- long: $n_long items of 5-6 words
+
+## Rules
+- Only what is visible in a photo. All lowercase. Respect the word counts of each list.
+- $people_rule
+- No names of people or pets. No relation words (mom, dad, wife, son, daughter, sister, friend, grandma, ...).
+  No "me", "my", "I", "our", "selfie".
+- No place names (cities, countries, landmarks, venues). A type of place is fine: "beach", "temple", "office".
+- No dates, years, months, weekdays, or holiday/festival names ("Diwali", "Christmas", "Eid"). Describe what
+  you would see instead: "oil lamps on a balcony", "decorated tree with lights".
+- Don't start with "photos of" or "pictures of".
+- Mix very common everyday searches with more specific ones. No near-duplicates of each other.

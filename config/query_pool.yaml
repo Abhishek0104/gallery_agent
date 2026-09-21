@@ -1,0 +1,81 @@
+# Query pool: short `query` strings for search_images, brainstormed once per (category, facet),
+# purity-checked, then deduplicated with embeddings.
+#
+# Only the visual-content part of a search goes here. Names, relations, places, dates, "me"/"my"
+# belong in other slots (docs/intent_filler_design.md §6), so the purity check rejects them.
+#
+# people: how an entry combines with the `people` slot in the spec sampler
+#   required — only makes sense after a person ("hugging", "with a birthday cake")
+#   optional — works alone or with people ("blowing out candles", "wearing a red saree")
+#   never    — query-only (documents)
+#
+# sampling_weight: starting category weights for the spec sampler (revise after first generation).
+per_facet: 30          # items requested per facet call
+per_region: 20         # items requested per region-flavored call
+
+# Real gallery searches are short; without a quota the LLM writes caption-like 5-6 word queries.
+# Each call asks for three lists; code labels every item by its actual word count.
+length:
+  buckets: {short: [1, 2], medium: [3, 4], long: [5, 6]}
+  split:   {short: 0.40, medium: 0.40, long: 0.20}
+
+dedup:
+  threshold: 0.87      # cosine >= this within a category -> near duplicate, keep the first
+  review_band: 0.82    # pairs in [review_band, threshold) are listed in the report for eyeballing
+
+region_groups:         # one region-flavored call per region, so tags stay accurate
+  india: [india]
+  us: [us]
+  uk: [uk]
+  australia: [australia]
+  canada: [canada]
+  singapore: [singapore]
+  uae: [uae]
+
+categories:
+  actions:
+    weight: heavy
+    people: optional
+    regional: true
+    facets: [celebrations and parties, sports and games, kids playing, everyday life at home,
+             travel and outdoors, cooking and eating, school college and work]
+    shape: "an activity or action, e.g. \"blowing out birthday candles\", \"jumping into a pool\", \"flying a kite\""
+  relational:
+    weight: heavy
+    people: required
+    regional: false
+    facets: [affection and poses, with objects, with animals, group moments, doing something together]
+    shape: "what a person is doing or who/what they are with, written to follow a person's name, e.g. \"hugging\", \"holding a baby\", \"with a birthday cake\", \"sitting on shoulders\", \"with a dog\""
+  documents:
+    weight: heavy
+    people: never
+    regional: true
+    facets: [identity documents, travel documents, bills and receipts, medical, school and work papers,
+             notes and handwritten, tickets and certificates]
+    shape: "a document or paper someone photographs, e.g. \"passport\", \"restaurant bill\", \"whiteboard notes\""
+  scenes:
+    weight: medium
+    people: optional
+    regional: true
+    facets: [nature and landscapes, water and beaches, city and streets, weather and sky, indoors and venues]
+    shape: "a type of scene or setting (never a named place), e.g. \"sunset over the sea\", \"snowy mountains\", \"crowded market\""
+  pets:
+    weight: medium
+    people: optional
+    regional: false
+    facets: [dogs, cats, other pets, pets doing things]
+    shape: "an unnamed pet or animal and what it is doing, e.g. \"dog sleeping on the sofa\", \"cat in a box\""
+  clothing:
+    weight: medium
+    people: optional
+    regional: true
+    facets: [formal and festive wear, casual and sportswear, accessories, costumes and uniforms]
+    shape: "what someone is wearing or how they look, e.g. \"wearing a black suit\", \"in a red saree\", \"with sunglasses\""
+  objects:
+    weight: light
+    people: optional
+    regional: true
+    facets: [food and drinks, vehicles, home and furniture, gadgets and things, plants and flowers]
+    shape: "a thing, e.g. \"birthday cake\", \"vintage car\", \"bouquet of roses\""
+
+weights: {heavy: 0.20, medium: 0.10, light: 0.10}

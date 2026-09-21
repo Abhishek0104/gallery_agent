@@ -12,9 +12,14 @@ model the provider reports actually answered, in both the cache entry and the re
 import hashlib
 import json
 import os
+import re
+import sys
+import threading
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
+import numpy as np
 import yaml
 from pydantic import BaseModel
 
@@ -56,9 +61,11 @@ class LLM:
         self.model = spec["model"]
         self.thinking = spec.get("thinking", "high")
         self.max_tokens = spec.get("max_tokens", 16000)
+        self.dimensions = spec.get("dimensions")
         self.provider_cfg = cfg.get(self.provider) or {}
         self.cache_dir = ROOT / cfg["cache_dir"]
         self._client = None
+        self._lock = threading.Lock()          # one shared client, created once, across threads
 
     # ------------------------------------------------------------------ public
     def json(self, prompt: str, schema: type[BaseModel], seed, system: str = "") -> LLMResult:
@@ -79,6 +86,22 @@ class LLM:
         meta = {k: entry[k] for k in ("provider", "model", "served_model", "thinking", "seed")}
         return LLMResult(entry["output"], {**meta, "cache_key": path.stem})
 
+    def embed(self, texts: list) -> np.ndarray:
+        """Unit-normalized embeddings, one row per text. Cached per (model, dimensions, text)."""
+        path = self.cache_dir / f"embeddings_{self.provider}_{self.model}_{self.dimensions}.npz"
+        cache = dict(np.load(path)) if path.exists() else {}
+        keys = [hashlib.sha256(t.encode()).hexdigest()[:24] for t in texts]
+        missing = sorted({(k, t) for k, t in zip(keys, texts) if k not in cache})
+        if missing:
+            if self.provider not in EMBEDDERS:
+                raise LLMError(f"provider {self.provider!r} has no embedding backend")
+            vecs = EMBEDDERS[self.provider](self, [t for _, t in missing])
+            cache.update({k: v for (k, _), v in zip(missing, vecs)})
+            path.parent.mkdir(parents=True, exist_ok=True)
+            np.savez(path, **cache)
+        v = np.array([cache[k] for k in keys], dtype=np.float32)
+        return v / np.linalg.norm(v, axis=1, keepdims=True)
+
     def cached(self, prompt: str, schema: type[BaseModel], seed, system: str = "") -> bool:
         return self._cache_path(prompt, schema, seed, system).exists()
 
@@ -94,6 +117,25 @@ def int_seed(seed):
     return int(hashlib.sha256(str(seed).encode()).hexdigest(), 16) % (2 ** 31)
 
 
+RETRY_CODES = {429, 503}          # rate limit / overloaded: same request, same model, after a wait
+MAX_RETRIES = 5
+
+
+def with_retries(fn, error_cls, what):
+    """Retry only rate-limit/overload errors, loudly; anything else (or too many retries) raises LLMError."""
+    for attempt in range(MAX_RETRIES + 1):
+        try:
+            return fn()
+        except error_cls as e:
+            code = getattr(e, "code", None)
+            if code not in RETRY_CODES or attempt == MAX_RETRIES:
+                raise LLMError(f"{what} failed ({code}): {getattr(e, 'message', e)}") from e
+            m = re.search(r"retry in ([\d.]+)s", str(e))
+            wait = float(m.group(1)) + 1 if m else 30 * (attempt + 1)
+            print(f"[llm] {what}: {code}, retry {attempt + 1}/{MAX_RETRIES} in {wait:.0f}s", file=sys.stderr, flush=True)
+            time.sleep(wait)
+
+
 # ---------------------------------------------------------------------- backends
 def call_gemini(llm, system, prompt, schema, seed):
     if not (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")):
@@ -101,8 +143,9 @@ def call_gemini(llm, system, prompt, schema, seed):
     from google import genai
     from google.genai import types
 
-    if llm._client is None:
-        llm._client = genai.Client()
+    with llm._lock:
+        if llm._client is None:
+            llm._client = genai.Client()
     config = types.GenerateContentConfig(
         system_instruction=system or None,
         response_mime_type="application/json",
@@ -112,10 +155,8 @@ def call_gemini(llm, system, prompt, schema, seed):
         thinking_config=types.ThinkingConfig(thinking_level=llm.thinking.upper()),
         automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
     )
-    try:
-        resp = llm._client.models.generate_content(model=llm.model, contents=prompt, config=config)
-    except genai.errors.ClientError as e:
-        raise LLMError(f"Gemini request failed ({e.code}): {e.message}") from e
+    resp = with_retries(lambda: llm._client.models.generate_content(model=llm.model, contents=prompt, config=config),
+                        genai.errors.APIError, "Gemini request")
     cand = resp.candidates[0] if resp.candidates else None
     reason = cand.finish_reason.name if cand and cand.finish_reason else None
     if reason == "MAX_TOKENS":
@@ -129,11 +170,35 @@ def call_gemini(llm, system, prompt, schema, seed):
     return resp.parsed.model_dump(), resp.model_version
 
 
+def embed_gemini(llm, texts, batch=100):
+    if not (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")):
+        raise LLMError("no Gemini credentials: set GEMINI_API_KEY")
+    from google import genai
+    from google.genai import types
+
+    with llm._lock:
+        if llm._client is None:
+            llm._client = genai.Client()
+    config = types.EmbedContentConfig(output_dimensionality=llm.dimensions) if llm.dimensions else None
+    out = []
+    for i in range(0, len(texts), batch):
+        chunk = texts[i:i + batch]
+        # one Content per text; a bare list of strings is embedded as a single item
+        contents = [types.Content(parts=[types.Part(text=t)]) for t in chunk]
+        resp = with_retries(lambda: llm._client.models.embed_content(model=llm.model, contents=contents, config=config),
+                            genai.errors.APIError, "Gemini embedding")
+        if len(resp.embeddings) != len(chunk):
+            raise LLMError(f"asked for {len(chunk)} embeddings, got {len(resp.embeddings)}")
+        out += [np.array(e.values, dtype=np.float32) for e in resp.embeddings]
+    return out
+
+
 def call_anthropic(llm, system, prompt, schema, seed):
     import anthropic
 
-    if llm._client is None:
-        llm._client = anthropic.Anthropic()
+    with llm._lock:
+        if llm._client is None:
+            llm._client = anthropic.Anthropic()
     kwargs = dict(
         model=llm.model,
         max_tokens=llm.max_tokens,
@@ -163,3 +228,4 @@ def call_anthropic(llm, system, prompt, schema, seed):
 
 
 BACKENDS = {"gemini": call_gemini, "anthropic": call_anthropic}
+EMBEDDERS = {"gemini": embed_gemini}
