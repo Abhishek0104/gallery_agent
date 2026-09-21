@@ -4,58 +4,56 @@
   "region": "india",
   "household": "young_family",
   "owner": {
-    "name": "Neha",
+    "name": "Swathi",
     "gender": "f",
-    "age": 35,
-    "home_city": "Bengaluru"
+    "age": 37,
+    "home_city": "Hyderabad"
   },
   "people": [
     {
-      "name": "Vikram",
+      "name": "Vivek",
       "relation": "husband"
     },
     {
-      "name": "Tara",
-      "relation": "daughter"
+      "name": "Golu",
+      "relation": "son"
     },
     {
-      "name": "Chutki",
-      "relation": "daughter"
+      "name": "Pranav",
+      "relation": "son"
     },
     {
-      "name": "Sunita",
+      "name": "Sujatha",
       "relation": "mom"
     },
     {
-      "name": "Radhika",
-      "relation": "sister"
+      "name": "Ramesh",
+      "relation": "dad"
     },
     {
-      "name": "Imran",
-      "relation": "friend"
-    },
-    {
-      "name": "Shalini",
+      "name": "Pallavi",
       "relation": "friend"
     }
   ],
   "pets": [],
   "places_visited": [
-    "Goa",
-    "Coorg",
-    "Singapore",
-    "Mysuru"
+    "Udaipur",
+    "Ooty",
+    "Maldives",
+    "Coorg"
   ],
   "albums": [
-    "Singapore 2023",
-    "Chutki's 1st Birthday",
-    "Diwali 2022",
-    "Interior Ideas"
+    "Udaipur 2025",
+    "Pranav's 1st Birthday",
+    "Ooty Trip",
+    "Tax Receipts 2020",
+    "Golu Artworks"
   ],
   "interests": [
     "filter coffee",
     "terrace gardening",
-    "classical dance"
+    "saree draping",
+    "temple architecture"
   ],
   "generation": {
     "provider": "gemini",
@@ -63,6 +61,6 @@
     "served_model": "gemini-3.1-pro-preview",
     "thinking": "high",
     "seed": "persona_11/a0",
-    "cache_key": "021be81db81188f4134769b7"
+    "cache_key": "60fd85f79e525d5bd82bc77d"
   }
 }

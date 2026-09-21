@@ -7,6 +7,7 @@ quotas:
   household: {young_family: 0.25, couple: 0.15, single: 0.15, student: 0.10,
               parents_of_adults: 0.15, multigenerational: 0.20}
   pet:       {named: 0.50, unnamed: 0.20, none: 0.30}
+  owner_gender: {m: 0.50, f: 0.50}
   # Gender of the sibling group in households whose group role is `child` (sons vs daughters).
   child_group: {m: 0.50, f: 0.50}
   # Unusual name shapes, to exercise span copying. One per persona where not "none".
@@ -16,6 +17,11 @@ quotas:
 pet_species: {dog: 0.55, cat: 0.35, rabbit: 0.05, parrot: 0.05}   # sampled, not quota'd
 
 people: {min: 3, max: 7}      # excluding the owner
+
+# Home city and required trips are dealt by code (no repeats within a region until the pool
+# runs out), because the LLM collapses onto the same few choices when it picks from a list.
+required_destinations: 2      # from the region's destinations; the LLM adds 1-3 more
+album_years: {range: [2019, 2025], per_persona: 2}   # the only years album names may use
 
 # Household templates. Roles map to canonical relations in persona_outline.py.
 # `group` = the role that gets 2+ people with the same relation word (exercises OR-within-element).

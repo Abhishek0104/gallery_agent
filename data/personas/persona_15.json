@@ -4,55 +4,57 @@
   "region": "us",
   "household": "parents_of_adults",
   "owner": {
-    "name": "Sarah",
-    "gender": "f",
-    "age": 48,
-    "home_city": "Denver"
+    "name": "Robert",
+    "gender": "m",
+    "age": 53,
+    "home_city": "Atlanta"
   },
   "people": [
     {
-      "name": "Miguel",
-      "relation": "husband"
+      "name": "Linda",
+      "relation": "wife"
     },
     {
-      "name": "Rachel",
-      "relation": "daughter"
+      "name": "Brian",
+      "relation": "son"
+    },
+    {
+      "name": "Derek",
+      "relation": "son"
     },
     {
       "name": "Mia",
-      "relation": "daughter"
-    },
-    {
-      "name": "Lily",
       "relation": "granddaughter"
     },
     {
-      "name": "Rebecca",
+      "name": "Susan",
       "relation": "sister"
     }
   ],
   "pets": [
     {
-      "name": "Whiskers",
-      "species": "cat"
+      "name": "Rex",
+      "species": "dog"
     }
   ],
   "places_visited": [
     "Yellowstone",
-    "Maui",
-    "New York",
-    "Cancun"
+    "Miami",
+    "Grand Canyon",
+    "Charleston"
   ],
   "albums": [
-    "Maui 2023",
-    "Lily's 1st Birthday",
-    "Garden Remodel",
-    "Recipes to try"
+    "Yellowstone 2019",
+    "Mia 1st birthday",
+    "Miami trip 2021",
+    "Home renovations",
+    "Tax receipts"
   ],
   "interests": [
-    "hiking",
-    "gardening",
-    "knitting"
+    "woodworking",
+    "barbecue grilling",
+    "classic cars",
+    "fishing"
   ],
   "generation": {
     "provider": "gemini",
@@ -60,6 +62,6 @@
     "served_model": "gemini-3.1-pro-preview",
     "thinking": "high",
     "seed": "persona_15/a0",
-    "cache_key": "331a3caecb5332b769c1926f"
+    "cache_key": "6dc327215d3454195ae984e0"
   }
 }

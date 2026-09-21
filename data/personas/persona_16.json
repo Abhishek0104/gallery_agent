@@ -4,55 +4,65 @@
   "region": "india",
   "household": "young_family",
   "owner": {
-    "name": "Akhila",
+    "name": "Nitika",
     "gender": "f",
     "age": 33,
-    "home_city": "Kochi"
+    "home_city": "Chandigarh"
   },
   "people": [
     {
-      "name": "Nitin",
+      "name": "Varun",
       "relation": "husband"
     },
     {
+      "name": "Kashvi",
+      "relation": "daughter"
+    },
+    {
+      "name": "Inaya",
+      "relation": "daughter"
+    },
+    {
+      "name": "Kusum",
+      "relation": "mom"
+    },
+    {
+      "name": "Rajiv",
+      "relation": "dad"
+    },
+    {
       "name": "Sai Krishna",
-      "relation": "son"
-    },
-    {
-      "name": "Pranav",
-      "relation": "son"
-    },
-    {
-      "name": "Manju",
       "relation": "friend"
     },
     {
-      "name": "Deepak",
+      "name": "Chetna",
       "relation": "friend"
     }
   ],
   "pets": [
     {
-      "name": "Kaiser",
+      "name": "Toffee",
       "species": "dog"
     }
   ],
   "places_visited": [
-    "Munnar",
-    "Goa",
-    "Bali",
-    "Singapore"
+    "Andaman",
+    "Mysuru",
+    "Shimla",
+    "Agra"
   ],
   "albums": [
-    "Singapore 2023",
-    "Pranavs 1st Birthday",
-    "Home Renovation",
-    "Screenshots"
+    "Andaman 2019",
+    "Diwali 2025",
+    "Mysuru Diaries",
+    "Receipts",
+    "Kashvi Art"
   ],
   "interests": [
+    "home cooking",
     "indoor plants",
-    "baking",
-    "traditional sarees"
+    "street photography",
+    "pottery"
   ],
   "generation": {
     "provider": "gemini",
@@ -60,6 +70,6 @@
     "served_model": "gemini-3.1-pro-preview",
     "thinking": "high",
     "seed": "persona_16/a0",
-    "cache_key": "c560bdf184a576319afdfd43"
+    "cache_key": "61232884a4b0e8afdfb9b173"
   }
 }

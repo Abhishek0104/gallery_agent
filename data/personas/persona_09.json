@@ -4,50 +4,48 @@
   "region": "uk",
   "household": "couple",
   "owner": {
-    "name": "Sophie",
-    "gender": "f",
-    "age": 26,
-    "home_city": "Bristol"
+    "name": "Connor",
+    "gender": "m",
+    "age": 28,
+    "home_city": "Liverpool"
   },
   "people": [
     {
-      "name": "Tomasz",
-      "relation": "husband"
+      "name": "Ewa",
+      "relation": "wife"
     },
     {
-      "name": "Aisha",
+      "name": "Dev",
       "relation": "friend"
     },
     {
-      "name": "Callum",
+      "name": "Jamal",
       "relation": "friend"
     },
     {
-      "name": "Fiona",
-      "relation": "mom"
-    },
-    {
-      "name": "Graham",
-      "relation": "dad"
+      "name": "Rhys",
+      "relation": "friend"
     }
   ],
   "pets": [],
   "places_visited": [
-    "Cornwall",
-    "Lisbon",
     "Snowdonia",
-    "Amsterdam"
+    "Paris",
+    "Lake District",
+    "Krakow"
   ],
   "albums": [
-    "Cornwall Trip",
-    "Wedding Photos",
-    "House Renovation",
-    "Tomasz Birthday"
+    "Snowdonia 2021",
+    "Paris Trip",
+    "Ewa's 28th",
+    "Gig tickets",
+    "Flat Reno 2020"
   ],
   "interests": [
-    "rock climbing",
-    "vegan cooking",
-    "indie gigs"
+    "bouldering",
+    "live music",
+    "craft beer",
+    "board games"
   ],
   "generation": {
     "provider": "gemini",
@@ -55,6 +53,6 @@
     "served_model": "gemini-3.1-pro-preview",
     "thinking": "high",
     "seed": "persona_09/a0",
-    "cache_key": "b7824978f7ff47e09c8557e3"
+    "cache_key": "bc780f793138d67175dabba0"
   }
 }

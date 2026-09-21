@@ -9,6 +9,7 @@ OUTLINE = {
     "relations": ["wife", "daughter", "daughter", "friend"],
     "pet": {"status": "named", "species": "dog"},
     "tricky_name": "hyphenated",
+    "home_city": "Bengaluru", "required_destinations": ["Goa", "Manali"], "album_years": [2022, 2024],
 }
 GOOD = {
     "persona_id": "persona_01", "version": 1, "region": "india", "household": "young_family",
@@ -82,7 +83,7 @@ def test_tricky_name_required():
 
 def test_home_city_and_interests():
     p = copy.deepcopy(GOOD)
-    p["owner"]["home_city"] = "Seattle"         # wrong region
+    p["owner"]["home_city"] = "Seattle"         # not the outline's city
     p["interests"][0] = "Goa beaches"
     assert {"places", "interests"} <= checks(p)
 
@@ -106,3 +107,22 @@ def test_child_groups_split_evenly():
         rel = o["relations"]
         groups += [r for r in ("son", "daughter") if rel.count(r) >= 2]
     assert abs(groups.count("son") - groups.count("daughter")) <= 1
+
+
+def test_required_destinations_and_album_years():
+    p = copy.deepcopy(GOOD)
+    p["places_visited"] = ["Goa", "Dubai", "Ooty"]          # Manali missing
+    p["albums"][0] = "Goa 2023"                               # year not in outline
+    assert {"places", "albums"} <= checks(p)
+
+
+def test_pet_names_count_as_used():
+    assert "cross_persona" in checks(GOOD, used={"bruno"})
+
+
+def test_outline_spreads_home_cities():
+    outs = [o for o in sample_outlines(20, seed=7) if o["region"] == "india"]
+    assert len({o["home_city"] for o in outs}) == len(outs)
+    assert all(o["home_city"] not in o["required_destinations"] for o in outs)
+    genders = [o["owner"]["gender"] for o in sample_outlines(20, seed=7)]
+    assert genders.count("m") == genders.count("f") == 10

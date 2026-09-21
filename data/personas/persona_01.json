@@ -4,65 +4,53 @@
   "region": "canada",
   "household": "couple",
   "owner": {
-    "name": "Chloe",
+    "name": "Amelie",
     "gender": "f",
-    "age": 35,
-    "home_city": "Vancouver"
+    "age": 37,
+    "home_city": "Halifax"
   },
   "people": [
     {
-      "name": "D'Arcy",
+      "name": "Sanjay",
       "relation": "husband"
     },
     {
-      "name": "Priya",
+      "name": "D'Arcy",
       "relation": "friend"
     },
     {
-      "name": "Wei",
+      "name": "Mei",
       "relation": "friend"
     },
     {
-      "name": "Mateo",
+      "name": "Jayson",
       "relation": "friend"
-    },
-    {
-      "name": "Sylvie",
-      "relation": "mom"
-    },
-    {
-      "name": "Arthur",
-      "relation": "dad"
-    },
-    {
-      "name": "Luc",
-      "relation": "brother"
     }
   ],
   "pets": [
     {
       "name": null,
-      "species": "rabbit"
+      "species": "dog"
     }
   ],
   "places_visited": [
     "Whistler",
-    "Tofino",
-    "Maui",
-    "Tokyo"
+    "Jasper",
+    "Montreal",
+    "Reykjavik"
   ],
   "albums": [
-    "Whistler Ski Trip",
-    "Tofino 2023",
-    "Wedding Day",
-    "House Renovation",
-    "Receipts"
+    "Whistler 2020",
+    "Anniversary 2021",
+    "Jasper Trip",
+    "Recipe Ideas",
+    "D'Arcy's Birthday"
   ],
   "interests": [
-    "hiking",
-    "baking",
-    "pottery",
-    "snowboarding"
+    "snowboarding",
+    "vegan cooking",
+    "knitting",
+    "craft beer"
   ],
   "generation": {
     "provider": "gemini",
@@ -70,6 +58,6 @@
     "served_model": "gemini-3.1-pro-preview",
     "thinking": "high",
     "seed": "persona_01/a0",
-    "cache_key": "8350d9ec6006a8beee57e31f"
+    "cache_key": "cb9a3f22d40473e186980bbb"
   }
 }

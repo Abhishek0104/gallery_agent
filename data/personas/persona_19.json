@@ -4,55 +4,52 @@
   "region": "india",
   "household": "multigenerational",
   "owner": {
-    "name": "Roshan",
-    "gender": "m",
-    "age": 36,
-    "home_city": "Kochi"
+    "name": "Faridah",
+    "gender": "f",
+    "age": 34,
+    "home_city": "Kolkata"
   },
   "people": [
     {
-      "name": "Jo'Ann",
-      "relation": "wife"
+      "name": "Rif'at",
+      "relation": "husband"
     },
     {
-      "name": "Reba",
+      "name": "Asma",
       "relation": "daughter"
     },
     {
-      "name": "Neva",
+      "name": "Zainab",
       "relation": "daughter"
     },
     {
-      "name": "Omana",
-      "relation": "mom"
-    },
-    {
-      "name": "Kurian",
+      "name": "Javed",
       "relation": "dad"
     },
     {
-      "name": "Varghese",
+      "name": "Qasim",
       "relation": "grandpa"
     }
   ],
   "pets": [],
   "places_visited": [
-    "Munnar",
-    "Goa",
-    "Ooty",
-    "Dubai",
-    "Singapore"
+    "Darjeeling",
+    "Bali",
+    "Ajmer",
+    "Dubai"
   ],
   "albums": [
-    "Munnar 2024",
-    "Reba's 5th birthday",
-    "Wedding",
-    "Receipts"
+    "Darjeeling 2019",
+    "Bali 2021",
+    "Asma's 5th Birthday",
+    "Receipts",
+    "Eid Celebrations"
   ],
   "interests": [
-    "football",
-    "seafood cooking",
-    "architecture"
+    "calligraphy",
+    "mughlai cooking",
+    "modest fashion",
+    "home gardening"
   ],
   "generation": {
     "provider": "gemini",
@@ -60,6 +57,6 @@
     "served_model": "gemini-3.1-pro-preview",
     "thinking": "high",
     "seed": "persona_19/a0",
-    "cache_key": "aeb6291f58edc845623cf47c"
+    "cache_key": "a53cf16ff5bf840d2bb1a80d"
   }
 }

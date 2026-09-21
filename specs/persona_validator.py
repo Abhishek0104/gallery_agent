@@ -11,12 +11,14 @@ break it later.
 """
 from pathlib import Path
 
+import re
+
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 CONFIG = ROOT / "config"
 
-LIMITS = {"places_visited": (3, 6), "albums": (2, 6), "interests": (3, 5)}
+LIMITS = {"places_visited": (3, 5), "albums": (2, 6), "interests": (3, 5)}
 MAX_ALBUM_CHARS = 30
 MAX_INTEREST_WORDS = 3
 
@@ -104,15 +106,18 @@ def validate(p, outline, used_names=()):
             add("names", f"name collides with a relation word: {n!r}")
         if low in place_words or any(t in place_words for t in low.split()):
             add("names", f"name collides with a place: {n!r}")
-    for n in [owner] + [x.get("name", "") for x in people]:
+    for n in names:
         if n.lower() in used_names:
             add("cross_persona", f"name already used by another persona: {n!r}")
     if not tricky_ok(outline["tricky_name"], names[1:]):
         add("tricky_name", f"no {outline['tricky_name']} name among people/pets")
 
     # --- places
-    if home not in REGIONS[outline["region"]]["home_cities"]:
-        add("places", f"home_city {home!r} not in the {outline['region']} list")
+    if home != outline["home_city"]:
+        add("places", f"home_city {home!r} != outline {outline['home_city']!r}")
+    missing = [d for d in outline["required_destinations"] if d.lower() not in {s.lower() for s in places}]
+    if missing:
+        add("places", f"required destinations missing: {missing}")
     if home.lower() in {s.lower() for s in places}:
         add("places", "home_city repeated in places_visited")
 
@@ -128,6 +133,9 @@ def validate(p, outline, used_names=()):
     for a in p.get("albums", []):
         if not a.strip() or len(a) > MAX_ALBUM_CHARS:
             add("albums", f"bad album name {a!r}")
+        for y in re.findall(r"\b(?:19|20)\d{2}\b", a):
+            if int(y) not in outline["album_years"]:
+                add("albums", f"album {a!r} uses year {y}, allowed {outline['album_years']}")
 
     # --- interests: short, and no place or person names leaking in
     lowered_names = {n.lower() for n in names}

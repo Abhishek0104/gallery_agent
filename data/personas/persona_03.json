@@ -4,52 +4,56 @@
   "region": "us",
   "household": "parents_of_adults",
   "owner": {
-    "name": "Laura",
-    "gender": "f",
-    "age": 53,
-    "home_city": "Denver"
+    "name": "Marcus",
+    "gender": "m",
+    "age": 50,
+    "home_city": "Phoenix"
   },
   "people": [
     {
+      "name": "Elena",
+      "relation": "wife"
+    },
+    {
+      "name": "Sarah Jane",
+      "relation": "daughter"
+    },
+    {
+      "name": "Maya",
+      "relation": "daughter"
+    },
+    {
+      "name": "Rachel",
+      "relation": "sister"
+    },
+    {
       "name": "David",
-      "relation": "husband"
-    },
-    {
-      "name": "John Paul",
-      "relation": "son"
-    },
-    {
-      "name": "Kevin",
-      "relation": "son"
-    },
-    {
-      "name": "Maria",
       "relation": "friend"
     }
   ],
   "pets": [
     {
       "name": null,
-      "species": "cat"
+      "species": "dog"
     }
   ],
   "places_visited": [
-    "Yosemite",
-    "Cancun",
-    "Las Vegas",
-    "Hawaii"
+    "Maui",
+    "Grand Canyon",
+    "Costa Rica",
+    "Chicago"
   ],
   "albums": [
-    "Hawaii 2022",
-    "John Paul's Graduation",
-    "Receipts",
-    "Garden remodel"
+    "Maui 2022",
+    "Sarah Jane Graduation",
+    "Kitchen Remodel",
+    "Grand Canyon 2025"
   ],
   "interests": [
-    "hiking",
-    "knitting",
-    "indoor plants",
-    "baking bread"
+    "mountain biking",
+    "woodworking",
+    "barbecue",
+    "classic cars"
   ],
   "generation": {
     "provider": "gemini",
@@ -57,6 +61,6 @@
     "served_model": "gemini-3.1-pro-preview",
     "thinking": "high",
     "seed": "persona_03/a0",
-    "cache_key": "0c7a17386a9a65e567450369"
+    "cache_key": "53ac0b880e121bc6ada4e018"
   }
 }

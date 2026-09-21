@@ -2,8 +2,9 @@
 Persona outline sampler (code only, no LLM).
 
 An outline fixes everything the LLM must respect: region, household, owner age/gender,
-the exact relation of every person, pet status, and one "tricky name" shape.
-The LLM later fills in names, home city, places, albums and interests.
+the exact relation of every person, pet status, one "tricky name" shape, home city,
+required trips and the years album names may use.
+The LLM later fills in names, more places, albums and interests.
 
 Quotas are exact counts (largest remainder) shuffled by seed, so 20 personas at
 india=0.5 always gives 10 Indian personas, not "about 10".
@@ -52,6 +53,24 @@ def quota_list(weights, n, rng):
     return items
 
 
+class Dealer:
+    """Deals items from a pool without repeats; reshuffles when the pool runs out."""
+
+    def __init__(self, pool, rng):
+        self.pool, self.rng, self.deck = list(pool), rng, []
+
+    def take(self, k=1):
+        out = []
+        while len(out) < k:
+            if not self.deck:
+                self.deck = self.pool[:]
+                self.rng.shuffle(self.deck)
+            x = self.deck.pop()
+            if x not in out:
+                out.append(x)
+        return out
+
+
 def sample_relations(household, owner_gender, cfg, rng, group_gender=None):
     """Pick role counts from the template, then map each person to a canonical relation.
     group_gender fixes the gender of the group role (quota'd for child groups); else random."""
@@ -94,6 +113,11 @@ def sample_outlines(n=None, seed=None):
     households = quota_list(q["household"], n, rng)
     pets = quota_list(q["pet"], n, rng)
     tricky = quota_list(q["tricky_name"], n, rng)
+    genders = quota_list(q["owner_gender"], n, rng)
+    regions_cfg = yaml.safe_load((CONFIG / "regions.yaml").read_text())
+    cities = {r: Dealer(c["home_cities"], rng) for r, c in regions_cfg.items()}
+    dests = {r: Dealer(c["destinations"], rng) for r, c in regions_cfg.items()}
+    y_lo, y_hi = cfg["album_years"]["range"]
     child_groups = [i for i, hh in enumerate(households) if cfg["households"][hh]["group"] == "child"]
     child_gender = dict(zip(child_groups, quota_list(q["child_group"], len(child_groups), rng)))
     species, sw = zip(*cfg["pet_species"].items())
@@ -101,22 +125,28 @@ def sample_outlines(n=None, seed=None):
     outlines = []
     for i in range(n):
         hh = households[i]
-        gender = rng.choice("mf")
+        gender = genders[i]
+        region = regions[i]
+        home = cities[region].take()[0]
+        trips = [d for d in dests[region].take(cfg["required_destinations"] + 1) if d != home]
         lo, hi = cfg["households"][hh]["age"]
         outlines.append({
             "persona_id": f"persona_{i + 1:02d}",
-            "region": regions[i],
+            "region": region,
             "household": hh,
             "owner": {"gender": gender, "age": rng.randint(lo, hi)},
             "relations": sample_relations(hh, gender, cfg, rng, child_gender.get(i)),
             "pet": {"status": pets[i],
                     "species": None if pets[i] == "none" else rng.choices(species, sw)[0]},
             "tricky_name": tricky[i],
+            "home_city": home,
+            "required_destinations": trips[:cfg["required_destinations"]],
+            "album_years": sorted(rng.sample(range(y_lo, y_hi + 1), cfg["album_years"]["per_persona"])),
         })
     return outlines
 
 
 if __name__ == "__main__":
     for o in sample_outlines():
-        print(o["persona_id"], o["region"], o["household"], o["owner"], o["pet"],
-              o["tricky_name"], o["relations"])
+        print(o["persona_id"], o["region"], o["household"], o["owner"], o["home_city"],
+              o["required_destinations"], o["album_years"], o["pet"], o["tricky_name"], o["relations"])

@@ -4,59 +4,63 @@
   "region": "india",
   "household": "young_family",
   "owner": {
-    "name": "Nandini",
+    "name": "Shruti",
     "gender": "f",
-    "age": 41,
-    "home_city": "Pune"
+    "age": 35,
+    "home_city": "Delhi"
   },
   "people": [
     {
-      "name": "Rohan",
+      "name": "Harshvardhan",
       "relation": "husband"
     },
     {
-      "name": "Kavya",
+      "name": "Anika",
       "relation": "daughter"
     },
     {
-      "name": "Ananya",
+      "name": "Diya",
       "relation": "daughter"
     },
     {
-      "name": "Venkateshwaran",
+      "name": "Sunita",
+      "relation": "mom"
+    },
+    {
+      "name": "Rajendra",
       "relation": "dad"
     },
     {
-      "name": "Rahul",
-      "relation": "brother"
+      "name": "Kavita",
+      "relation": "sister"
     },
     {
-      "name": "Saima",
+      "name": "Neha",
       "relation": "friend"
     }
   ],
   "pets": [
     {
-      "name": "Sheru",
+      "name": "Ladoo",
       "species": "dog"
     }
   ],
   "places_visited": [
+    "Rishikesh",
+    "Bali",
     "Goa",
-    "Coorg",
-    "Munnar",
-    "Dubai"
+    "Udaipur"
   ],
   "albums": [
-    "Goa Trip 2023",
-    "Kavya 5th Birthday",
-    "Diwali Snaps",
-    "Home Renovation"
+    "Bali Trip 2019",
+    "Anika Birthday",
+    "Goa 2020",
+    "Tax Receipts"
   ],
   "interests": [
-    "terrace gardening",
-    "knitting",
-    "street photography"
+    "street food",
+    "pottery",
+    "indie music"
   ],
   "generation": {
     "provider": "gemini",
@@ -64,6 +68,6 @@
     "served_model": "gemini-3.1-pro-preview",
     "thinking": "high",
     "seed": "persona_05/a0",
-    "cache_key": "2d919ac52eca5defd73e197f"
+    "cache_key": "ba3a4fe86e0bdf175c82c5f2"
   }
 }

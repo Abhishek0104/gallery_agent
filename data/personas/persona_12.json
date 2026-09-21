@@ -4,27 +4,23 @@
   "region": "india",
   "household": "single",
   "owner": {
-    "name": "Gaurav",
+    "name": "Aditya",
     "gender": "m",
-    "age": 33,
-    "home_city": "Pune"
+    "age": 23,
+    "home_city": "Chennai"
   },
   "people": [
     {
-      "name": "Bunty",
+      "name": "Sonu",
       "relation": "friend"
     },
     {
-      "name": "Vivek",
+      "name": "Venkatesh",
       "relation": "friend"
     },
     {
-      "name": "Zoya",
-      "relation": "friend"
-    },
-    {
-      "name": "Kusum",
-      "relation": "mom"
+      "name": "Rishabh",
+      "relation": "colleague"
     }
   ],
   "pets": [
@@ -34,21 +30,22 @@
     }
   ],
   "places_visited": [
+    "Shimla",
     "Goa",
-    "Bali",
-    "Coorg",
-    "Rishikesh"
+    "Munnar",
+    "Pondicherry"
   ],
   "albums": [
-    "Goa trip 2023",
-    "Zoya's Wedding",
-    "Gym progress",
-    "Screenshots"
+    "Goa Trip 2023",
+    "College Farewell 2023",
+    "Office Memes",
+    "Shimla Trek"
   ],
   "interests": [
-    "street food",
-    "motorcycling",
-    "indie music"
+    "filter coffee",
+    "gaming setups",
+    "street photography",
+    "indie gigs"
   ],
   "generation": {
     "provider": "gemini",
@@ -56,6 +53,6 @@
     "served_model": "gemini-3.1-pro-preview",
     "thinking": "high",
     "seed": "persona_12/a0",
-    "cache_key": "861501708515d30f42c3788f"
+    "cache_key": "4a762c0bd20b33fcd846c219"
   }
 }

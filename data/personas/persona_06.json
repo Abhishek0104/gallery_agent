@@ -4,57 +4,57 @@
   "region": "india",
   "household": "couple",
   "owner": {
-    "name": "Siddharth",
-    "gender": "m",
-    "age": 25,
-    "home_city": "Bengaluru"
+    "name": "Lakshmi",
+    "gender": "f",
+    "age": 40,
+    "home_city": "Kochi"
   },
   "people": [
     {
-      "name": "Meera",
-      "relation": "wife"
+      "name": "Arun",
+      "relation": "husband"
     },
     {
-      "name": "Arjun",
+      "name": "Deepa",
       "relation": "friend"
     },
     {
-      "name": "Faizan",
+      "name": "Shabana",
       "relation": "friend"
     },
     {
-      "name": "Prakash",
-      "relation": "dad"
+      "name": "Meenakshi",
+      "relation": "friend"
     },
     {
-      "name": "Divya",
+      "name": "Parvathi",
       "relation": "sister"
     }
   ],
   "pets": [
     {
-      "name": "Milo",
-      "species": "dog"
+      "name": "Bunty",
+      "species": "rabbit"
     }
   ],
   "places_visited": [
-    "Coorg",
-    "Goa",
     "Singapore",
-    "Munnar"
+    "Darjeeling",
+    "Munnar",
+    "Dubai"
   ],
   "albums": [
-    "Coorg Weekend",
-    "Our Wedding",
-    "Milo",
-    "Diwali 2023",
-    "Receipts"
+    "Singapore 2024",
+    "Darjeeling 2021",
+    "Parvathi Wedding",
+    "Recipes",
+    "Bunty Snaps"
   ],
   "interests": [
-    "cricket",
-    "street food",
-    "pc gaming",
-    "sneakers"
+    "houseplants",
+    "traditional art",
+    "sarees",
+    "baking"
   ],
   "generation": {
     "provider": "gemini",
@@ -62,6 +62,6 @@
     "served_model": "gemini-3.1-pro-preview",
     "thinking": "high",
     "seed": "persona_06/a0",
-    "cache_key": "d67bb5d1032247a4903384a0"
+    "cache_key": "8544732c0d91c50b1015ddff"
   }
 }

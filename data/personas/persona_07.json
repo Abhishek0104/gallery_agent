@@ -4,9 +4,9 @@
   "region": "uae",
   "household": "multigenerational",
   "owner": {
-    "name": "Nadine",
+    "name": "Leila",
     "gender": "f",
-    "age": 36,
+    "age": 46,
     "home_city": "Dubai"
   },
   "people": [
@@ -15,47 +15,36 @@
       "relation": "husband"
     },
     {
-      "name": "Elias",
+      "name": "Omar",
       "relation": "son"
     },
     {
-      "name": "Ziad",
+      "name": "Zayn-Ali",
       "relation": "son"
     },
     {
-      "name": "Hala",
-      "relation": "mom"
-    },
-    {
-      "name": "Fadi",
+      "name": "Hassan",
       "relation": "dad"
-    },
-    {
-      "name": "Layla",
-      "relation": "grandma"
-    },
-    {
-      "name": "Marie-Claire",
-      "relation": "cousin"
     }
   ],
   "pets": [],
   "places_visited": [
     "Istanbul",
     "Baku",
-    "Jebel Jais",
-    "Salalah"
+    "Salalah",
+    "Maldives"
   ],
   "albums": [
-    "Istanbul Trip 2023",
-    "Elias Birthday",
-    "Desert Safari",
-    "Work Receipts"
+    "Istanbul 2023",
+    "Baku Trip",
+    "Omar Graduation",
+    "Zayn-Ali 2020",
+    "Visa Docs"
   ],
   "interests": [
-    "desert camping",
     "fine dining",
-    "interior design"
+    "desert camping",
+    "modern architecture"
   ],
   "generation": {
     "provider": "gemini",
@@ -63,6 +52,6 @@
     "served_model": "gemini-3.1-pro-preview",
     "thinking": "high",
     "seed": "persona_07/a0",
-    "cache_key": "2bc71d2b330efcab8d304072"
+    "cache_key": "12db6ccbd42ebee376197e69"
   }
 }

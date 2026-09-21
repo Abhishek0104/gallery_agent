@@ -4,47 +4,54 @@
   "region": "india",
   "household": "student",
   "owner": {
-    "name": "Sneha",
-    "gender": "f",
-    "age": 22,
-    "home_city": "Pune"
+    "name": "Ishaan",
+    "gender": "m",
+    "age": 20,
+    "home_city": "Lucknow"
   },
   "people": [
     {
-      "name": "Isha",
+      "name": "Kabir",
       "relation": "friend"
     },
     {
-      "name": "Varun",
+      "name": "Zoya",
       "relation": "friend"
     },
     {
-      "name": "Anjali",
+      "name": "Meera",
       "relation": "mom"
     },
     {
-      "name": "Pallavi",
+      "name": "Sunil",
+      "relation": "dad"
+    },
+    {
+      "name": "Aryan",
+      "relation": "brother"
+    },
+    {
+      "name": "Farhan",
       "relation": "roommate"
     }
   ],
   "pets": [],
   "places_visited": [
-    "Goa",
+    "Pondicherry",
     "Munnar",
-    "Dubai",
-    "Coorg"
+    "Varanasi",
+    "Manali"
   ],
   "albums": [
-    "Goa 2023",
-    "Hostel Life",
-    "Notes and Boards",
-    "Isha Birthday"
+    "Pondy Trip 2024",
+    "College Fest 2022",
+    "Assignments",
+    "Munnar 2024"
   ],
   "interests": [
     "street photography",
-    "cafe hopping",
-    "indie gigs",
-    "sketching"
+    "cafe aesthetics",
+    "cricket"
   ],
   "generation": {
     "provider": "gemini",
@@ -52,6 +59,6 @@
     "served_model": "gemini-3.1-pro-preview",
     "thinking": "high",
     "seed": "persona_10/a0",
-    "cache_key": "63fd5350ba39c6ac41593eab"
+    "cache_key": "346b08af19129f25585a68ef"
   }
 }

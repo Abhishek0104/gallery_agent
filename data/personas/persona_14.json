@@ -4,43 +4,46 @@
   "region": "india",
   "household": "single",
   "owner": {
-    "name": "Swati",
-    "gender": "f",
-    "age": 30,
-    "home_city": "Pune"
+    "name": "Kunal",
+    "gender": "m",
+    "age": 27,
+    "home_city": "Ahmedabad"
   },
   "people": [
     {
-      "name": "Mary-Ann",
+      "name": "Siddharth",
       "relation": "friend"
     },
     {
-      "name": "Kunal",
+      "name": "Rupali",
       "relation": "friend"
     },
     {
-      "name": "Rashmi",
-      "relation": "sister"
+      "name": "John-Paul",
+      "relation": "friend"
+    },
+    {
+      "name": "Nikhil",
+      "relation": "colleague"
     }
   ],
   "pets": [],
   "places_visited": [
-    "Goa",
-    "Bali",
-    "Rishikesh",
-    "Dubai"
+    "Manali",
+    "Varanasi",
+    "Udaipur",
+    "Spiti Valley"
   ],
   "albums": [
-    "Goa 2023",
-    "Rashmi Graduation",
-    "Cafe Hopping",
-    "Office Receipts"
+    "Manali 2020",
+    "Varanasi 2024",
+    "Gaming Setup",
+    "Receipts"
   ],
   "interests": [
-    "pottery",
-    "street art",
-    "indoor plants",
-    "indie music"
+    "street photography",
+    "indie music",
+    "pc gaming"
   ],
   "generation": {
     "provider": "gemini",
@@ -48,6 +51,6 @@
     "served_model": "gemini-3.1-pro-preview",
     "thinking": "high",
     "seed": "persona_14/a0",
-    "cache_key": "698831aa34494d1516f9fbb4"
+    "cache_key": "e8e926d1691e3e323af1d9fd"
   }
 }

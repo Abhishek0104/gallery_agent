@@ -49,7 +49,6 @@ class Pet(BaseModel):
 
 class PersonaContent(BaseModel):
     owner_name: str
-    home_city: str
     people: List[Person]
     pets: List[Pet]
     places_visited: List[str]
@@ -73,7 +72,8 @@ def build_prompt(o, used_names, feedback=()):
         age=o["owner"]["age"], gender={"m": "man", "f": "woman"}[o["owner"]["gender"]],
         relations="\n".join(f"  {i}. {r}" for i, r in enumerate(o["relations"], 1)),
         pet=pet_line, pet_field=pet_field, tricky=TRICKY[o["tricky_name"]],
-        home_cities=", ".join(region["home_cities"]), destinations=", ".join(region["destinations"]),
+        home_city=o["home_city"], required=" and ".join(o["required_destinations"]),
+        album_years=", ".join(map(str, o["album_years"])),
         used_names=", ".join(sorted(used_names)) or "(none yet)", feedback=fb,
     )
 
@@ -87,7 +87,7 @@ def to_persona(o, c, meta):
         "persona_id": o["persona_id"], "version": VERSION,
         "region": o["region"], "household": o["household"],
         "owner": {"name": clean(c["owner_name"]), "gender": o["owner"]["gender"],
-                  "age": o["owner"]["age"], "home_city": c["home_city"]},
+                  "age": o["owner"]["age"], "home_city": o["home_city"]},
         "people": [{"name": clean(x["name"]), "relation": x["relation"]} for x in c["people"]],
         "pets": [{"name": clean(x["name"]), "species": x["species"]} for x in c["pets"]],
         "places_visited": c["places_visited"],
@@ -127,6 +127,7 @@ def generate(max_attempts, dry_run=False, limit=None):
             continue
         (OUT / f"{o['persona_id']}.json").write_text(json.dumps(persona, indent=2, ensure_ascii=False))
         used |= {persona["owner"]["name"].lower()} | {x["name"].lower() for x in persona["people"]}
+        used |= {x["name"].lower() for x in persona["pets"] if x["name"]}
         print(f"{o['persona_id']}: ok ({attempt + 1} attempt{'s' * bool(attempt)})")
 
     (OUT / "_report.json").write_text(json.dumps(report, indent=2))

@@ -4,52 +4,57 @@
   "region": "india",
   "household": "student",
   "owner": {
-    "name": "Shruti",
+    "name": "Riya",
     "gender": "f",
-    "age": 23,
-    "home_city": "Pune"
+    "age": 21,
+    "home_city": "Bengaluru"
   },
   "people": [
     {
-      "name": "Aditya",
+      "name": "Aisha",
       "relation": "friend"
     },
     {
-      "name": "Riya",
+      "name": "Rohan",
       "relation": "friend"
     },
     {
-      "name": "Tanya",
-      "relation": "friend"
-    },
-    {
-      "name": "Smita",
+      "name": "Shweta",
       "relation": "mom"
+    },
+    {
+      "name": "Prakash",
+      "relation": "dad"
+    },
+    {
+      "name": "Chintu",
+      "relation": "brother"
     }
   ],
   "pets": [
     {
-      "name": "Bruno",
+      "name": "Murphy",
       "species": "dog"
     }
   ],
   "places_visited": [
-    "Goa",
-    "Lonavala",
-    "Bali",
-    "Coorg"
+    "Mysuru",
+    "Leh",
+    "Gokarna",
+    "Hampi"
   ],
   "albums": [
-    "Goa 2023",
-    "College Fest",
-    "Food Snaps",
-    "Bruno being Bruno"
+    "Leh Trip 2024",
+    "College Fest 2024",
+    "Chintu Convocation",
+    "Notes and Syllabi",
+    "Gokarna 2025"
   ],
   "interests": [
     "cafe hopping",
-    "sketching",
-    "street fashion",
-    "live music"
+    "indie concerts",
+    "street photography",
+    "vintage fashion"
   ],
   "generation": {
     "provider": "gemini",
@@ -57,6 +62,6 @@
     "served_model": "gemini-3.1-pro-preview",
     "thinking": "high",
     "seed": "persona_08/a0",
-    "cache_key": "fd5ff30f6c84c70cb9ee3189"
+    "cache_key": "8c78fbe0e09529eaf23f7ceb"
   }
 }

@@ -4,63 +4,61 @@
   "region": "india",
   "household": "young_family",
   "owner": {
-    "name": "Saurabh",
+    "name": "Vikram",
     "gender": "m",
-    "age": 35,
-    "home_city": "Pune"
+    "age": 42,
+    "home_city": "Jaipur"
   },
   "people": [
     {
-      "name": "Pooja",
+      "name": "Anjali",
       "relation": "wife"
     },
     {
-      "name": "Ayaan",
-      "relation": "son"
+      "name": "Tara",
+      "relation": "daughter"
     },
     {
-      "name": "Kabir",
-      "relation": "son"
+      "name": "Rumi",
+      "relation": "daughter"
     },
     {
-      "name": "Kiran",
-      "relation": "mom"
-    },
-    {
-      "name": "Ashok",
-      "relation": "dad"
+      "name": "Samir",
+      "relation": "brother"
     },
     {
       "name": "Harish",
       "relation": "friend"
     },
     {
-      "name": "Ali-Reza",
+      "name": "Abdul-Karim",
       "relation": "friend"
     }
   ],
   "pets": [
     {
-      "name": "Chintu",
+      "name": "Jalebi",
       "species": "cat"
     }
   ],
   "places_visited": [
-    "Goa",
+    "Kashmir",
     "Coorg",
-    "Dubai",
-    "Singapore"
+    "Singapore",
+    "Ranthambore"
   ],
   "albums": [
-    "Goa 2023",
-    "Kabirs 1st Birthday",
-    "Office Party",
-    "Tax Docs"
+    "Kashmir Trip 2022",
+    "Tara's 5th Birthday",
+    "Home Renovation 2025",
+    "Tax Receipts",
+    "Rumi and Jalebi"
   ],
   "interests": [
+    "wildlife photography",
     "cricket",
-    "street food",
-    "indie music"
+    "spicy curries",
+    "historical architecture"
   ],
   "generation": {
     "provider": "gemini",
@@ -68,6 +66,6 @@
     "served_model": "gemini-3.1-pro-preview",
     "thinking": "high",
     "seed": "persona_17/a0",
-    "cache_key": "cf3f765f6f292d517257b852"
+    "cache_key": "591db3107f2b6546956a9ceb"
   }
 }
