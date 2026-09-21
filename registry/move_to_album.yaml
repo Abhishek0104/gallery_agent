@@ -1,0 +1,10 @@
+name: move_to_album
+model_facing:
+  description: "Move photos to an album (creates it if missing)"
+  args:
+    images: {type: ImageSet, required: true}   # rN handle
+    album:  {type: str, required: true}        # as the user said it
+pipeline:
+  output: {status: enum[moved], count: int, album: str, created: bool}
+  effect: write
+  errors: {}

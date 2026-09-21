@@ -1,0 +1,12 @@
+name: apply_effect
+model_facing:
+  description: "Apply a photo effect; saves new copies, originals unchanged"
+  args:
+    images: {type: ImageSet, required: true}
+    effect: {type: enum, values: "{effects}", required: true}
+pipeline:
+  constraints: {effect: {values: [cool, warm, sepia, black_and_white],
+                         randomize: true}}
+  output: {status: enum[created], images: ImageSet}   # new handle
+  effect: write
+  errors: {}

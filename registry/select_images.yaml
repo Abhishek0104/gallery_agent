@@ -1,0 +1,9 @@
+name: select_images          # v2.0
+model_facing:
+  args:
+    images: {type: ImageSet, required: true}
+    k:      {type: int, required: true}
+    by:     {type: enum[relevance, aesthetic], default: aesthetic}
+pipeline:
+  output: ImageSet            # new handle, count k
+  effect: read

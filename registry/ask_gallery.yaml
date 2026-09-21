@@ -1,0 +1,10 @@
+name: ask_gallery
+model_facing:
+  description: "Answer any question about the user's photos"
+  args:
+    question: {type: str, required: true}   # self-contained, no pronouns
+pipeline:
+  constraints: {top_k: 4}                   # internal; not model-facing
+  output: {answer: str, images: ImageSet}   # model sees {answer, id: rN, count}
+  effect: read
+  errors: {}

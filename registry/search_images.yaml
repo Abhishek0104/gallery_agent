@@ -1,0 +1,13 @@
+name: search_images
+model_facing:
+  description: "Find photos by content, people, place, date"
+  args:
+    query:    {type: str}         # visual content → SigLIP
+    people: {type: list[str]}     # "me" = owner; names or relations as spoken, app resolves
+    location: {type: str}         # raw phrase; reverse-geocoded
+    date:     {type: str}         # raw phrase; app resolves
+pipeline:
+  output: ImageSet                # model sees {id: "rN", count: N}
+  effect: read
+  errors:
+    no_results: {expect: "say nothing was found, suggest loosening a filter; never invent results"}

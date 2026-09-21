@@ -1,0 +1,602 @@
+- id: P001
+  initial: empty
+  calls: 1
+  path: ask→r1
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P002
+  initial: empty
+  calls: 1
+  path: search→r1
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P003
+  initial: empty
+  calls: 2
+  path: ask→r1  ▸  [select](r1)→r2  ▸  collage(r2)→r3
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P004
+  initial: empty
+  calls: 2
+  path: ask→r1  ▸  [select](r1)→r2  ▸  delete(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P005
+  initial: empty
+  calls: 2
+  path: ask→r1  ▸  [select](r1)→r2  ▸  effect(r2)→r3
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P006
+  initial: empty
+  calls: 2
+  path: ask→r1  ▸  [select](r1)→r2  ▸  move(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P007
+  initial: empty
+  calls: 2
+  path: ask→r1  ▸  collage(r1)→r2
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P008
+  initial: empty
+  calls: 2
+  path: ask→r1  ▸  delete(r1)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P009
+  initial: empty
+  calls: 2
+  path: ask→r1  ▸  effect(r1)→r2
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P010
+  initial: empty
+  calls: 2
+  path: ask→r1  ▸  move(r1)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P011
+  initial: empty
+  calls: 2
+  path: search→r1  ▸  [select](r1)→r2  ▸  collage(r2)→r3
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P012
+  initial: empty
+  calls: 2
+  path: search→r1  ▸  [select](r1)→r2  ▸  delete(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P013
+  initial: empty
+  calls: 2
+  path: search→r1  ▸  [select](r1)→r2  ▸  effect(r2)→r3
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P014
+  initial: empty
+  calls: 2
+  path: search→r1  ▸  [select](r1)→r2  ▸  move(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P015
+  initial: empty
+  calls: 2
+  path: search→r1  ▸  collage(r1)→r2
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P016
+  initial: empty
+  calls: 2
+  path: search→r1  ▸  delete(r1)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P017
+  initial: empty
+  calls: 2
+  path: search→r1  ▸  effect(r1)→r2
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P018
+  initial: empty
+  calls: 2
+  path: search→r1  ▸  move(r1)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P019
+  initial: empty
+  calls: 2
+  path: search→r1  ▸  search→r2
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P020
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  [select](r1)→r2  ▸  collage(r2)→r3  ▸  delete(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P021
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  [select](r1)→r2  ▸  collage(r2)→r3  ▸  effect(r3)→r4
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P022
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  [select](r1)→r2  ▸  collage(r2)→r3  ▸  move(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P023
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  [select](r1)→r2  ▸  effect(r2)→r3  ▸  collage(r3)→r4
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P024
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  [select](r1)→r2  ▸  effect(r2)→r3  ▸  delete(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P025
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  [select](r1)→r2  ▸  effect(r2)→r3  ▸  move(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P026
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  collage(r1)→r2  ▸  delete(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P027
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  collage(r1)→r2  ▸  effect(r2)→r3
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P028
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  collage(r1)→r2  ▸  move(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P029
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  effect(r1)→r2  ▸  [select](r2)→r3  ▸  collage(r3)→r4
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P030
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  effect(r1)→r2  ▸  [select](r2)→r3  ▸  delete(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P031
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  effect(r1)→r2  ▸  [select](r2)→r3  ▸  move(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P032
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  effect(r1)→r2  ▸  collage(r2)→r3
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P033
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  effect(r1)→r2  ▸  delete(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P034
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  effect(r1)→r2  ▸  move(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P035
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  search→r2  ▸  [select](r2)→r3  ▸  collage(r3)→r4
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P036
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  search→r2  ▸  [select](r2)→r3  ▸  delete(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P037
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  search→r2  ▸  [select](r2)→r3  ▸  effect(r3)→r4
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P038
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  search→r2  ▸  [select](r2)→r3  ▸  move(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P039
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  search→r2  ▸  collage(r2)→r3
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P040
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  search→r2  ▸  delete(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P041
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  search→r2  ▸  effect(r2)→r3
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P042
+  initial: empty
+  calls: 3
+  path: search→r1  ▸  search→r2  ▸  move(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P043
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  [select](r1)→r2  ▸  collage(r2)→r3  ▸  effect(r3)→r4  ▸  delete(r4)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P044
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  [select](r1)→r2  ▸  collage(r2)→r3  ▸  effect(r3)→r4  ▸  move(r4)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P045
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  [select](r1)→r2  ▸  effect(r2)→r3  ▸  collage(r3)→r4  ▸  delete(r4)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P046
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  [select](r1)→r2  ▸  effect(r2)→r3  ▸  collage(r3)→r4  ▸  move(r4)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P047
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  collage(r1)→r2  ▸  effect(r2)→r3  ▸  delete(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P048
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  collage(r1)→r2  ▸  effect(r2)→r3  ▸  move(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P049
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  effect(r1)→r2  ▸  [select](r2)→r3  ▸  collage(r3)→r4  ▸  delete(r4)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P050
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  effect(r1)→r2  ▸  [select](r2)→r3  ▸  collage(r3)→r4  ▸  move(r4)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P051
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  effect(r1)→r2  ▸  collage(r2)→r3  ▸  delete(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P052
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  effect(r1)→r2  ▸  collage(r2)→r3  ▸  move(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P053
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  search→r2  ▸  [select](r2)→r3  ▸  collage(r3)→r4  ▸  delete(r4)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P054
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  search→r2  ▸  [select](r2)→r3  ▸  collage(r3)→r4  ▸  effect(r4)→r5
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P055
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  search→r2  ▸  [select](r2)→r3  ▸  collage(r3)→r4  ▸  move(r4)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P056
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  search→r2  ▸  [select](r2)→r3  ▸  effect(r3)→r4  ▸  collage(r4)→r5
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P057
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  search→r2  ▸  [select](r2)→r3  ▸  effect(r3)→r4  ▸  delete(r4)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P058
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  search→r2  ▸  [select](r2)→r3  ▸  effect(r3)→r4  ▸  move(r4)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P059
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  search→r2  ▸  collage(r2)→r3  ▸  delete(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P060
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  search→r2  ▸  collage(r2)→r3  ▸  effect(r3)→r4
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P061
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  search→r2  ▸  collage(r2)→r3  ▸  move(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P062
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  search→r2  ▸  effect(r2)→r3  ▸  [select](r3)→r4  ▸  collage(r4)→r5
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P063
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  search→r2  ▸  effect(r2)→r3  ▸  [select](r3)→r4  ▸  delete(r4)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P064
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  search→r2  ▸  effect(r2)→r3  ▸  [select](r3)→r4  ▸  move(r4)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P065
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  search→r2  ▸  effect(r2)→r3  ▸  collage(r3)→r4
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P066
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  search→r2  ▸  effect(r2)→r3  ▸  delete(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P067
+  initial: empty
+  calls: 4
+  path: search→r1  ▸  search→r2  ▸  effect(r2)→r3  ▸  move(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P068
+  initial: selection
+  calls: 1
+  path: collage(r0)→r1
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P069
+  initial: selection
+  calls: 1
+  path: delete(r0)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P070
+  initial: selection
+  calls: 1
+  path: effect(r0)→r1
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P071
+  initial: selection
+  calls: 1
+  path: move(r0)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P072
+  initial: selection
+  calls: 2
+  path: collage(r0)→r1  ▸  delete(r1)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P073
+  initial: selection
+  calls: 2
+  path: collage(r0)→r1  ▸  effect(r1)→r2
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P074
+  initial: selection
+  calls: 2
+  path: collage(r0)→r1  ▸  move(r1)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P075
+  initial: selection
+  calls: 2
+  path: effect(r0)→r1  ▸  [select](r1)→r2  ▸  collage(r2)→r3
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P076
+  initial: selection
+  calls: 2
+  path: effect(r0)→r1  ▸  [select](r1)→r2  ▸  delete(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P077
+  initial: selection
+  calls: 2
+  path: effect(r0)→r1  ▸  [select](r1)→r2  ▸  move(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P078
+  initial: selection
+  calls: 2
+  path: effect(r0)→r1  ▸  collage(r1)→r2
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P079
+  initial: selection
+  calls: 2
+  path: effect(r0)→r1  ▸  delete(r1)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P080
+  initial: selection
+  calls: 2
+  path: effect(r0)→r1  ▸  move(r1)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P081
+  initial: selection
+  calls: 3
+  path: collage(r0)→r1  ▸  effect(r1)→r2  ▸  delete(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P082
+  initial: selection
+  calls: 3
+  path: collage(r0)→r1  ▸  effect(r1)→r2  ▸  move(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P083
+  initial: selection
+  calls: 3
+  path: effect(r0)→r1  ▸  [select](r1)→r2  ▸  collage(r2)→r3  ▸  delete(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P084
+  initial: selection
+  calls: 3
+  path: effect(r0)→r1  ▸  [select](r1)→r2  ▸  collage(r2)→r3  ▸  move(r3)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P085
+  initial: selection
+  calls: 3
+  path: effect(r0)→r1  ▸  collage(r1)→r2  ▸  delete(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
+- id: P086
+  initial: selection
+  calls: 3
+  path: effect(r0)→r1  ▸  collage(r1)→r2  ▸  move(r2)
+  weight: 1.0
+  status: keep
+  notes: ''
