@@ -98,3 +98,11 @@ def test_unicode_and_apostrophe_names():
     p["people"][3]["name"] = "René"
     p["people"][2]["name"] = "D'Andre-Lee"
     assert validate(p, OUTLINE) == []
+
+
+def test_child_groups_split_evenly():
+    groups = []
+    for o in sample_outlines(20, seed=5):
+        rel = o["relations"]
+        groups += [r for r in ("son", "daughter") if rel.count(r) >= 2]
+    assert abs(groups.count("son") - groups.count("daughter")) <= 1

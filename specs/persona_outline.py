@@ -52,8 +52,9 @@ def quota_list(weights, n, rng):
     return items
 
 
-def sample_relations(household, owner_gender, cfg, rng):
-    """Pick role counts from the template, then map each person to a canonical relation."""
+def sample_relations(household, owner_gender, cfg, rng, group_gender=None):
+    """Pick role counts from the template, then map each person to a canonical relation.
+    group_gender fixes the gender of the group role (quota'd for child groups); else random."""
     tmpl = cfg["households"][household]
     counts = {role: rng.randint(lo, hi) for role, (lo, hi) in tmpl["roles"].items()}
 
@@ -72,7 +73,7 @@ def sample_relations(household, owner_gender, cfg, rng):
         if role == "spouse":
             relations += ["wife" if owner_gender == "m" else "husband"] * c
         elif role == tmpl["group"]:
-            g = rng.choice("mf")                    # group shares one relation word
+            g = group_gender or rng.choice("mf")    # group shares one relation word
             relations += [ROLE_RELATIONS[role][g]] * c
         elif role == "parent" and c == 2:
             relations += ["mom", "dad"]
@@ -93,6 +94,8 @@ def sample_outlines(n=None, seed=None):
     households = quota_list(q["household"], n, rng)
     pets = quota_list(q["pet"], n, rng)
     tricky = quota_list(q["tricky_name"], n, rng)
+    child_groups = [i for i, hh in enumerate(households) if cfg["households"][hh]["group"] == "child"]
+    child_gender = dict(zip(child_groups, quota_list(q["child_group"], len(child_groups), rng)))
     species, sw = zip(*cfg["pet_species"].items())
 
     outlines = []
@@ -105,7 +108,7 @@ def sample_outlines(n=None, seed=None):
             "region": regions[i],
             "household": hh,
             "owner": {"gender": gender, "age": rng.randint(lo, hi)},
-            "relations": sample_relations(hh, gender, cfg, rng),
+            "relations": sample_relations(hh, gender, cfg, rng, child_gender.get(i)),
             "pet": {"status": pets[i],
                     "species": None if pets[i] == "none" else rng.choices(species, sw)[0]},
             "tricky_name": tricky[i],

@@ -7,6 +7,8 @@ quotas:
   household: {young_family: 0.25, couple: 0.15, single: 0.15, student: 0.10,
               parents_of_adults: 0.15, multigenerational: 0.20}
   pet:       {named: 0.50, unnamed: 0.20, none: 0.30}
+  # Gender of the sibling group in households whose group role is `child` (sons vs daughters).
+  child_group: {m: 0.50, f: 0.50}
   # Unusual name shapes, to exercise span copying. One per persona where not "none".
   tricky_name: {none: 0.40, two_word: 0.15, hyphenated: 0.15, apostrophe: 0.10,
                 nickname: 0.10, long: 0.10}

@@ -4,19 +4,21 @@
     "region": "canada",
     "household": "couple",
     "owner": {
-      "gender": "m",
-      "age": 38
+      "gender": "f",
+      "age": 35
     },
     "relations": [
-      "wife",
+      "husband",
       "friend",
       "friend",
       "friend",
+      "mom",
+      "dad",
       "brother"
     ],
     "pet": {
       "status": "unnamed",
-      "species": "parrot"
+      "species": "rabbit"
     },
     "tricky_name": "apostrophe"
   }
