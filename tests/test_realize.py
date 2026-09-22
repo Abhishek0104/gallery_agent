@@ -103,3 +103,20 @@ def test_named_persons_relation_word_allowed():
     persona = PERSONAS["persona_18"]
     name, rel = persona["people"][-1]["name"], persona["people"][-1]["relation"]
     assert check_message(f"photos of my {rel} {name}", [name], [{"people": [name]}], persona) == []
+
+
+def test_prompts_do_not_depend_on_hash_seed():
+    """Prompt text feeds the cache key, so it must not change with PYTHONHASHSEED (set iteration order)."""
+    import os
+    import subprocess
+    import sys
+    code = ("import json; from specs.scenarios import round2_skeleton; from realize.user_sim import turn_intent, "
+            "sample_surface; from specs.spec_sampler import load_personas; import random; "
+            "P={p['persona_id']: p for p in load_personas()}; out=[]\n"
+            "for s in round2_skeleton(40, seed=3):\n"
+            "    surf = sample_surface(s, P[s['persona']], 'casual', random.Random(1))\n"
+            "    out += [turn_intent(s, t, surf) for t in s['turns']]\n"
+            "print(json.dumps(out))")
+    runs = {subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, check=True,
+                           env={**os.environ, "PYTHONHASHSEED": str(h)}).stdout for h in (1, 2, 3)}
+    assert len(runs) == 1

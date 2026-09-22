@@ -108,7 +108,8 @@ def people_phrase(values, surface):
 
 def all_effect_words():
     """Every way of naming an effect; a request that must not say which effect avoids all of them."""
-    return sorted({w for e in CFG["effect_words"].values() for w in e["name"] + e["synonyms"]}, key=len, reverse=True)
+    words = {w for e in CFG["effect_words"].values() for w in e["name"] + e["synonyms"]}
+    return sorted(words, key=lambda w: (-len(w), w))      # total order: set order varies between processes
 
 
 def turn_intent(spec, turn, surface):
