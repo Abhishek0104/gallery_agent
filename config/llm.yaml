@@ -39,3 +39,31 @@ roles:
 
 anthropic:
   fallbacks: null           # no silent model switching: a failed request fails loudly
+
+# ---------------------------------------------------------------------------------------------------
+# Other providers (Gemini stays the default). To use a vLLM server for a role, replace that role's block,
+# e.g. (see README.md for the vLLM launch flags tool calling needs):
+#
+#   teacher:
+#     provider: openai_compatible
+#     base_url: http://localhost:8000/v1
+#     model: Qwen/Qwen3-8B            # the name vLLM serves (--served-model-name, else the HF id)
+#     max_tokens: 8000
+#     api_key_env: VLLM_API_KEY       # optional: only if vLLM was started with --api-key
+#     temperature: 0.7                # optional
+#     reasoning_effort: low           # optional: models that support it (e.g. gpt-oss)
+#     extra_body:                     # optional: passed through, e.g. Qwen3 thinking off
+#       chat_template_kwargs: {enable_thinking: false}
+#
+#   embedding:
+#     provider: openai_compatible     # vLLM (or any server with /v1/embeddings)
+#     base_url: http://localhost:8001/v1
+#     model: BAAI/bge-small-en-v1.5
+#     dimensions: null                # set only if the served model supports matryoshka dimensions
+#
+#   embedding:
+#     provider: local                 # in-process: pip install sentence-transformers
+#     model: BAAI/bge-small-en-v1.5
+#     device: cpu                     # optional: cpu / cuda / mps
+#
+# Changing a role's provider or model changes its cache keys, so that stage is regenerated.

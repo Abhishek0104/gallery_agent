@@ -68,15 +68,12 @@ def run_teacher(teacher, sim, sys_prompt, tools, contents, messages, seed_prefix
                          "tool_calls": [{"name": n, "args": a} for n, a, _ in calls] or None})
         if not calls:
             return res.meta
-        responses = []
+        results = []
         for name, args, call_id in calls:
             result = sim.call(name, args)
             messages.append({"role": "tool", "name": name, "content": result})
-            fr = {"name": name, "response": result}
-            if call_id:
-                fr["id"] = call_id
-            responses.append({"function_response": fr})
-        contents.append({"role": "user", "parts": responses})
+            results.append((name, call_id, result))
+        contents.extend(teacher.tool_results(results))
     flags.append("teacher_call_cap")
     return res.meta
 
@@ -96,7 +93,7 @@ def realize(spec, persona, style, user_llm, teacher, rng):
         gen["user_sim"].append({**meta, "attempts": attempts})
         text = "\n".join(events + [msg])
         messages.append({"role": "user", "content": text})
-        contents.append({"role": "user", "parts": [{"text": text}]})
+        contents.append(teacher.user_message(text))
         gen["teacher"].append(run_teacher(teacher, sim, sys_teacher, tools, contents, messages,
                                           f"{spec['episode_id']}/t{t_no}", flags))
         planned_before += sum(1 for i in turn if "call" in by_i[i] and not by_i[i].get("skipped"))
@@ -109,7 +106,7 @@ def realize(spec, persona, style, user_llm, teacher, rng):
                 extra="The assistant just asked you something. Answer it briefly and restate what you want.")
             gen["user_sim"].append({**meta, "attempts": attempts})
             messages.append({"role": "user", "content": msg})
-            contents.append({"role": "user", "parts": [{"text": msg}]})
+            contents.append(teacher.user_message(msg))
             gen["teacher"].append(run_teacher(teacher, sim, sys_teacher, tools, contents, messages,
                                               f"{spec['episode_id']}/t{t_no}b", flags))
         if sim.pos != planned_before:
