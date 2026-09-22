@@ -15,6 +15,9 @@ pipeline:
     result: {status: created, collage: $out}
   conversation:
     outcome: "1 collage image ({out})"
+    request: "Ask to make a collage of {images}."
+    refers_to: "the collage"
+    request_words: [collage, grid]
   errors:
     too_many_images: {expect: "ask the user to select at most {max}",
                       result: {error: too_many_images, max: $max}, flag: collage_outside_limits}

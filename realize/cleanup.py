@@ -22,6 +22,7 @@ from typing import List
 from pydantic import BaseModel
 
 from llm import LLM, BadOutputError
+from registry import tools
 from realize.user_sim import check_message, search_args_in_turn, turn_intent
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -102,15 +103,9 @@ def grounding_words(ep, k):
     return {w for w in WORD.findall(" ".join(blob).lower()) if len(w) > 2 and w not in STOP}
 
 
-# words that ask for each tool; if the original message asks for a tool the turn calls, the edit must keep asking
-TOOL_WORDS = {
-    "delete_images": {"delete", "deleting", "remove", "trash", "bin", "rid", "erase"},
-    "make_collage": {"collage", "grid"},
-    "move_to_album": {"move", "album", "put", "add", "file", "save"},
-    "apply_effect": {"effect", "filter", "tone", "tones", "look", "make", "turn", "apply", "black", "sepia", "warm",
-                     "cool", "vintage", "grayscale", "monochrome", "b&w", "bluish", "golden", "cooler", "warmer"},
-    "search_images": {"show", "find", "pull", "photos", "pictures", "pics", "see", "look", "search", "get"},
-}
+# words that ask for each tool (registry conversation.request_words); if the original message asks for a tool the
+# turn calls, the edit must keep asking
+TOOL_WORDS = {name: set(t.conversation.get("request_words", [])) for name, t in tools().items()}
 
 
 def turn_tools(ep, k):

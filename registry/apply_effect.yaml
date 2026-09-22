@@ -16,4 +16,11 @@ pipeline:
     result: {status: created, images: $out}
   conversation:
     outcome: "{count} new copies ({out}); originals unchanged"
+    request: "Ask to apply a \"{effect}\" effect to {images}."   # {arg} = how the user says it; {images} = the photos
+    required: [effect]                         # the spoken effect word must appear in the message
+    request_without:                           # missing-argument clarification: the request omits the value
+      effect: {text: "Ask to add a photo effect or filter to {images}, but don't say which one.", forbid: all_forms}
+    refers_to: {set: "the edited copies", single: "the edited collage"}   # by the kind of photos it made
+    request_words: [effect, filter, tone, tones, look, make, turn, apply, black, sepia, warm, cool, vintage,
+                    grayscale, monochrome, b&w, bluish, golden, cooler, warmer]
   errors: {}

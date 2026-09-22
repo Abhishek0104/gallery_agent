@@ -55,5 +55,12 @@ def system_prompt():
     return SYSTEM_PROMPT_V0
 
 
+def guidance():
+    """The teacher guidance: the general rules file, then any tool's own `conversation.guidance` lines (tools
+    added later bring their rules with them; the current tools' rules are in the file)."""
+    extra = [f"- {t.name}: {t.conversation['guidance']}" for t in tools().values() if t.conversation.get("guidance")]
+    return "\n".join([GUIDANCE] + extra)
+
+
 def teacher_system_prompt():
-    return f"{SYSTEM_PROMPT_V0}\n\n{GUIDANCE_START}\n{GUIDANCE}\n{GUIDANCE_END}"
+    return f"{SYSTEM_PROMPT_V0}\n\n{GUIDANCE_START}\n{guidance()}\n{GUIDANCE_END}"

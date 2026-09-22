@@ -19,4 +19,6 @@ pipeline:
     default_outcome: {answer: "I couldn't find anything about that.", count: 1}
   conversation:
     outcome: "answer <ANSWER>, backed by {count} photos ({out})"
+    request: "Ask this question in your own words (keep its meaning): {question}"
+    refers_to: "those photos"
   errors: {}

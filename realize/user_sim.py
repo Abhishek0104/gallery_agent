@@ -12,6 +12,7 @@ from string import Template
 import yaml
 from pydantic import BaseModel
 
+from registry import tools
 from specs.query_purity import DATE_PATTERNS, MONTHS, WEEKDAYS, _has_phrase, _lexicon
 from specs.spec_validator import date_core
 
@@ -19,7 +20,8 @@ ROOT = Path(__file__).resolve().parent.parent
 CFG = yaml.safe_load((ROOT / "config" / "realize.yaml").read_text())
 REL = yaml.safe_load((ROOT / "config" / "relations.yaml").read_text())
 PROMPT = Template((ROOT / "realize" / "prompts" / "user_sim.txt").read_text())
-TOOL_NAMES = re.compile(r"\b(search_images|ask_gallery|apply_effect|make_collage|move_to_album|delete_images)\b")
+TOOLS = tools()
+TOOL_NAMES = re.compile(r"\b(" + "|".join(sorted(TOOLS)) + r")\b")      # the user never names a tool
 HANDLE = re.compile(r"\br\d+\b")
 ME = re.compile(r"\b(me|myself|i|i'm|i've|my selfies|selfies)\b", re.I)
 US = re.compile(r"\b(us|we|we're|we've)\b", re.I)
@@ -88,8 +90,17 @@ def pick(options, *key):
     return options[int(hashlib.sha256("/".join(map(str, key)).encode()).hexdigest(), 16) % len(options)]
 
 
+def handle_kind(spec, handle):
+    """set | single: what kind of photos a handle holds (from the tools' io.produces)."""
+    src = next((s for s in spec["steps"] if s.get("out") == handle), None)
+    if handle == "r0" or src is None or "event" in src:
+        return "set"
+    t = TOOLS[src["call"]]
+    return handle_kind(spec, src["args"][t.io.consumes]) if t.io.produces == "same" else t.io.produces
+
+
 def describe_target(spec, handle):
-    """How the owner refers to a photo set."""
+    """How the owner refers to a photo set: the producing tool's `conversation.refers_to`."""
     if handle == "r0":
         return "the photos you have selected"
     src = next((s for s in spec["steps"] if s.get("out") == handle), None)
@@ -97,10 +108,29 @@ def describe_target(spec, handle):
         return "them"
     if "event" in src:
         return "the photos you just selected"
-    if src.get("call") == "apply_effect" and describe_target(spec, src["args"]["images"]) == "the collage":
-        return "the edited collage"
-    return {"search_images": "those photos", "ask_gallery": "those photos",
-            "apply_effect": "the edited copies", "make_collage": "the collage"}.get(src["call"], "them")
+    refers = TOOLS[src["call"]].conversation.get("refers_to", "them")
+    return refers[handle_kind(spec, handle)] if isinstance(refers, dict) else refers
+
+
+def spoken(arg, value, surface):
+    """How the user says an argument value in this episode (the effect's sampled surface form, else as is)."""
+    return surface["effects"][value] if arg == "effect" else value
+
+
+def tool_request(tool, step, target, surface, withheld=None):
+    """(line, required, forbidden) for asking for one tool call, from its `conversation` templates."""
+    conv, a = tool.conversation, step["args"]
+    said = {k: spoken(k, v, surface) for k, v in a.items() if k != tool.io.consumes}
+    images = target(a[tool.io.consumes]) if tool.io.consumes else None
+    if withheld:
+        w = conv["request_without"][withheld]
+        forbid = all_effect_words() if w["forbid"] == "all_forms" else [a[withheld]]
+        return w["text"].format(images=images, **said), [], forbid
+    req = conv["request"]
+    if isinstance(req, dict):                               # a variant chosen by the outcome (e.g. created)
+        key = next(iter(req))
+        req = req[key][step["outcome"][key]]
+    return req.format(images=images, **said), [said[r] for r in conv.get("required", [])], []
 
 
 def people_phrase(values, surface):
@@ -159,7 +189,7 @@ def turn_intent(spec, turn, surface):
         a, call = s["args"], s["call"]
         withheld = next((x["about"] for x in spec["steps"] if x.get("expect") == "ask" and x["i"] == i - 1
                          and x["about"] in ("album", "effect") and i not in turn), None)
-        if call == "search_images":
+        if TOOLS[call].raw["pipeline"].get("sample") == "slot_filters":   # search: built from the slots
             if "loosens" in s:
                 src = by_i[s["loosens"]]["args"]
                 dropped = next(x for x in src if x not in a)
@@ -179,29 +209,11 @@ def turn_intent(spec, turn, surface):
                 new = a
                 lines.append("Ask to see photos " + slot_text(a, surface) + ".")
             required += required_for(new, surface)
-        elif call == "ask_gallery":
-            lines.append(f"Ask this question in your own words (keep its meaning): {a['question']}")
-        elif call == "apply_effect":
-            if withheld == "effect":
-                lines.append(f"Ask to add a photo effect or filter to {target(a['images'])}, but don't say which one.")
-                forbidden += all_effect_words()
-            else:
-                word = surface["effects"][a["effect"]]
-                lines.append(f"Ask to apply a \"{word}\" effect to {target(a['images'])}.")
-                required.append(word)
-        elif call == "make_collage":
-            lines.append(f"Ask to make a collage of {target(a['images'])}.")
-        elif call == "move_to_album":
-            if withheld == "album":
-                lines.append(f"Ask to move {target(a['images'])} into an album, but don't say which album.")
-                forbidden.append(a["album"])
-            else:
-                lines.append(f"Ask to move {target(a['images'])} to "
-                             + (f"a new album called \"{a['album']}\"." if s["outcome"]["created"]
-                                else f"your album \"{a['album']}\"."))
-                required.append(a["album"])
-        elif call == "delete_images":
-            lines.append(f"Ask to delete {target(a['images'])}.")
+        else:
+            line, req, forb = tool_request(TOOLS[call], s, target, surface, withheld)
+            lines.append(line)
+            required += req
+            forbidden += forb
     return lines, required, forbidden
 
 

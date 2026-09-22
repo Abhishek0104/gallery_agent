@@ -23,5 +23,8 @@ pipeline:
     no_results: {when: {error: no_results}, result: {error: no_results}, produces: none, story: "no photos found"}
   conversation:
     outcome: "{count} photos ({out})"          # how the intent filler is told the result
+    refers_to: "those photos"                  # how the user later refers to its photos
+    request_words: [show, find, pull, photos, pictures, pics, see, look, search, get]   # cleanup must keep one
+    # the request itself is built from the search slots (specs/strategies.py slot_filters, config/arg_types.yaml)
   errors:
     no_results: {expect: "say nothing was found, suggest loosening a filter; never invent results"}

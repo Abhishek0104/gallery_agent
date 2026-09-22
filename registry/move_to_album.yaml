@@ -15,4 +15,11 @@ pipeline:
   conversation:
     outcome: "moved {count} ({created})"
     outcome_values: {created: {true: "new album created", false: "existing album"}}
+    request:                                   # chosen by the spec outcome's `created`
+      created: {true: "Ask to move {images} to a new album called \"{album}\".",
+                false: "Ask to move {images} to your album \"{album}\"."}
+    required: [album]
+    request_without:
+      album: {text: "Ask to move {images} into an album, but don't say which album.", forbid: value}
+    request_words: [move, album, put, add, file, save]
   errors: {}

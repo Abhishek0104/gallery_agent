@@ -16,4 +16,6 @@ pipeline:
                 story: "the owner cancels in the app's confirmation dialog; nothing is deleted"}
   conversation:
     outcome: "deleted {count}"
+    request: "Ask to delete {images}."
+    request_words: [delete, deleting, remove, trash, bin, rid, erase]
   errors: {}
