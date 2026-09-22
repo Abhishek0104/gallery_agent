@@ -42,6 +42,14 @@ def normalize_person(v):
     return ALIAS_TO_CANON.get(v.lower(), v)
 
 
+DATE_PREPOSITIONS = re.compile(r"^(back in|in|during|from|on|over|at)\s+", re.I)
+
+
+def date_core(v):
+    """A date phrase without its leading preposition: "in 2023" -> "2023", "during Eid" -> "Eid"."""
+    return DATE_PREPOSITIONS.sub("", v.strip()) if isinstance(v, str) else v
+
+
 def type_ok(value, typ):
     if typ == "str":
         return isinstance(value, str) and value.strip() != ""
@@ -175,7 +183,12 @@ def validate(spec, persona):
     if flat != [s["i"] for s in spec["steps"]]:
         add("turns", f"turns {spec['turns']} do not cover the steps in order")
     starts = {t[0] for t in spec["turns"]}
+    by_i = {s["i"]: s for s in spec["steps"]}
     for s in spec["steps"]:
         if "event" in s and s["i"] not in starts:
             add("turns", f"step {s['i']}: a selection must start a user turn")
+        prev = by_i.get(s["i"] - 1, {})
+        if s.get("call") == "delete_images" and prev.get("call") in ("make_collage", "apply_effect") \
+                and s["i"] not in starts:
+            add("turns", f"step {s['i']}: deleting something just created must start a user turn")
     return v

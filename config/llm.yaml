@@ -19,6 +19,16 @@ roles:
     model: gemini-3.8-flash
     thinking: high
     max_tokens: 16000
+  user_sim:                 # dialogue realization: plays the owner
+    provider: gemini
+    model: gemini-3.8-flash
+    thinking: medium
+    max_tokens: 4000
+  teacher:                  # dialogue realization: plays the assistant, with function calling
+    provider: gemini
+    model: gemini-3.8-flash
+    thinking: high
+    max_tokens: 8000
   embedding:                # query-pool dedup (near-duplicate detection)
     provider: gemini
     model: gemini-embedding-2

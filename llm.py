@@ -49,6 +49,23 @@ class LLMResult:
     meta: dict          # provider, model, served_model, thinking, seed, cache_key — copy into output records
 
 
+@dataclass
+class ChatResult:
+    content: dict       # provider-native assistant message, appended as-is to the next request
+    meta: dict
+
+    @property
+    def calls(self):
+        """[(name, args, id)] for every function call in the message."""
+        return [(p["function_call"]["name"], p["function_call"].get("args") or {}, p["function_call"].get("id"))
+                for p in self.content.get("parts", []) if p.get("function_call")]
+
+    @property
+    def text(self):
+        return "".join(p.get("text", "") for p in self.content.get("parts", [])
+                       if p.get("text") and not p.get("thought")).strip()
+
+
 class LLM:
     def __init__(self, role="generation", config_path=ROOT / "config" / "llm.yaml"):
         cfg = yaml.safe_load(Path(config_path).read_text())
@@ -101,6 +118,25 @@ class LLM:
             np.savez(path, **cache)
         v = np.array([cache[k] for k in keys], dtype=np.float32)
         return v / np.linalg.norm(v, axis=1, keepdims=True)
+
+    def chat(self, system: str, contents: list, tools: list, seed) -> "ChatResult":
+        """One function-calling turn. `contents` are provider-native message dicts (JSON-safe); `tools` are
+        neutral declarations {name, description, parameters (JSON schema)}. Cached like json()."""
+        blob = json.dumps([self.provider, self.model, self.thinking, system, contents, tools, str(seed)],
+                          sort_keys=True, ensure_ascii=False)
+        path = self.cache_dir / "chat" / f"{hashlib.sha256(blob.encode()).hexdigest()[:24]}.json"
+        if path.exists():
+            entry = json.loads(path.read_text())
+        else:
+            if self.provider not in CHATTERS:
+                raise LLMError(f"provider {self.provider!r} has no chat backend")
+            content, served_model = CHATTERS[self.provider](self, system, contents, tools, seed)
+            entry = {"provider": self.provider, "model": self.model, "served_model": served_model,
+                     "thinking": self.thinking, "seed": seed, "content": content}
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(entry, indent=2, ensure_ascii=False))
+        meta = {k: entry[k] for k in ("provider", "model", "served_model", "thinking", "seed")}
+        return ChatResult(entry["content"], {**meta, "cache_key": path.stem})
 
     def cached(self, prompt: str, schema: type[BaseModel], seed, system: str = "") -> bool:
         return self._cache_path(prompt, schema, seed, system).exists()
@@ -194,6 +230,39 @@ def embed_gemini(llm, texts, batch=100):
     return out
 
 
+def chat_gemini(llm, system, contents, tools, seed):
+    if not (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")):
+        raise LLMError("no Gemini credentials: set GEMINI_API_KEY")
+    from google import genai
+    from google.genai import types
+
+    with llm._lock:
+        if llm._client is None:
+            llm._client = genai.Client()
+    decls = [types.FunctionDeclaration(name=t["name"], description=t["description"],
+                                       parameters_json_schema=t["parameters"]) for t in tools]
+    config = types.GenerateContentConfig(
+        system_instruction=system or None,
+        tools=[types.Tool(function_declarations=decls)] if decls else None,
+        max_output_tokens=llm.max_tokens,
+        seed=int_seed(seed),
+        thinking_config=types.ThinkingConfig(thinking_level=llm.thinking.upper()),
+        automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+    )
+    msgs = [types.Content.model_validate(c) for c in contents]
+    resp = with_retries(lambda: llm._client.models.generate_content(model=llm.model, contents=msgs, config=config),
+                        genai.errors.APIError, "Gemini chat")
+    cand = resp.candidates[0] if resp.candidates else None
+    reason = cand.finish_reason.name if cand and cand.finish_reason else None
+    if reason not in (None, "STOP"):
+        raise LLMError(f"Gemini chat stopped with finish_reason={reason}")
+    if not cand or not cand.content or not cand.content.parts:
+        raise LLMError("Gemini chat returned an empty message")
+    if not resp.model_version:
+        raise LLMError("Gemini response did not report which model answered")
+    return cand.content.model_dump(mode="json", exclude_none=True), resp.model_version
+
+
 def call_anthropic(llm, system, prompt, schema, seed):
     import anthropic
 
@@ -230,3 +299,4 @@ def call_anthropic(llm, system, prompt, schema, seed):
 
 BACKENDS = {"gemini": call_gemini, "anthropic": call_anthropic}
 EMBEDDERS = {"gemini": embed_gemini}
+CHATTERS = {"gemini": chat_gemini}

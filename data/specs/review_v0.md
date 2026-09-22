@@ -14,12 +14,12 @@
 - query hints: step 1: relational/medium e.g. ['holding a small rabbit', 'passing a soccer ball', 'looking through a telescope']
 
 ## ep_0002 · P072 · Joanne (persona_04, singapore) · collage_max 4 · effects sepia, warm, cool, black_and_white · turns one_message
-*Joanne wants to preview how two selected photos look side by side for a potential layout, but only needs a quick look, so she asks to generate a collage and then delete it immediately.*
+*Joanne wants to make a collage from the two photos she has selected to share with her friend Siti, but changes her mind after seeing how it turned out and decides to delete it.*
 
 - 0. [starts with 2 photos selected → r0]
 - 1. `make_collage(images="r0")` → {"count": 1}
 - 2. `delete_images(images="r1")` → {"count": 1}
-- turns: [[1, 2]]
+- turns: [[1], [2]]
 
 ## ep_0003 · P060 · Marcus (persona_03, us) · collage_max 9 · effects cool, sepia, black_and_white, warm · turns one_per_turn
 *Marcus wants to make a warm-toned collage of photos of himself from 2023 to share with his wife Elena.*
@@ -95,12 +95,12 @@
 - turns: [[1], [2, 3, 4]]
 
 ## ep_0011 · P079 · Kunal (persona_14, india) · collage_max 6 · effects cool, warm, black_and_white, sepia · turns one_message
-*Kunal wanted to test a black-and-white effect on his eight selected photos for street photography, but decided against keeping them and had the newly created copies deleted right away.*
+*Kunal wants to see how eight photos he has selected look with a black and white effect, but after reviewing the generated copies, he decides he prefers the originals and deletes the edits.*
 
 - 0. [starts with 8 photos selected → r0]
 - 1. `apply_effect(images="r0", effect="black_and_white")` → {"count": 8}
 - 2. `delete_images(images="r1")` → {"count": 8}
-- turns: [[1, 2]]
+- turns: [[1], [2]]
 
 ## ep_0012 · P013 · Nitika (persona_16, india) · collage_max 6 · effects warm, cool, black_and_white · turns one_per_turn
 *Nitika wants to explore her passion for street photography by converting a few of her favorite shots taken in Mysuru into classic black-and-white edits.*
@@ -111,14 +111,14 @@
 - turns: [[1], [2, 3]]
 
 ## ep_0013 · P083 · Nitika (persona_16, india) · collage_max 4 · effects sepia, warm, black_and_white · turns mixed
-*Nitika wants to convert eight photos she selected into black and white to see how they look. She then tests combining two of the monochrome images into a collage, but decides she does not like the result and deletes it.*
+*Nitika wants to experiment with black and white edits on eight selected photos for her street photography hobby, tries making a collage from two of the results, but deletes the collage after deciding she dislikes how it turned out.*
 
 - 0. [starts with 8 photos selected → r0]
 - 1. `apply_effect(images="r0", effect="black_and_white")` → {"count": 8}
 - 2. [user selects 2 from r1 → r2]
 - 3. `make_collage(images="r2")` → {"count": 1}
 - 4. `delete_images(images="r3")` → {"count": 1}
-- turns: [[1], [2, 3, 4]]
+- turns: [[1], [2, 3], [4]]
 
 ## ep_0014 · P039 · Lucas (persona_13, australia) · collage_max 4 · effects warm, black_and_white · turns one_message
 *Lucas wants to look through photos of flipping sausages on a barbecue grill. He then narrows the selection down to those taken last weekend to make a collage to share with his cousin Youssef.*
@@ -344,13 +344,13 @@
 - turns: [[1], [2, 3]]
 
 ## ep_0040 · P085 · Brenda (persona_18, us) · collage_max 6 · effects warm, sepia, black_and_white, cool · turns one_message
-*Brenda wants black-and-white versions of her five selected photos to use as inspiration for a quilting project. She initially asks for a collage of them as well, but changes her mind in the same request and decides to delete the collage so she only keeps the individual black-and-white prints.*
+*Brenda wants to preview a black-and-white collage of five photos she selected to inspire a new quilting layout. After seeing the resulting collage, she dislikes the arrangement and decides to delete it.*
 
 - 0. [starts with 5 photos selected → r0]
 - 1. `apply_effect(images="r0", effect="black_and_white")` → {"count": 5}
 - 2. `make_collage(images="r1")` → {"count": 1}
 - 3. `delete_images(images="r2")` → {"count": 1}
-- turns: [[1, 2, 3]]
+- turns: [[1, 2], [3]]
 
 ## ep_0041 · P032 · Aditya (persona_12, india) · collage_max 6 · effects cool, warm · turns one_message
 *Aditya wants to make a warm-toned collage of photos featuring his friends and colleagues in graphic tees to display near his gaming setup.*

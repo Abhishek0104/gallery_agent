@@ -1,0 +1,26 @@
+# Dialogue realization (v0 happy path). Quotas are exact counts over the batch.
+n_episodes: 15
+seed: 21
+
+# user message style (sampled with quotas)
+style:
+  terse:   0.25     # short, lowercase ok, no greetings ("find goa beach pics of the girls")
+  casual:  0.35     # everyday chat
+  polite:  0.20     # "could you please..."
+  chatty:  0.20     # a bit of context or feeling, still one message
+
+# how a relation is said: the canonical word or one of its aliases (config/relations.yaml)
+relation_alias: 0.5          # probability of using an alias instead of the canonical word
+effect_synonym: 0.5          # probability of a synonym instead of the effect's own name
+effect_words:                # how each effect can be said
+  black_and_white: {name: [black and white], synonyms: [b&w, grayscale, monochrome, black-and-white]}
+  sepia:           {name: [sepia], synonyms: [vintage, old-timey, sepia-toned]}
+  warm:            {name: [warm], synonyms: [warmer, golden tones, warm tones]}
+  cool:            {name: [cool], synonyms: [cooler, cool tones, bluish]}
+
+
+user_sim:
+  max_attempts: 3
+  max_words: 60
+teacher:
+  max_calls_per_turn: 8      # model calls per user turn before the episode is cut off

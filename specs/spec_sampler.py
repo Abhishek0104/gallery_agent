@@ -236,7 +236,8 @@ def assign_categories(assign, refines, rng):
 def sample_turns(steps, mode, rng):
     """Group step indices (1-based) into user turns.
     Forced: a selection starts a new turn and stays with the action after it; a turn ends after
-    ask_gallery; refinement searches are in separate turns."""
+    ask_gallery; refinement searches are in separate turns; deleting something just created (a collage
+    or effect copies) starts a new turn, since the user looks at it first."""
     n = len(steps)
     turns, cur = [], [1]
     for j in range(2, n + 1):
@@ -249,6 +250,8 @@ def sample_turns(steps, mode, rng):
         else:
             forced = False
             split = {"one_message": False, "one_per_turn": True, "mixed": rng.random() < 0.5}[mode]
+            if s["kind"] == "delete" and prev["kind"] in ("collage", "effect"):
+                split = True                     # decided after the draw, so later specs don't shift
         if split:
             turns.append(cur)
             cur = [j]
