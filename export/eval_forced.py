@@ -129,13 +129,21 @@ def predictor(tok, model, device, max_new_tokens):
 
 # ---------------------------------------------------------------- run
 def run(rows, tools_by_id, predict):
-    scored, losses = [], []
+    """-> (report, scored, predictions). `predictions` is one record per row: what the model actually
+    produced next to the gold, so a number can always be traced back to a turn."""
+    scored, predictions, losses = [], [], []
     for i, row in enumerate(rows, 1):
         tools = tools_by_id[row["id"]]
         pred, loss = predict(row["prompt"], row["completion"])
         m = score_row(row, pred, tools)
         gold_kind, gold_name, _ = parse_completion(row["completion"], tools)
-        scored.append((row, gold_name if gold_kind == "call" else None, m))
+        tool = gold_name if gold_kind == "call" else None
+        scored.append((row, tool, m))
+        predictions.append({"id": row["id"], "turn": row["turn"], "kind": row["kind"], "tool": tool,
+                            "gold": row["completion"], "pred": pred,
+                            "loss": round(loss, 4) if loss is not None else None,
+                            "ok": all(v for k, v in m.items() if k not in ("truncated", "malformed") and v is not None),
+                            "metrics": {k: v for k, v in m.items() if v is not None}})
         if loss is not None:
             losses.append(loss)
         if i % 25 == 0:
@@ -143,7 +151,27 @@ def run(rows, tools_by_id, predict):
     report = aggregate(scored)
     if losses:
         report["completion_loss"] = round(sum(losses) / len(losses), 4)
-    return report, scored
+    return report, scored, predictions
+
+
+def review(predictions, meta):
+    """Markdown of the misses only, gold next to prediction — the file you actually read after a run."""
+    bad = [p for p in predictions if not p["ok"]]
+    out = [f"# Teacher-forced misses — {meta['base_model']}"
+           f"{' + ' + meta['adapter'] if meta['adapter'] else ' (untrained base)'}",
+           f"\n{len(bad)} of {len(predictions)} turns missed at least one metric "
+           f"({meta['version']} {meta['split']}, {meta['device']} {meta['dtype']}).\n"]
+    by_tool = defaultdict(list)
+    for p in bad:
+        by_tool[p["tool"] or "(reply)"].append(p)
+    for tool, ps in sorted(by_tool.items(), key=lambda kv: -len(kv[1])):
+        out.append(f"\n## {tool} — {len(ps)} miss(es)\n")
+        for p in ps:
+            failed = [k for k, v in p["metrics"].items() if (v if k in ("truncated", "malformed") else not v)]
+            out.append(f"### {p['id']} turn {p['turn']}  ({', '.join(failed)})\n")
+            out.append(f"gold:\n```\n{p['gold'].strip()}\n```\n")
+            out.append(f"pred:\n```\n{p['pred'].strip()}\n```\n")
+    return "\n".join(out)
 
 
 def main():
@@ -168,12 +196,16 @@ def main():
     name = Path(args.adapter).parent.name if args.adapter else "base"
     print(f"{CFG['version']} {args.split}: {len(rows)} rows | {CFG['base_model']}"
           f"{' + ' + args.adapter if args.adapter else ' (untrained base)'} | {device} {args.dtype}")
-    report, _ = run(rows, tools_by_id, predictor(tok, model, device, args.max_new_tokens))
-    report["meta"] = {"version": CFG["version"], "split": args.split, "rows": len(rows),
-                      "base_model": CFG["base_model"], "adapter": args.adapter,
-                      "device": device, "dtype": args.dtype, "max_new_tokens": args.max_new_tokens}
+    report, _, predictions = run(rows, tools_by_id, predictor(tok, model, device, args.max_new_tokens))
+    report["meta"] = meta = {"version": CFG["version"], "split": args.split, "rows": len(rows),
+                             "base_model": CFG["base_model"], "adapter": args.adapter,
+                             "device": device, "dtype": args.dtype, "max_new_tokens": args.max_new_tokens}
     path = Path(args.out) if args.out else out_dir / f"forced_{args.split}_{name}.json"
     path.write_text(json.dumps(report, indent=2, ensure_ascii=False))
+    preds = path.with_suffix(".jsonl")
+    preds.write_text("".join(json.dumps(p, ensure_ascii=False) + "\n" for p in predictions))
+    md = path.with_suffix(".md")
+    md.write_text(review(predictions, meta))
 
     print(f"\n{'metric':18} {'rate':>6}  n     (headline: structural)")
     for k, v in report["overall"].items():
@@ -184,7 +216,9 @@ def main():
         for g, t in report[group].items():
             key = "structural" if "structural" in t else "reply_nonempty"
             print(f"  {g:16} {key}={t[key]['rate']:.3f} kind={t['kind']['rate']:.3f} (n={t['kind']['n']})")
-    print(f"\nwrote {path.relative_to(ROOT)}")
+    miss = sum(not p["ok"] for p in predictions)
+    print(f"\nwrote {path.relative_to(ROOT)} (scores), {preds.name} (every prediction next to its gold), "
+          f"{md.name} ({miss} miss{'es' if miss != 1 else ''}, gold vs pred)")
 
 
 if __name__ == "__main__":

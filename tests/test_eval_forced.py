@@ -5,7 +5,7 @@ never mistaken for a weak model. Mutations then check each metric actually fails
 """
 import json
 
-from export.eval_forced import aggregate, run, score_row
+from export.eval_forced import aggregate, review, run, score_row
 
 ROWS = [json.loads(l) for l in open("data/export/e2e_v2/sft_eval.jsonl")]
 TOOLS = {json.loads(l)["id"]: json.loads(l)["tools"] for l in open("data/export/e2e_v2/eval.jsonl")}
@@ -17,12 +17,14 @@ def gold_predictor(row):
 
 def test_gold_scores_perfectly():
     """Every row of the real eval split, scored against itself."""
-    report, scored = run(ROWS, TOOLS, lambda prompt, gold: (gold, None))
+    report, scored, preds = run(ROWS, TOOLS, lambda prompt, gold: (gold, None))
     for metric, v in report["overall"].items():
         expect = 0.0 if metric in ("truncated", "malformed") else 1.0
         assert v["rate"] == expect, f"{metric}: {v}"
     assert report["overall"]["structural"]["n"] == sum(r["kind"] == "call" for r in ROWS)
     assert "completion_loss" not in report          # no model, no loss
+    assert len(preds) == len(ROWS) and all(p["ok"] for p in preds)
+    assert all(p["gold"] == p["pred"] for p in preds)
 
 
 def test_metrics_fail_on_the_right_mutations():
@@ -55,7 +57,19 @@ def test_normalized_args_are_compared_like_the_verifier():
 
 
 def test_aggregate_groups_by_kind_and_tool():
-    _, scored = run(ROWS[:40], TOOLS, lambda prompt, gold: (gold, None))
+    _, scored, _ = run(ROWS[:40], TOOLS, lambda prompt, gold: (gold, None))
     report = aggregate(scored)
     assert set(report["by_kind"]) <= {"call", "reply"}
     assert all(t["kind"]["rate"] == 1.0 for t in report["by_tool"].values())
+
+
+def test_review_lists_every_miss_with_gold_and_prediction():
+    """A wrong prediction on every row: the review names each one and shows both sides."""
+    _, _, preds = run(ROWS[:12], TOOLS, lambda prompt, gold: ("<|im_end|>", None))
+    meta = {"base_model": "m", "adapter": None, "version": "v", "split": "eval",
+            "device": "cpu", "dtype": "float32"}
+    md = review(preds, meta)
+    assert f"{len(preds)} of {len(preds)} turns missed" in md
+    for p in preds:
+        assert f"{p['id']} turn {p['turn']}" in md
+        assert p["gold"].strip() in md

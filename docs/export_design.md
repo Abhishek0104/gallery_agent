@@ -99,6 +99,9 @@ known steps in a new order. Parked until there is enough data to spare paths fro
      would floor the headline number for no good reason.
    - `tests/test_eval_forced.py` feeds the gold completions back in as predictions and asserts every metric is
      1.0, so a scoring bug is never mistaken for a weak model.
+   - Three files per run, so a number can always be traced to a turn: `forced_<split>_<name>.json` (scores),
+     `.jsonl` (every prediction next to its gold, with per-row metrics and loss), `.md` (the misses only,
+     grouped by tool, gold above prediction).
 
 ## 6. Scale and mix before training
 - 396 accepted episodes is a starting point. Proposed first training set: **~5,000 episodes**, e.g. 3,000 happy
