@@ -148,3 +148,16 @@ def test_refined_search_never_gets_documents():
 def test_self_contained(q, ok):
     from specs.spec_validator import self_contained
     assert self_contained(q) == ok
+
+
+def test_none_fits_flips_to_new_album():
+    from specs.spec_sampler import load_personas
+    personas = {p["persona_id"]: p for p in load_personas()}
+    skel = next(s for s in skeleton(50, seed=3) if any(f["field"] == "album" and f["exists"] for f in s["fill"]))
+    out = {"motivation": "m", "question": "Do I have photos of a sunset at the beach?", "answer": "Yes.",
+           "album": "Something Brand New", "album_is_new": True,
+           "queries": [{"step": f["step"], "query": "sunset"} for f in skel["fill"] if f["field"] == "query"]}
+    spec = merge(skel, out)
+    move = next(s for s in spec["steps"] if s.get("call") == "move_to_album")
+    assert move["outcome"]["created"] and spec["sampling"]["album_flipped"]
+    assert validate(spec, personas[spec["persona"]]) == []

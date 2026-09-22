@@ -63,9 +63,11 @@ def generate(max_attempts, dry_run=False):
     report["accepted"] = len(accepted)
     SPECS.write_text("".join(json.dumps(s, ensure_ascii=False) + "\n" for s in accepted))
     (OUT / "_report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False))
+    report["album_flipped"] = [s["episode_id"] for s in accepted if s["sampling"].get("album_flipped")]
     first_try = sum(1 for _, (s, h) in zip(skels, results) if s and len(h) == 1)
     print(f"accepted {len(accepted)}/{len(skels)} ({first_try} on the first attempt); "
-          f"rejections by check: {dict(report['rejections_by_check'])}")
+          f"rejections by check: {dict(report['rejections_by_check'])}; "
+          f"existing album -> new (none fit): {report['album_flipped']}")
     write_review(accepted, personas)
 
 

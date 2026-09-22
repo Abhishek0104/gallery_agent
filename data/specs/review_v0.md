@@ -171,7 +171,7 @@
 - query hints: step 1: relational/short e.g. ['kissing', 'with bicycle', 'peace sign']
 
 ## ep_0020 · P074 · Lakshmi (persona_06, india) · collage_max 6 · effects sepia, warm · turns one_per_turn
-*Lakshmi has selected four photos of her recent baking projects to make a collage and wants to save the finished image into her Recipes album.*
+*Lakshmi has selected four photos of baking steps to combine into a collage and wants to store the resulting image in her Recipes album.*
 
 - 0. [starts with 4 photos selected → r0]
 - 1. `make_collage(images="r0")` → {"count": 1}
@@ -263,9 +263,9 @@
 - turns: [[1], [2], [3], [4]]
 
 ## ep_0031 · P050 · Riya (persona_08, india) · collage_max 9 · effects warm, sepia, black_and_white · turns one_message
-*Riya wants to convert photos of handwritten exam revision notes into clean black-and-white versions and make a compact study collage to keep in her Notes and Syllabi album.*
+*Riya wants to convert snapshots of handwritten lecture notes into crisp black-and-white pages to make a tidy study collage for her organized records.*
 
-- 1. `search_images(query="handwritten exam revision notes")` → {"count": 38}
+- 1. `search_images(query="handwritten lecture notes pages")` → {"count": 38}
 - 2. `apply_effect(images="r1", effect="black_and_white")` → {"count": 38}
 - 3. [user selects 4 from r2 → r3]
 - 4. `make_collage(images="r3")` → {"count": 1}
@@ -311,7 +311,7 @@
 - query hints: step 1: actions/short e.g. ['scuba diving', 'hitting pinata', 'eating breakfast']
 
 ## ep_0036 · P077 · Faridah (persona_19, india) · collage_max 9 · effects warm, black_and_white · turns mixed
-*Faridah wants to apply a warm effect to her selected photos to give them a cozy festive glow, then organize the best edited shots into her Eid Celebrations album.*
+*Faridah wants to apply a warm effect to the photos she has selected and add the best ones into her Eid Celebrations album.*
 
 - 0. [starts with 17 photos selected → r0]
 - 1. `apply_effect(images="r0", effect="warm")` → {"count": 17}
@@ -320,11 +320,11 @@
 - turns: [[1], [2, 3]]
 
 ## ep_0037 · P034 · Brenda (persona_18, us) · collage_max 4 · effects black_and_white, cool, sepia, warm · turns one_message
-*Brenda wants to add cool-toned photos of her brother to the family collection in the Lily 1st Birthday album to share with family members.*
+*Brenda wants to collect pictures of her brother, give them a cool filter effect, and save the new copies into a dedicated album.*
 
 - 1. `search_images(people=["brother"])` → {"count": 4}
 - 2. `apply_effect(images="r1", effect="cool")` → {"count": 4}
-- 3. `move_to_album(images="r2", album="Lily 1st Birthday")` → {"count": 4, "album": "Lily 1st Birthday", "created": false}
+- 3. `move_to_album(images="r2", album="Brother")` → {"count": 4, "album": "Brother", "created": true}
 - turns: [[1, 2, 3]]
 
 ## ep_0038 · P015 · Aditya (persona_12, india) · collage_max 12 · effects sepia, black_and_white, warm, cool · turns one_message
@@ -385,13 +385,13 @@
 - turns: [[1]]
 
 ## ep_0045 · P055 · Amelie (persona_01, canada) · collage_max 12 · effects sepia, warm, black_and_white, cool · turns one_message
-*Amelie wants to make a photo collage of Mei along snow-covered city streets in Reykjavik during Lunar New Year to add to her Anniversary 2021 album.*
+*Amelie wants to make a collage of photos of Mei on a snow covered city street taken in Reykjavik during Lunar New Year. She plans to save the finished collage into a new album for the trip.*
 
 - 1. `search_images(query="snow covered city street", people=["Mei"], location="Reykjavik")` → {"count": 39}
 - 2. `search_images(query="snow covered city street", people=["Mei"], location="Reykjavik", date="during Lunar New Year")` → {"count": 27} *(refines 1)*
 - 3. [user selects 10 from r2 → r3]
 - 4. `make_collage(images="r3")` → {"count": 1}
-- 5. `move_to_album(images="r4", album="Anniversary 2021")` → {"count": 1, "album": "Anniversary 2021", "created": false}
+- 5. `move_to_album(images="r4", album="Reykjavik Trip")` → {"count": 1, "album": "Reykjavik Trip", "created": true}
 - turns: [[1], [2], [3, 4, 5]]
 - query hints: step 1: scenes/medium e.g. ['cluttered kitchen island surface', 'fresh snow on ground', 'empty subway car']
 
@@ -421,13 +421,13 @@
 - query hints: step 1: pets/long e.g. ['colorful fish swimming in an aquarium', 'dog catching a frisbee in air', 'guinea pig hiding in a tube']
 
 ## ep_0049 · P044 · Kevin (persona_20, us) · collage_max 9 · effects cool, black_and_white, warm, sepia · turns one_message
-*Kevin wants to create a warm collage of Barnaby to add to the Oliver's 3rd Birthday album because Oliver adores their family dog.*
+*Kevin wants to make a warm collage using some photos of Barnaby and save it into a new album dedicated to his dog.*
 
 - 1. `search_images(people=["Barnaby"])` → {"count": 11}
 - 2. [user selects 5 from r1 → r2]
 - 3. `make_collage(images="r2")` → {"count": 1}
 - 4. `apply_effect(images="r3", effect="warm")` → {"count": 1}
-- 5. `move_to_album(images="r4", album="Oliver's 3rd Birthday")` → {"count": 1, "album": "Oliver's 3rd Birthday", "created": false}
+- 5. `move_to_album(images="r4", album="Barnaby")` → {"count": 1, "album": "Barnaby", "created": true}
 - turns: [[1], [2, 3, 4, 5]]
 
 ## ep_0050 · P017 · Swathi (persona_11, india) · collage_max 4 · effects sepia, black_and_white, cool · turns mixed

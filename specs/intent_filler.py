@@ -52,6 +52,11 @@ class Fill(BaseModel):
     album: Optional[str]
 
 
+class FillExistingAlbum(Fill):
+    """For moves sampled into an existing album: the filler may say none fits (-> a new album)."""
+    album_is_new: bool
+
+
 def render_persona(p):
     o = p["owner"]
     people = ", ".join(f"{x['name']} ({x['relation']})" for x in p["people"])
@@ -122,8 +127,10 @@ def render_fields(skel):
         out.append("- question: null\n- answer: null")
     album = next((f for f in skel["fill"] if f["field"] == "album"), None)
     if album and album["exists"]:
-        out.append("- album: the <ALBUM>: copy exactly the one existing album name that best fits these photos "
-                   "as the search arguments describe them.")
+        out.append("- album: the <ALBUM>: copy exactly the one existing album name that fits these photos "
+                   "as the search arguments describe them, and set album_is_new to false. If none of the existing "
+                   "albums fits, write a new album name instead (as the owner would type it, max 30 characters) "
+                   "and set album_is_new to true.")
     elif album:
         out.append("- album: the <ALBUM>: a new album name the owner creates, as they would type it "
                    "(max 30 characters). It must not be one of the existing albums.")
@@ -167,9 +174,13 @@ def merge(skel, out):
         if a.get("album") == FILL:
             a["album"] = (out.get("album") or FILL).strip()
             s["outcome"]["album"] = a["album"]
+            if out.get("album_is_new") and not s["outcome"]["created"]:   # "none fits" -> new album
+                s["outcome"]["created"] = True
+                spec["sampling"]["album_flipped"] = True
     return spec
 
 
 def fill(llm, skel, persona, seed, feedback=()):
-    res = llm.json(build_prompt(skel, persona, feedback), Fill, seed=seed)
+    existing = any(f["field"] == "album" and f["exists"] for f in skel["fill"])
+    res = llm.json(build_prompt(skel, persona, feedback), FillExistingAlbum if existing else Fill, seed=seed)
     return merge(skel, res.output), res.meta
