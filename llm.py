@@ -43,8 +43,23 @@ class LLMError(RuntimeError):
     pass
 
 
-class EmptyResponseError(LLMError):
-    """The request succeeded but the model returned no content (a bad output, not an API failure)."""
+class BadOutputError(LLMError):
+    """The request succeeded but the output is unusable (a bad output, not an API failure)."""
+
+
+class EmptyResponseError(BadOutputError):
+    """The model returned no content."""
+
+
+class TruncatedResponseError(BadOutputError):
+    """The model hit max_tokens."""
+
+
+class BlockedResponseError(BadOutputError):
+    """The provider's safety filter blocked the output (SAFETY, PROHIBITED_CONTENT, ...)."""
+
+
+BLOCKED_REASONS = {"SAFETY", "PROHIBITED_CONTENT", "BLOCKLIST", "SPII", "RECITATION", "IMAGE_SAFETY"}
 
 
 @dataclass
@@ -162,10 +177,18 @@ MAX_RETRIES = 5
 
 
 def with_retries(fn, error_cls, what):
-    """Retry only rate-limit/overload errors, loudly; anything else (or too many retries) raises LLMError."""
+    """Retry only rate-limit/overload errors and dropped connections, loudly; anything else (or too many
+    retries) raises LLMError."""
+    import httpx
+
     for attempt in range(MAX_RETRIES + 1):
         try:
             return fn()
+        except (httpx.RemoteProtocolError, httpx.ConnectError, httpx.ReadTimeout) as e:   # transient network drop
+            if attempt == MAX_RETRIES:
+                raise LLMError(f"{what} failed: {type(e).__name__}: {e}") from e
+            print(f"[llm] {what}: {type(e).__name__}, retry {attempt + 1}/{MAX_RETRIES} in 10s", file=sys.stderr, flush=True)
+            time.sleep(10)
         except error_cls as e:
             code = getattr(e, "code", None)
             daily = "per_day" in str(e).lower() or "perday" in str(e).lower()   # waiting won't help
@@ -258,6 +281,10 @@ def chat_gemini(llm, system, contents, tools, seed):
                         genai.errors.APIError, "Gemini chat")
     cand = resp.candidates[0] if resp.candidates else None
     reason = cand.finish_reason.name if cand and cand.finish_reason else None
+    if reason == "MAX_TOKENS":
+        raise TruncatedResponseError(f"Gemini chat hit max_tokens={llm.max_tokens}")
+    if reason in BLOCKED_REASONS:
+        raise BlockedResponseError(f"Gemini chat blocked: finish_reason={reason}")
     if reason not in (None, "STOP"):
         raise LLMError(f"Gemini chat stopped with finish_reason={reason}")
     if not cand or not cand.content or not cand.content.parts:

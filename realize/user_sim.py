@@ -106,24 +106,72 @@ def people_phrase(values, surface):
     return " and ".join("me" if v == "me" else surface["people"][v] for v in values)
 
 
+def all_effect_words():
+    """Every way of naming an effect; a request that must not say which effect avoids all of them."""
+    return sorted({w for e in CFG["effect_words"].values() for w in e["name"] + e["synonyms"]}, key=len, reverse=True)
+
+
 def turn_intent(spec, turn, surface):
-    """(plain-language lines, required phrases) for one user turn."""
+    """(plain-language lines, required phrases, forbidden phrases) for one user turn.
+    The user asks for the steps in spec["requests"] for this turn (default: the turn's own steps); round-2
+    turns also answer a clarification, reselect after a collage-limit question, or retry without a filter."""
     by_i = {s["i"]: s for s in spec["steps"]}
-    lines, required = [], []
+    k = spec["turns"].index(turn)
+    asked = spec["requests"][k] if "requests" in spec else [i for i in turn if "call" in by_i[i]]
+    lines, required, forbidden = [], [], []
+    first = by_i[turn[0]]
+    prev = by_i.get(turn[0] - 1, {})
+
+    def target(h):
+        src = next((x for x in spec["steps"] if x.get("out") == h), None)
+        if src and "event" in src and src["i"] not in turn:      # a selection that happens later: its source
+            return describe_target(spec, src["from"])
+        return describe_target(spec, h)
+
     if turn[0] == 1 and spec["initial_selection"]:
         lines.append(f"Before this message you selected {spec['initial_selection']['count']} photos in the app. "
                      "The app already tells the assistant, so don't say you selected them; just call them \"these\".")
+    # round-2 turn openers
+    if prev.get("expect") == "ask" and prev["about"] in ("album", "effect") and "call" in first:
+        if prev["about"] == "album":
+            a = first["args"]["album"]
+            lines.append(f"The assistant asked which album. Answer with the album name: {a}"
+                         + (" (a new album)." if first["outcome"]["created"] else " (one of your albums)."))
+            required.append(a)
+        else:
+            word = surface["effects"][first["args"]["effect"]]
+            lines.append(f"The assistant asked which effect. Answer: \"{word}\".")
+            required.append(word)
+    if prev.get("expect") == "ask" and prev["about"] == "select" and "event" in first:
+        lines.append(f"The assistant asked you to pick fewer photos. You have now selected {first['count']} in the "
+                     "app; just tell it to use these. Don't repeat what the assistant said and don't say you selected them.")
     for i in turn:
         s = by_i[i]
-        if "event" in s:
+        if "event" in s and not (i == turn[0] and prev.get("about") == "select"):
             lines.append(f"You have just selected {s['count']} of {describe_target(spec, s['from'])} in the app. "
                          "The app already tells the assistant, so don't say you selected them; just call them \"these\".")
+    for i in asked:
+        s = by_i[i]
+        if "call" not in s:
             continue
         a, call = s["args"], s["call"]
+        withheld = next((x["about"] for x in spec["steps"] if x.get("expect") == "ask" and x["i"] == i - 1
+                         and x["about"] in ("album", "effect") and i not in turn), None)
         if call == "search_images":
+            if "loosens" in s:
+                src = by_i[s["loosens"]]["args"]
+                dropped = next(x for x in src if x not in a)
+                what = {"people": "the people filter", "location": "the place", "date": "the date",
+                        "query": "the description of what is in the photos"}[dropped]
+                lines.append(f"Nothing was found. Ask to try again without {what} (keep everything else).")
+                if dropped != "query":
+                    val = src[dropped]
+                    forbidden += [surface["people"].get(v, v) for v in val if v != "me"] if dropped == "people" \
+                        else [date_core(val) if dropped == "date" else val]
+                continue
             if "refines" in s:
-                prev = by_i[s["refines"]]["args"]
-                new = {k: v for k, v in a.items() if k not in prev}
+                prev_args = by_i[s["refines"]]["args"]
+                new = {x: v for x, v in a.items() if x not in prev_args}
                 lines.append(pick(NARROW, spec["episode_id"], i).format(x=slot_text(new, surface)))
             else:
                 new = a
@@ -132,19 +180,27 @@ def turn_intent(spec, turn, surface):
         elif call == "ask_gallery":
             lines.append(f"Ask this question in your own words (keep its meaning): {a['question']}")
         elif call == "apply_effect":
-            word = surface["effects"][a["effect"]]
-            lines.append(f"Ask to apply a \"{word}\" effect to {describe_target(spec, a['images'])}.")
-            required.append(word)
+            if withheld == "effect":
+                lines.append(f"Ask to add a photo effect or filter to {target(a['images'])}, but don't say which one.")
+                forbidden += all_effect_words()
+            else:
+                word = surface["effects"][a["effect"]]
+                lines.append(f"Ask to apply a \"{word}\" effect to {target(a['images'])}.")
+                required.append(word)
         elif call == "make_collage":
-            lines.append(f"Ask to make a collage of {describe_target(spec, a['images'])}.")
+            lines.append(f"Ask to make a collage of {target(a['images'])}.")
         elif call == "move_to_album":
-            new_album = s["outcome"]["created"]
-            lines.append(f"Ask to move {describe_target(spec, a['images'])} to "
-                         + (f"a new album called \"{a['album']}\"." if new_album else f"your album \"{a['album']}\"."))
-            required.append(a["album"])
+            if withheld == "album":
+                lines.append(f"Ask to move {target(a['images'])} into an album, but don't say which album.")
+                forbidden.append(a["album"])
+            else:
+                lines.append(f"Ask to move {target(a['images'])} to "
+                             + (f"a new album called \"{a['album']}\"." if s["outcome"]["created"]
+                                else f"your album \"{a['album']}\"."))
+                required.append(a["album"])
         elif call == "delete_images":
-            lines.append(f"Ask to delete {describe_target(spec, a['images'])}.")
-    return lines, required
+            lines.append(f"Ask to delete {target(a['images'])}.")
+    return lines, required, forbidden
 
 
 def slot_text(args, surface):
@@ -188,6 +244,9 @@ def extra_filters(msg, required, searches, persona):
             low = low.replace(r.lower(), " ")
     _, places, festivals, _ = _lexicon()
     allowed_people = {v.lower() for a in searches for v in a.get("people", [])}
+    rel_of = {p["name"].lower(): p["relation"] for p in persona["people"]}
+    allowed_people |= {w.lower() for v in list(allowed_people) if v in rel_of
+                       for w in [rel_of[v]] + REL.get(rel_of[v], [])}
     names = {p["name"].lower() for p in persona["people"]} | {p["name"].lower() for p in persona["pets"] if p["name"]}
     rel_words = {w.lower() for c, al in REL.items() for w in [c] + al}
     v = []
@@ -210,9 +269,12 @@ def extra_filters(msg, required, searches, persona):
     return v
 
 
-def check_message(msg, required, searches=(), persona=None):
+def check_message(msg, required, searches=(), persona=None, forbidden=()):
     v = extra_filters(msg, required, searches, persona) if persona else []
     low = msg.lower()
+    for f in forbidden:
+        if f and re.search(rf"(?<![\w]){re.escape(f.lower())}(?![\w])", low):
+            v.append(f"don't say \"{f}\" in this message")
     for r in required:
         if r == "<me>":
             if not ME.search(msg):
@@ -239,7 +301,7 @@ def render_persona(p):
 
 def write_message(llm, spec, persona, turn_no, turn, surface, history, extra=""):
     """One user message for a turn. Returns (message, meta, attempts)."""
-    lines, required = turn_intent(spec, turn, surface)
+    lines, required, forbidden = turn_intent(spec, turn, surface)
     feedback = ""
     for attempt in range(CFG["user_sim"]["max_attempts"]):
         prompt = PROMPT.substitute(
@@ -247,10 +309,11 @@ def write_message(llm, spec, persona, turn_no, turn, surface, history, extra="")
             history=history or "(this is your first message)",
             intent="\n".join(f"- {l}" for l in lines) + (f"\n- {extra}" if extra else ""),
             required=", ".join("yourself (me / I)" if r == "<me>" else f"\"{r}\"" for r in required) or "(none)",
+            forbidden=", ".join(f"\"{f}\"" for f in forbidden) or "(none)",
             feedback=feedback)
         res = llm.json(prompt, UserMessage, seed=f"{spec['episode_id']}/u{turn_no}/a{attempt}")
         msg = res.output["message"].strip()
-        v = check_message(msg, required, search_args_in_turn(spec, turn), persona)
+        v = check_message(msg, required, search_args_in_turn(spec, turn), persona, forbidden)
         if not v:
             return msg, res.meta, attempt + 1
         feedback = "\n\nYour previous message was rejected. Fix: " + "; ".join(v)

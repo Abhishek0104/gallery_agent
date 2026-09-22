@@ -51,7 +51,7 @@ def test_every_spec_turn_has_an_intent():
     for spec in SPECS:
         surface = sample_surface(spec, PERSONAS[spec["persona"]], "casual", rng)
         for turn in spec["turns"]:
-            lines, required = turn_intent(spec, turn, surface)
+            lines, required, _ = turn_intent(spec, turn, surface)
             assert lines
             assert not any("r1" in l or "search_images" in l for l in lines)
 
@@ -96,3 +96,10 @@ def test_self_reference_rejected_when_search_has_no_me():
     assert check_message("just the ones where I'm wearing a floral dress", [], q, persona)
     assert check_message("show me photos of a floral dress", [], q, persona) == []
     assert check_message("the ones where I'm wearing a floral dress", ["<me>"], [{"query": "floral dress", "people": ["me"]}], persona) == []
+
+
+def test_named_persons_relation_word_allowed():
+    from realize.user_sim import check_message
+    persona = PERSONAS["persona_18"]
+    name, rel = persona["people"][-1]["name"], persona["people"][-1]["relation"]
+    assert check_message(f"photos of my {rel} {name}", [name], [{"people": [name]}], persona) == []

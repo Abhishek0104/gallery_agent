@@ -89,7 +89,26 @@ def render_steps(skel):
         if "event" in s:
             lines.append(f"{s['i']}. [owner selects {s['count']} of the photos in {s['from']} → {s['out']}]")
             continue
+        if "expect" in s:
+            lines.append(f"{s['i']}. [no tool call: " + {
+                "report": "the assistant says nothing was found and suggests loosening a filter]",
+                "album": "the owner asked to move them to an album without saying which; the assistant asks which album]",
+                "effect": "the owner asked for a photo effect without saying which; the assistant asks which one]",
+                "select": f"too many photos for a collage (max {s.get('max')}); the assistant asks the owner to "
+                          f"select at most {s.get('max')}]",
+            }[s["about"] if s["about"] != "no_results" else "report"])
+            continue
         o, call = s["outcome"], s["call"]
+        if s.get("skipped"):
+            lines.append(f"{s['i']}. (asked for, but not done because nothing was found) {call}({render_args(s['args'])})")
+            continue
+        if o.get("error") == "no_results":
+            lines.append(f"{s['i']}. {call}({render_args(s['args'])}) → no photos found")
+            continue
+        if call == "delete_images" and o.get("status") == "cancelled":
+            lines.append(f"{s['i']}. {call}({render_args(s['args'])}) → the owner cancels in the app's confirmation "
+                         "dialog; nothing is deleted")
+            continue
         result = {
             "search_images": lambda: f"{o['count']} photos ({s['out']})",
             "ask_gallery": lambda: f"answer <ANSWER>, backed by {o['count']} photos ({s['out']})",
@@ -98,7 +117,8 @@ def render_steps(skel):
             "move_to_album": lambda: f"moved {o['count']} ({'new album created' if o['created'] else 'existing album'})",
             "delete_images": lambda: f"deleted {o['count']}",
         }[call]()
-        note = f"   (refines the search in step {s['refines']})" if "refines" in s else ""
+        note = (f"   (refines the search in step {s['refines']})" if "refines" in s else
+                f"   (the owner tries again without one filter from step {s['loosens']})" if "loosens" in s else "")
         lines.append(f"{s['i']}. {call}({render_args(s['args'])}) → {result}{note}")
     return "\n".join(lines)
 
@@ -163,11 +183,12 @@ def merge(skel, out):
     queries = {q["step"]: q["query"].strip() for q in out["queries"]}
     by_i = {s["i"]: s for s in spec["steps"]}
     for s in spec["steps"]:
-        if "event" in s:
+        if "event" in s or "expect" in s:
             continue
         a = s["args"]
         if a.get("query") == FILL:
-            a["query"] = queries.get(s["i"]) or (by_i[s["refines"]]["args"].get("query") if "refines" in s else FILL)
+            src = s.get("refines") or s.get("loosens")
+            a["query"] = queries.get(s["i"]) or (by_i[src]["args"].get("query") if src else FILL)
         if a.get("question") == FILL:
             a["question"] = (out.get("question") or FILL).strip()
             s["outcome"]["answer"] = (out.get("answer") or FILL).strip()

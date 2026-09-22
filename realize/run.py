@@ -13,7 +13,7 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from llm import LLM, EmptyResponseError
+from llm import LLM, BadOutputError
 from realize.system_prompt import GUIDANCE_VERSION, system_prompt, teacher_system_prompt, tool_declarations
 from realize.user_sim import CFG, UserSimError, sample_surface, write_message
 from sim.simulator import Simulator
@@ -99,7 +99,7 @@ def realize(spec, persona, style, user_llm, teacher, rng):
         contents.append({"role": "user", "parts": [{"text": text}]})
         gen["teacher"].append(run_teacher(teacher, sim, sys_teacher, tools, contents, messages,
                                           f"{spec['episode_id']}/t{t_no}", flags))
-        planned_before += sum(1 for i in turn if "call" in by_i[i])
+        planned_before += sum(1 for i in turn if "call" in by_i[i] and not by_i[i].get("skipped"))
         last = next((m for m in reversed(messages) if m["role"] == "assistant"), {})
         if sim.pos < planned_before and "?" in (last.get("content") or ""):
             # the teacher asked something the spec did not plan: answer from the intent, once
@@ -127,7 +127,7 @@ def realize(spec, persona, style, user_llm, teacher, rng):
 # ---------------------------------------------------------------- quick report (not the verifier)
 def compare(ep):
     """Planned vs actual calls: tool names in order, and non-query args after normalization."""
-    planned = [s for s in ep["spec"]["steps"] if "call" in s]
+    planned = [s for s in ep["spec"]["steps"] if "call" in s and not s.get("skipped")]
     actual = [c for m in ep["messages"] if m["role"] == "assistant" for c in (m["tool_calls"] or [])]
     rows = []
     for k in range(max(len(planned), len(actual))):
@@ -198,7 +198,7 @@ def main(tag="v0", limit=None, only=None, all_specs=False):
         try:
             return realize(chosen[k], personas[chosen[k]["persona"]], styles[k], user_llm, teacher,
                            random.Random(seeds[k]))
-        except (UserSimError, EmptyResponseError) as e:   # bad output: drop this episode, keep the batch
+        except (UserSimError, BadOutputError) as e:       # bad output: drop this episode, keep the batch
             return {"episode_id": chosen[k]["episode_id"], "realize_failed": f"{type(e).__name__}: {e}"}  # API errors raise
 
     with ThreadPoolExecutor(max_workers=WORKERS) as pool:

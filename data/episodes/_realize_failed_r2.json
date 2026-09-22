@@ -1,0 +1,14 @@
+[
+  {
+    "episode_id": "r2_0076",
+    "realize_failed": "BlockedResponseError: Gemini chat blocked: finish_reason=PROHIBITED_CONTENT"
+  },
+  {
+    "episode_id": "r2_0116",
+    "realize_failed": "BlockedResponseError: Gemini chat blocked: finish_reason=PROHIBITED_CONTENT"
+  },
+  {
+    "episode_id": "r2_0149",
+    "realize_failed": "UserSimError: r2_0149 turn 1: user message failed checks: ['include the exact words \"Samuel\"']"
+  }
+]

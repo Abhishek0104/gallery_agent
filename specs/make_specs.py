@@ -36,9 +36,13 @@ def fill_one(llm, skel, persona, max_attempts):
     return None, history
 
 
-def generate(max_attempts, dry_run=False, n=None, seed=None, tag="v0"):
+def generate(max_attempts, dry_run=False, n=None, seed=None, tag="v0", round2=False):
     personas = {p["persona_id"]: p for p in load_personas()}
-    skels = skeleton(n, seed)
+    if round2:
+        from specs.scenarios import round2_skeleton
+        skels = round2_skeleton(n, seed)
+    else:
+        skels = skeleton(n, seed)
     if dry_run:
         print(build_prompt(skels[0], personas[skels[0]["persona"]]))
         return
@@ -95,12 +99,18 @@ def write_review(specs, personas, tag="v0"):
         lines.append("")
         if sp["initial_selection"]:
             lines.append(f"- 0. [starts with {sp['initial_selection']['count']} photos selected → r0]")
+        if sp.get("scenario"):
+            lines.append(f"- scenario: {sp['scenario']}")
         for s in sp["steps"]:
             if "event" in s:
                 lines.append(f"- {s['i']}. [user selects {s['count']} from {s['from']} → {s['out']}]")
                 continue
+            if "expect" in s:
+                lines.append(f"- {s['i']}. [assistant, no call: {s['expect']} about {s['about']}]")
+                continue
             o = {k: v for k, v in s["outcome"].items() if k != "status"}
-            ref = f" *(refines {s['refines']})*" if "refines" in s else ""
+            ref = (f" *(refines {s['refines']})*" if "refines" in s else f" *(loosens {s['loosens']})*"
+                   if "loosens" in s else "") + (" *(skipped)*" if s.get("skipped") else "")
             lines.append(f"- {s['i']}. `{s['call']}({fmt_args(s['args'])})` → {json.dumps(o, ensure_ascii=False)}{ref}")
         lines.append(f"- turns: {sp['turns']}")
         hints = [f"step {f['step']}: {f['category']}/{f['length']} e.g. {f['examples']}"
@@ -119,9 +129,10 @@ if __name__ == "__main__":
     ap.add_argument("--n", type=int, help="number of specs (default: config)")
     ap.add_argument("--seed", type=int, help="sampler seed (default: config)")
     ap.add_argument("--tag", default="v0", help="output data/specs/specs_<tag>.jsonl")
+    ap.add_argument("--round2", action="store_true", help="round-2 scenario overlays (config/round2.yaml)")
     args = ap.parse_args()
     if args.review:
         write_review([json.loads(l) for l in (OUT / f"specs_{args.tag}.jsonl").read_text().splitlines()],
                      {p["persona_id"]: p for p in load_personas()}, args.tag)
     else:
-        generate(args.max_attempts, args.dry_run, args.n, args.seed, args.tag)
+        generate(args.max_attempts, args.dry_run, args.n, args.seed, args.tag, args.round2)

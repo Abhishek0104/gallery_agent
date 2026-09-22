@@ -12,6 +12,7 @@ $history
 $intent
 
 Exact words the message must contain: $required
+Words the message must NOT contain: $forbidden
 
 ## Style
 $style

@@ -1,0 +1,7 @@
+# Round 2 scenario batch (docs/round2_design.md). Quotas are exact counts over the batch.
+n_specs: 200
+seed: 202
+scenarios: {no_results: 0.25, cancelled: 0.20, collage_over_limit: 0.25, missing_arg: 0.30}
+variants:
+  no_results:  {truncate: 0.60, recover: 0.40}
+  missing_arg: {album: 0.50, effect: 0.50}

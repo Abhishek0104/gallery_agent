@@ -198,7 +198,7 @@ def search_args(slots, persona, rng):
     return {k: args[k] for k in ("query", "people", "location", "date") if k in args}
 
 
-def assign_categories(assign, refines, rng):
+def assign_categories(assign, refines, rng, multi=frozenset()):
     """Exact category quota over first searches that carry a query (spec index -> category).
     Documents are query-only, so a documents search gets the "query" pattern (swapping patterns with
     another spec to keep the slot-pattern quota) and is never refined. Relational needs people."""
@@ -208,11 +208,12 @@ def assign_categories(assign, refines, rng):
     out = {}
 
     n_docs = cats.count("documents")
-    cand = sorted((i for i in q_idx if not refines[i]), key=lambda i: assign[i] != "query")[:n_docs]
+    cand = sorted((i for i in q_idx if not refines[i] and i not in multi), key=lambda i: assign[i] != "query")[:n_docs]
     for i in cand:
         if assign[i] != "query":
             j = next((j for j in sorted(assign) if assign[j] == "query" and j not in cand
-                      and (not refines[j] or len(assign[i].split("+")) < 4)), None)
+                      and (not refines[j] or len(assign[i].split("+")) < 4)
+                      and (j not in multi or len(assign[i].split("+")) >= 2)), None)
             if j is not None:
                 assign[j] = assign[i]
             assign[i] = "query"
@@ -262,17 +263,21 @@ def sample_turns(steps, mode, rng):
 
 
 # ---------------------------------------------------------------- skeleton
-def skeleton(n=None, seed=None):
-    n = n or CFG["n_specs"]
+def skeleton(n=None, seed=None, paths=None, multi=(), id_prefix="ep"):
+    """Happy-path skeletons. `paths`: a fixed path per spec (round 2 draws eligible paths itself);
+    `multi`: spec indices whose first search needs 2+ slots (so one can be dropped later)."""
     seed = CFG["seed"] if seed is None else seed
     rng = random.Random(seed)
     catalog, personas, pool = load_catalog(), load_personas(), load_pool()
     cmin, cmax_options = collage_bounds()
     all_effects = effect_values()
 
-    paths = rng.sample(catalog, min(n, len(catalog)))            # without replacement: distinct paths
-    while len(paths) < n:                                        # every path once more before any repeats again
-        paths += rng.sample(catalog, min(n - len(paths), len(catalog)))
+    if paths is None:
+        n = n or CFG["n_specs"]
+        paths = rng.sample(catalog, min(n, len(catalog)))        # without replacement: distinct paths
+        while len(paths) < n:                                    # every path once more before any repeats again
+            paths += rng.sample(catalog, min(n - len(paths), len(catalog)))
+    n = len(paths)
     persona_order = quota_list({p["persona_id"]: 1 for p in personas}, n, rng)
     by_id = {p["persona_id"]: p for p in personas}
     modes = quota_list(CFG["turn_mode"], n, rng)
@@ -283,14 +288,18 @@ def skeleton(n=None, seed=None):
     patterns = quota_list(CFG["slot_patterns"], sum(has_search), rng)
     free = [x for x in patterns if len(x.split("+")) < 4]
     assign = {}
-    for i in [i for i in range(n) if refines[i]] + [i for i in range(n) if has_search[i] and not refines[i]]:
-        pick = next(x for x in (free if refines[i] else patterns) if x in patterns)
+    multi = set(multi)
+    order = ([i for i in range(n) if refines[i]] + [i for i in range(n) if has_search[i] and i in multi and not refines[i]]
+             + [i for i in range(n) if has_search[i] and i not in multi and not refines[i]])
+    for i in order:
+        options = free if refines[i] else [x for x in patterns if len(x.split("+")) >= 2] if i in multi else patterns
+        pick = next(x for x in options if x in patterns)
         patterns.remove(pick)
         if pick in free:
             free.remove(pick)
         assign[i] = pick
 
-    category_of = assign_categories(assign, refines, rng)
+    category_of = assign_categories(assign, refines, rng, multi)
 
     specs = []
     for i, path in enumerate(paths):
@@ -323,7 +332,7 @@ def skeleton(n=None, seed=None):
                     step["refines"] = prev_search["i"]
                     slots = slots + [add]
                 sampling["slot_patterns"].append("+".join(x for x in SLOTS if x in step["args"]))
-                inherited = "refines" in step and "query" in prev_search["args"]
+                inherited = "refines" in step and "query" in prev_search["args"]   # refinements copy the query
                 later = list(step["args"]) + [refine_add[j + 1]] if j + 1 in refine_add else None
                 if step["args"].get("query") == FILL and not inherited:
                     cat = category_of.get(i) if prev_search is None else None
@@ -359,7 +368,7 @@ def skeleton(n=None, seed=None):
 
         specs.append({
             "spec_version": SPEC_VERSION,
-            "episode_id": f"ep_{i + 1:04d}",
+            "episode_id": f"{id_prefix}_{i + 1:04d}",
             "path": path["id"],
             "path_str": path["path"],
             "persona": persona["persona_id"],

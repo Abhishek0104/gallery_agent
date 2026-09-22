@@ -15,7 +15,8 @@ DEFAULTS = {                     # unplanned calls only; the episode is flagged
 class Simulator:
     def __init__(self, spec):
         self.spec = spec
-        self.planned = [s for s in spec["steps"] if "call" in s]
+        self.planned = [s for s in spec["steps"] if "call" in s and not s.get("skipped")]
+        self.cmax = spec["config"]["collage_max"]
         self.pos = 0
         self.n = 0
         self.ledger = {}         # actual handle -> {"count", "alive", "src"}
@@ -49,6 +50,10 @@ class Simulator:
     def call(self, name, args):
         """Model-facing result for one tool call."""
         exp = self.expected()
+        src = args.get("images")
+        if name == "make_collage" and src in self.ledger and not 2 <= self.ledger[src]["count"] <= self.cmax:
+            self.flags.append("collage_outside_limits")          # backend safety net; the plan is not advanced
+            return {"error": "too_many_images", "max": self.cmax}
         planned = exp is not None and exp["call"] == name
         if planned:
             self.pos += 1
@@ -56,7 +61,6 @@ class Simulator:
         else:
             self.flags.append(f"unplanned_call:{name}")
             out = DEFAULTS.get(name, {})
-        src = args.get("images")
         if src is not None and (src not in self.ledger or not self.ledger[src]["alive"]):
             self.flags.append(f"bad_handle:{name}:{src}")
         src_count = self.ledger.get(src, {}).get("count", 1)
@@ -68,6 +72,8 @@ class Simulator:
             return h
 
         if name == "search_images":
+            if out.get("error") == "no_results":
+                return {"error": "no_results"}                   # no handle is created
             return {"id": produce(out["count"], "search"), "count": out["count"]}
         if name == "ask_gallery":
             return {"answer": out["answer"], "id": produce(out["count"], "ask"), "count": out["count"]}
@@ -79,6 +85,8 @@ class Simulator:
             return {"status": "moved", "count": out.get("count", src_count), "album": args.get("album"),
                     "created": out.get("created", True)}
         if name == "delete_images":
+            if out.get("status") == "cancelled":
+                return {"status": "cancelled", "count": 0}      # the user cancelled the app's dialog
             if src in self.ledger:
                 self.ledger[src]["alive"] = False
             return {"status": "deleted", "count": out.get("count", src_count)}

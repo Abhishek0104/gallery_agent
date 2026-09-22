@@ -83,6 +83,8 @@ def validate(spec, persona):
     prev_search = None
 
     for s in spec["steps"]:
+        if "expect" in s or s.get("skipped"):             # assistant-only / asked-but-not-done steps
+            continue
         if "event" in s:
             src = ledger.get(s["from"])
             if not src or not src["alive"]:
@@ -126,14 +128,20 @@ def validate(spec, persona):
             if isinstance(args.get("query"), str):
                 for check, msg in check_query(args["query"], persona, people="people" in args):
                     add("purity", f"step {s['i']}: query {args['query']!r}: {msg}")
+            if "loosens" in s:
+                src_args = next(x for x in spec["steps"] if x["i"] == s["loosens"])["args"]
+                missing = [k for k in src_args if k not in args]
+                if len(missing) != 1 or any(args.get(k) != v for k, v in src_args.items() if k in args) \
+                        or any(k not in src_args for k in args):
+                    add("slots", f"step {s['i']}: a loosened search must drop exactly one earlier filter")
             if "refines" in s and prev_search:
                 for k, val in prev_search["args"].items():
                     if args.get(k) != val:
                         add("slots", f"step {s['i']}: refinement dropped or changed {k}")
                 if out["count"] >= prev_search["outcome"]["count"]:
                     add("counts", f"step {s['i']}: refinement did not narrow the results")
-            if out.get("count", 0) < 1:
-                add("counts", f"step {s['i']}: happy-path search needs 1+ results")
+            if out.get("count", 0) < 1 and out.get("error") != "no_results":
+                add("counts", f"step {s['i']}: search needs 1+ results unless it is a no_results outcome")
             prev_search = s
 
         elif s["call"] == "ask_gallery":
@@ -170,9 +178,12 @@ def validate(spec, persona):
                 add("counts", f"step {s['i']}: move outcome disagrees with args")
 
         elif s["call"] == "delete_images":
-            if out["status"] != "deleted" or (src_count is not None and out["count"] != src_count):
-                add("counts", f"step {s['i']}: v0 delete must be confirmed for every image")
-            if args.get("images") in ledger:
+            if out["status"] == "cancelled":
+                if out["count"] != 0:
+                    add("counts", f"step {s['i']}: a cancelled delete deletes nothing")
+            elif out["status"] != "deleted" or (src_count is not None and out["count"] != src_count):
+                add("counts", f"step {s['i']}: a confirmed delete removes every image")
+            elif args.get("images") in ledger:
                 ledger[args["images"]]["alive"] = False
 
         if s.get("out"):
@@ -191,4 +202,6 @@ def validate(spec, persona):
         if s.get("call") == "delete_images" and prev.get("call") in ("make_collage", "apply_effect") \
                 and s["i"] not in starts:
             add("turns", f"step {s['i']}: deleting something just created must start a user turn")
+        if s.get("expect") == "ask" and not any(t[-1] == s["i"] for t in spec["turns"]):
+            add("turns", f"step {s['i']}: a clarification question must end its turn")
     return v
