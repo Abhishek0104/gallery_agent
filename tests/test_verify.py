@@ -78,3 +78,11 @@ def test_invented_number_flagged():
     ep["messages"][-1]["content"] = "I found 12 photos of you in Miami and made a collage."
     v = run(ep)
     assert any(f.startswith("grounded_numbers") for f in v["failures"]) and v["accept"]   # soft check
+
+
+def test_missing_query_scores_zero_without_embedding_empty_text():
+    ep = ep_by("ep_0022")
+    calls(ep)[0]["args"].pop("query")
+    seen = []
+    v = verify(ep, PERSONAS[ep["spec"]["persona"]], lambda t: (seen.extend(t), fake_embed(t))[1])
+    assert "" not in seen and not v["accept"]

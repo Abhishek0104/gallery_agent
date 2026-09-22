@@ -35,6 +35,10 @@ STYLE = {
 }
 
 
+class UserSimError(RuntimeError):
+    """The user simulator could not write a message that passes the checks (a content failure, not an API one)."""
+
+
 class UserMessage(BaseModel):
     message: str
 
@@ -177,8 +181,8 @@ def extra_filters(msg, required, searches, persona):
     if not searches:
         return []
     low = msg.lower()
-    for r in required:                                  # required phrases (album names, ...) are allowed
-        if r != "<me>":
+    for r in sorted(required, key=len, reverse=True):   # required phrases (album names, ...) are allowed;
+        if r != "<me>":                                 # longest first, so "Queenstown 2022" goes before "Queenstown"
             low = low.replace(r.lower(), " ")
     _, places, festivals, _ = _lexicon()
     allowed_people = {v.lower() for a in searches for v in a.get("people", [])}
@@ -246,4 +250,4 @@ def write_message(llm, spec, persona, turn_no, turn, surface, history, extra="")
         if not v:
             return msg, res.meta, attempt + 1
         feedback = "\n\nYour previous message was rejected. Fix: " + "; ".join(v)
-    raise RuntimeError(f"{spec['episode_id']} turn {turn_no}: user message failed checks: {v}")
+    raise UserSimError(f"{spec['episode_id']} turn {turn_no}: user message failed checks: {v}")

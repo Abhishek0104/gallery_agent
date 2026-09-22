@@ -105,24 +105,26 @@ def verify(ep, persona, embed):
     # query + question similarity
     q_pairs = [(p, a) for p, a in pairs if "query" in p["args"] or "query" in a["args"]]
     k_pairs = [(p, a) for p, a in pairs if p["call"] == "ask_gallery"]
-    texts = [x for p, a in q_pairs for x in (p["args"].get("query", ""), a["args"].get("query", ""))]
-    texts += [x for p, a in k_pairs for x in (p["args"]["question"], a["args"].get("question", ""))]
-    vecs = embed(texts) if texts else []
+    # embed only non-empty pairs; a missing side scores 0
+    to_embed = [(p["args"].get("query"), a["args"].get("query")) for p, a in q_pairs]
+    to_embed += [(p["args"]["question"], a["args"].get("question")) for p, a in k_pairs]
+    texts = [x for sp, tp in to_embed if sp and tp for x in (sp, tp)]
+    vecs = iter(embed(texts)) if texts else iter(())
+    cosines = [float(next(vecs) @ next(vecs)) if sp and tp else 0.0 for sp, tp in to_embed]
     for n, (p, a) in enumerate(q_pairs):
         sq, tq = p["args"].get("query"), a["args"].get("query")
         if not sq or not tq:
             check("query", f"query:{p['i']}", 0.0, msg=f"step {p['i']} query spec={sq!r} teacher={tq!r}")
             continue
-        cos = float(vecs[2 * n] @ vecs[2 * n + 1])
+        cos = cosines[n]
         check("query", f"query_similarity:{p['i']}", cos, threshold=CFG["query_threshold"],
               msg=f"step {p['i']} {sq!r} vs {tq!r} (cos {cos:.2f})")
         impure = check_query(tq, persona, people="people" in a["args"])
         check("query", f"query_purity:{p['i']}", float(not impure),
               msg=f"step {p['i']} teacher query {tq!r}: {[m for _, m in impure]}")
-    off = 2 * len(q_pairs)
     for n, (p, a) in enumerate(k_pairs):
         tq = a["args"].get("question", "")
-        cos = float(vecs[off + 2 * n] @ vecs[off + 2 * n + 1])
+        cos = cosines[len(q_pairs) + n]
         check("ask", f"question_similarity:{p['i']}", cos, threshold=CFG["question_threshold"],
               msg=f"step {p['i']} {p['args']['question']!r} vs {tq!r} (cos {cos:.2f})")
         check("ask", f"question_self_contained:{p['i']}", float(self_contained(tq)),

@@ -15,7 +15,7 @@ from pathlib import Path
 
 from llm import LLM
 from realize.system_prompt import GUIDANCE_VERSION, system_prompt, teacher_system_prompt, tool_declarations
-from realize.user_sim import CFG, sample_surface, write_message
+from realize.user_sim import CFG, UserSimError, sample_surface, write_message
 from sim.simulator import Simulator
 from specs.persona_outline import quota_list
 from specs.spec_validator import date_core, normalize_person
@@ -195,19 +195,28 @@ def main(tag="v0", limit=None, only=None, all_specs=False):
     user_llm, teacher = LLM("user_sim"), LLM("teacher")
 
     def one(k):
-        return realize(chosen[k], personas[chosen[k]["persona"]], styles[k], user_llm, teacher, random.Random(seeds[k]))
+        try:
+            return realize(chosen[k], personas[chosen[k]["persona"]], styles[k], user_llm, teacher,
+                           random.Random(seeds[k]))
+        except UserSimError as e:            # content failure: drop this episode, keep the batch (API errors still raise)
+            return {"episode_id": chosen[k]["episode_id"], "realize_failed": str(e)}
 
     with ThreadPoolExecutor(max_workers=WORKERS) as pool:
-        episodes = list(pool.map(one, todo))
+        results = list(pool.map(one, todo))
+    failed = [r for r in results if "realize_failed" in r]
+    episodes = [r for r in results if "realize_failed" not in r]
+    for r in failed:
+        print(f"{r['episode_id']}: realization failed: {r['realize_failed']}")
     OUT.mkdir(parents=True, exist_ok=True)
     if only:                                   # splice the re-realized episodes into the saved batch
         new = {e["episode_id"]: e for e in episodes}
         saved = [json.loads(l) for l in episodes_path.read_text().splitlines()]
         episodes = [new.get(e["episode_id"], e) for e in saved]
+    (OUT / f"_realize_failed_{tag}.json").write_text(json.dumps(failed, indent=2))
     episodes_path.write_text("".join(json.dumps(e, ensure_ascii=False) + "\n" for e in episodes))
     write_review(episodes, tag)
     matched = [sum(r["match"] for r in compare(e)) == len(compare(e)) for e in episodes]
-    print(f"realized {len(episodes)}; all calls match the spec in {sum(matched)}; "
+    print(f"realized {len(episodes)} ({len(failed)} failed); all calls match the spec in {sum(matched)}; "
           f"flags: {dict(Counter(f for e in episodes for f in e['flags']))}")
     print("served:", dict(Counter(m["served_model"] for e in episodes for k in ("user_sim", "teacher")
                                   for m in e["generation"][k])))

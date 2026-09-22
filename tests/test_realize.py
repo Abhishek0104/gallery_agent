@@ -79,3 +79,11 @@ def test_delete_after_create_starts_turn():
     from specs.spec_sampler import sample_turns
     steps = [{"kind": "effect"}, {"kind": "collage"}, {"kind": "delete"}]
     assert sample_turns(steps, "one_message", random.Random(0)) == [[1, 2], [3]]
+
+
+def test_album_with_year_is_not_a_date():
+    from realize.user_sim import check_message
+    persona = PERSONAS["persona_13"]
+    msg = "find my mom in a gondola in Queenstown and move them to my Queenstown 2022 album"
+    args = [{"query": "gondola", "people": ["mom"], "location": "Queenstown"}]
+    assert check_message(msg, ["mom", "Queenstown", "Queenstown 2022"], args, persona) == []
