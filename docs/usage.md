@@ -110,6 +110,11 @@ commands it wraps are in README "End-to-end training run". Eval puts the trained
 (`realize.run --assistant-role student --only-file data/export/<version>/eval_ids_<tag>.txt --out-tag student_<tag>`)
 and scores it with the same verifier.
 
+`python -m export.eval_forced` is the cheap secondary metric: each held-out assistant turn predicted from the
+gold history, scored without the simulator, the user simulator or the embedding API — so it runs on a Mac and
+on the untrained base. Use it per checkpoint; use the interactive run for anything that depends on the model's
+own history.
+
 ## 6. Changing things
 
 ### Tune ratios, counts, styles

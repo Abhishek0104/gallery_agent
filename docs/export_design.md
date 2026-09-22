@@ -85,9 +85,20 @@ known steps in a new order. Parked until there is enough data to spare paths fro
 1. **Interactive (primary):** the trained model takes the teacher's seat in `realize/run.py` for each held-out spec
    (simulator + user simulator unchanged), and the **verifier** scores its conversation. Report acceptance and
    failures by check, split by path, scenario and turn style — the same table as for teacher data.
-2. **Teacher-forced (fast, secondary):** on held-out transcripts, predict each assistant turn given the gold
-   history; exact match on tool name + normalized args (verifier normalization), and "call vs. reply" accuracy.
-   Cheap enough to run every checkpoint.
+2. **Teacher-forced (fast, secondary):** `export/eval_forced.py` — predict each assistant turn from the gold
+   history of `sft_eval.jsonl`. A pure function of model + data: no simulator, no user simulator, no embedding
+   API, so it is the only metric that isolates the model (the interactive one measures student + user
+   simulator + embeddings jointly) and the only one that runs without CUDA. It cannot see error recovery or
+   exposure bias — the history is always gold — so it stays secondary.
+   - Headline: **structural match** = tool name + `images` (the handle: did the model track conversation
+     state?) + the exactly-compared args, normalized by `config/arg_types.yaml` as the verifier normalizes them.
+   - Also: `kind` (call vs reply), malformed / truncated rates, mean completion loss, and for replies the two
+     wording-independent checks the verifier makes (non-empty, no handle ids). Broken down by kind and by tool.
+   - `query` / `question` are compared by cosine at 0.75 in the verifier; with no embedding model here they are
+     reported as exact-string rates only and **nothing is gated on them** — exact match on a free-text query
+     would floor the headline number for no good reason.
+   - `tests/test_eval_forced.py` feeds the gold completions back in as predictions and asserts every metric is
+     1.0, so a scoring bug is never mistaken for a weak model.
 
 ## 6. Scale and mix before training
 - 396 accepted episodes is a starting point. Proposed first training set: **~5,000 episodes**, e.g. 3,000 happy

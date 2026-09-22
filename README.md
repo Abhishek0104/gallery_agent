@@ -120,3 +120,16 @@ done
   `content` and every episode scores as a miss.
 - The user simulator still runs on Gemini during eval; its calls miss the cache once the student's replies differ
   from the teacher's (~3 calls per held-out episode).
+
+**Teacher-forced eval (no CUDA, no API)** — predict each held-out assistant turn from the gold history. It
+isolates the model from the user simulator and the embedding model, and runs on a Mac (MPS or CPU), so the
+untrained base can be measured before any training:
+
+```bash
+python -m export.eval_forced                              # untrained base -> forced_eval_base.json
+python -m export.eval_forced --adapter runs/e2e_v2_lora/adapter
+python -m export.eval_forced --limit 40 --device cpu      # smoke test
+```
+Headline is the structural match (tool name + handle + exactly-compared args); `query` / `question` are
+reported as exact-string diagnostics only. It cannot see error recovery or exposure bias — the history is
+always gold — so the interactive run above stays primary. `docs/export_design.md` §5.

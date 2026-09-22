@@ -39,4 +39,7 @@ on the first batch before tuning.
 
 ## Parking list
 - LLM judge: faithfulness (reply matches tool results) and naturalness (user and assistant turns).
+- Offline query similarity: `config/llm.yaml` has a `local` embeddings provider, so verification without an API
+  is reachable — but the 0.75 threshold was set against `gemini-embedding-2` and would have to be re-tuned for
+  a different embedding model. Until then `verify.run` needs the API even when the model under eval is local.
 - Partial credit for recovering from a wrong call (needs error / recovery specs first).
