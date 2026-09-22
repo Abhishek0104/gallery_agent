@@ -69,3 +69,11 @@ def test_missing_arg_first_request_forbids_the_value():
     lines, req, forbidden = turn_intent(spec, first, surf)
     assert move["args"]["album"] in forbidden
     assert check_message(f"put these into {move['args']['album']}", [], [], None, forbidden)
+
+
+def test_personas_are_not_tied_to_one_scenario():
+    import collections
+    by = collections.defaultdict(set)
+    for s in round2_skeleton(200, seed=202):
+        by[s["persona"]].add(s["scenario"]["type"])
+    assert all(len(v) >= 3 for v in by.values()), {k: sorted(v) for k, v in by.items()}

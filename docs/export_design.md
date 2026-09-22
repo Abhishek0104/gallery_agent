@@ -2,7 +2,8 @@
 
 ## Purpose
 Turn verified episodes into (1) training data for the < 1B on-device model and (2) a held-out eval set whose
-primary metric is the same verifier, run on the small model's own conversations. No code yet.
+primary metric is the same verifier, run on the small model's own conversations. Code: `export/`, `train/`
+(see README "End-to-end training run").
 
 ---
 
@@ -56,11 +57,15 @@ Rules:
 - Render with the chosen base model's chat template: `apply_chat_template(messages, tools=tools, tokenize=False)`.
   The template must support a tools block, assistant tool calls and a `tool` role (e.g. Qwen-style `<tool_call>`).
 - **Loss on assistant tokens only**: tool calls and replies. System, user, app events and tool results are
-  context. (TRL `SFTTrainer` with `assistant_only_loss`, or a template with `{% generation %}` markers.)
-- **One example per episode** (whole conversation, every assistant turn trained). Episodes are ~11 messages,
-  far below any context limit.
-- A render check in `export/` asserts every episode round-trips: the rendered text parses back to the same tool
-  calls (catches templates that drop arguments or reorder turns).
+  context. (`train/sft_lora.py` masks the prompt tokens.)
+- **One example per assistant turn** (prompt = render of the history with the generation prompt, completion = the
+  turn). Not one example per episode: Qwen3.5 renders earlier assistant turns *without* the empty
+  `<think></think>` block that the non-thinking generation prompt adds, so whole-episode training would teach a
+  prompt shape the model never sees at inference. Per-turn examples match inference exactly (e2e_v1: 1,751 train
+  / 453 eval examples, ≤ 1,388 tokens).
+- `export/render_check.py` asserts for every turn: the generation prompt is a prefix of the rendered turn, it ends
+  with the non-thinking marker, the completion parses back to exactly the gold tool call or reply (parameters
+  converted by the tool schema, since the XML call format loses "2022" vs 2022), and no guidance leaked.
 
 ## 4. Train / eval split
 **Primary: hold out personas.** Eval episodes come only from personas never seen in training, so eval measures

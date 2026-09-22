@@ -112,6 +112,7 @@ class LLM:
         if spec["provider"] not in providers:
             raise LLMError(f"unsupported provider {spec['provider']!r}; choose from {sorted(providers)}")
         self.spec = spec                        # provider-specific keys: base_url, api_key_env, extra_body, ...
+        self.role = role
         self.provider = spec["provider"]
         self.model = spec["model"]
         self.thinking = spec.get("thinking", "high")

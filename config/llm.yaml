@@ -29,6 +29,15 @@ roles:
     model: gemini-3.8-flash
     thinking: high
     max_tokens: 16000         # 8000 was hit once (round 2); not part of the cache key
+  student:                  # a trained model under eval (realize.run --assistant-role student); served by vLLM
+    provider: openai_compatible
+    base_url: http://localhost:8000/v1
+    model: gallery-lora       # --lora-modules name (or the base model id to eval the untrained base)
+    max_tokens: 1024
+    temperature: 0            # greedy: reproducible eval
+    thinking: none            # only a cache-key label here; non-thinking is set below
+    extra_body:
+      chat_template_kwargs: {enable_thinking: false}   # same as training (config/export.yaml)
   embedding:                # query-pool dedup (near-duplicate detection)
     provider: gemini
     model: gemini-embedding-2

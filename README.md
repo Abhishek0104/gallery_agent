@@ -7,7 +7,7 @@ Design docs are in `docs/` (start with `CLAUDE.md`).
 
 ## Setup
 ```bash
-uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -r requirements.txt
+uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -r requirements.txt   # + requirements-train.txt for export/train
 echo 'GEMINI_API_KEY=...' > .env          # git-ignored; llm.py loads it
 .venv/bin/python -m pytest -q tests
 ```
@@ -77,3 +77,33 @@ detects pooling models automatically (`--runner pooling --convert embed` forces 
 vllm serve BAAI/bge-small-en-v1.5 --port 8001
 ```
 Check flags against `vllm serve --help` for your vLLM version; parser names change between releases.
+
+## End-to-end training run (export → render check → LoRA → eval)
+Code is set up and dry-checked; training and serving run on a CUDA machine. Pipeline test, not a tuned model.
+
+```bash
+# 1. export verified v2 + r2 episodes, split by held-out persona       (config/export.yaml)
+python -m export.build_export          # -> data/export/e2e_v1/{train,eval}.jsonl, eval_ids_*.txt, manifest.json
+# 2. render every assistant turn with the Qwen3.5 template (non-thinking) and check it round-trips
+python -m export.render_check          # -> sft_{train,eval}.jsonl, render_report.json   (tokenizer only)
+# 3. LoRA SFT, loss on completions only                                   (config/train.yaml)
+python -m train.sft_lora --check       # data + masking only; safe anywhere
+python -m train.sft_lora               # CUDA: adapter -> runs/e2e_v1_lora/adapter
+# 4. serve base + adapter with tool calling (text only, non-thinking by default for 0.8B)
+vllm serve Qwen/Qwen3.5-0.8B --language-model-only --max-model-len 8192 \
+  --enable-lora --lora-modules gallery-lora=runs/e2e_v1_lora/adapter --max-lora-rank 16 \
+  --enable-auto-tool-choice --tool-call-parser qwen3_coder --port 8000
+# 5. the trained model plays the assistant on the held-out specs (no teacher guidance), then the verifier scores it
+for t in v2 r2; do
+  python -m realize.run --tag $t --all --only-file data/export/e2e_v1/eval_ids_$t.txt \
+         --assistant-role student --out-tag student_$t
+  python -m verify.run --tag student_$t
+done
+```
+- The `student` role in `config/llm.yaml` points at `http://localhost:8000/v1`, model `gallery-lora`, greedy
+  (`temperature: 0`), `enable_thinking: false` — the same rendering as training. Set `model:
+  Qwen/Qwen3.5-0.8B` to evaluate the untrained base as a baseline.
+- `--tool-call-parser qwen3_coder` is from the Qwen3.5 model card; the template emits XML-style calls
+  (`<function=...><parameter=...>`), which that parser converts by the tools' JSON schema (strings stay strings).
+- The user simulator still runs on Gemini during eval; its calls miss the cache once the student's replies differ
+  from the teacher's (~3 calls per held-out episode).

@@ -78,11 +78,13 @@ def run_teacher(teacher, sim, sys_prompt, tools, contents, messages, seed_prefix
     return res.meta
 
 
-def realize(spec, persona, style, user_llm, teacher, rng):
+def realize(spec, persona, style, user_llm, teacher, rng, guided=True):
+    """guided: the assistant gets the teacher guidance block (data generation). A trained model under eval
+    gets only the on-device system prompt, exactly as in its training data."""
     surface = sample_surface(spec, persona, style, rng)
     sim = Simulator(spec)
     tools = tool_declarations(spec["config"])
-    sys_teacher = teacher_system_prompt()
+    sys_teacher = teacher_system_prompt() if guided else system_prompt()
     by_i = {s["i"]: s for s in spec["steps"]}
     contents, messages, flags, gen = [], [], sim.flags, {"user_sim": [], "teacher": []}
     planned_before = 0
@@ -116,7 +118,8 @@ def realize(spec, persona, style, user_llm, teacher, rng):
         flags.append("incomplete")
     return {
         "episode_version": 1, "episode_id": spec["episode_id"], "spec": spec,
-        "system_prompt": system_prompt(), "tools": tools, "teacher_guidance_version": GUIDANCE_VERSION,
+        "system_prompt": system_prompt(), "tools": tools,
+        "teacher_guidance_version": GUIDANCE_VERSION if guided else None, "assistant_role": teacher.role,
         "surface": surface, "messages": messages, "flags": sorted(set(flags)), "generation": gen,
     }
 
@@ -178,10 +181,14 @@ def write_review(episodes, tag="v0"):
 
 
 # ---------------------------------------------------------------- main
-def main(tag="v0", limit=None, only=None, all_specs=False):
-    """Realize specs_{tag} -> episodes_{tag}. `only`: re-realize these episode ids in place."""
+def main(tag="v0", limit=None, only=None, all_specs=False, assistant_role="teacher", out_tag=None):
+    """Realize specs_{tag} -> episodes_{tag}. `only`: re-realize these episode ids in place.
+    `assistant_role` != "teacher" (a trained model under eval): no guidance block; with `out_tag` the episodes go
+    to episodes_{out_tag}.jsonl on their own (no splice), ready for `verify.run --tag {out_tag}`."""
     specs = [json.loads(l) for l in (ROOT / "data" / "specs" / f"specs_{tag}.jsonl").read_text().splitlines()]
-    episodes_path = OUT / f"episodes_{tag}.jsonl"
+    out_tag = out_tag or tag
+    episodes_path = OUT / f"episodes_{out_tag}.jsonl"
+    guided = assistant_role == "teacher"
     personas = {json.loads(f.read_text())["persona_id"]: json.loads(f.read_text())
                 for f in (ROOT / "data" / "personas").glob("persona_*.json")}
     rng = random.Random(CFG["seed"])
@@ -189,12 +196,12 @@ def main(tag="v0", limit=None, only=None, all_specs=False):
     styles = quota_list(CFG["style"], len(chosen), rng)
     seeds = [rng.randrange(2 ** 31) for _ in chosen]
     todo = [k for k, s in enumerate(chosen) if not only or s["episode_id"] in only][:limit]
-    user_llm, teacher = LLM("user_sim"), LLM("teacher")
+    user_llm, teacher = LLM("user_sim"), LLM(assistant_role)
 
     def one(k):
         try:
             return realize(chosen[k], personas[chosen[k]["persona"]], styles[k], user_llm, teacher,
-                           random.Random(seeds[k]))
+                           random.Random(seeds[k]), guided)
         except (UserSimError, BadOutputError) as e:       # bad output: drop this episode, keep the batch
             return {"episode_id": chosen[k]["episode_id"], "realize_failed": f"{type(e).__name__}: {e}"}  # API errors raise
 
@@ -205,13 +212,13 @@ def main(tag="v0", limit=None, only=None, all_specs=False):
     for r in failed:
         print(f"{r['episode_id']}: realization failed: {r['realize_failed']}")
     OUT.mkdir(parents=True, exist_ok=True)
-    if only:                                   # splice the re-realized episodes into the saved batch
+    if only and out_tag == tag:                # splice the re-realized episodes into the saved batch
         new = {e["episode_id"]: e for e in episodes}
         saved = [json.loads(l) for l in episodes_path.read_text().splitlines()]
         episodes = [new.get(e["episode_id"], e) for e in saved]
-    (OUT / f"_realize_failed_{tag}.json").write_text(json.dumps(failed, indent=2))
+    (OUT / f"_realize_failed_{out_tag}.json").write_text(json.dumps(failed, indent=2))
     episodes_path.write_text("".join(json.dumps(e, ensure_ascii=False) + "\n" for e in episodes))
-    write_review(episodes, tag)
+    write_review(episodes, out_tag)
     matched = [sum(r["match"] for r in compare(e)) == len(compare(e)) for e in episodes]
     print(f"realized {len(episodes)} ({len(failed)} failed); all calls match the spec in {sum(matched)}; "
           f"flags: {dict(Counter(f for e in episodes for f in e['flags']))}")
@@ -225,9 +232,15 @@ if __name__ == "__main__":
     ap.add_argument("--tag", default="v0", help="specs_<tag>.jsonl -> episodes_<tag>.jsonl")
     ap.add_argument("--all", action="store_true", help="realize every spec in the file (no feature pick)")
     ap.add_argument("--only", nargs="*", help="re-realize these episode ids in place")
+    ap.add_argument("--only-file", help="file with one episode id per line (e.g. data/export/<v>/eval_ids_v2.txt)")
+    ap.add_argument("--assistant-role", default="teacher",
+                    help="config/llm.yaml role playing the assistant; not 'teacher' = trained model, no guidance")
+    ap.add_argument("--out-tag", help="write episodes_<out-tag>.jsonl instead of episodes_<tag>.jsonl")
     ap.add_argument("--limit", type=int, help="only the first N chosen specs (smoke test)")
     args = ap.parse_args()
+    if args.only_file:
+        args.only = (args.only or []) + Path(args.only_file).read_text().split()
     if args.review:
         write_review([json.loads(l) for l in (OUT / f"episodes_{args.tag}.jsonl").read_text().splitlines()], args.tag)
     else:
-        main(args.tag, args.limit, set(args.only or []), args.all)
+        main(args.tag, args.limit, set(args.only or []), args.all, args.assistant_role, args.out_tag)

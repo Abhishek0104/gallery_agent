@@ -11,7 +11,6 @@ New step kinds: {"expect": "ask" | "report", "about": ...} (assistant turn with 
 """
 import copy
 import random
-import re
 
 import yaml
 
@@ -93,19 +92,6 @@ def renumber(spec):
     return spec
 
 
-def split_turn(spec, at_i, keep_through):
-    """Split the turn holding `at_i`: steps up to `keep_through` stay; the rest move to a new next turn.
-    Returns (this turn index, moved step ids)."""
-    k = turn_index(spec, at_i)
-    t = spec["turns"][k]
-    cut = t.index(keep_through) + 1
-    moved = t[cut:]
-    spec["turns"][k] = t[:cut]
-    spec["turns"].insert(k + 1, [])
-    spec["requests"].insert(k + 1, [])
-    return k, moved
-
-
 # ---------------------------------------------------------------- overlays
 def no_results(spec, variant, rng):
     searches = [s for s in spec["steps"] if s.get("call") == "search_images"]
@@ -139,13 +125,9 @@ def no_results(spec, variant, rng):
     insert_after(spec, report["i"], loose)
     spec["turns"][k] = t[:t.index(s["i"]) + 1] + [report["i"]]
     spec["turns"].insert(k + 1, [loose["i"]] + after)
-    spec["requests"][k] = [i for i in spec["requests"][k]]            # the user asked for all of it
-    spec["requests"].insert(k + 1, [loose["i"]] + after)             # ...and restates the rest
-    if "query" in s["args"] and "query" in loose["args"]:
-        pass                                                         # merge() copies the query from `loosens`
-    for f in spec["fill"]:
-        if f["field"] == "query" and f["step"] == s["i"] and dropped == "query":
-            pass                                                     # the failed search still needs its query
+    # the user asked for all of it in turn k, and restates the rest when retrying; merge() copies the query
+    # of the failed search into the loosened one (via `loosens`) unless the query is the dropped filter
+    spec["requests"].insert(k + 1, [loose["i"]] + after)
     return spec
 
 
@@ -241,7 +223,9 @@ def round2_skeleton(n=None, seed=None):
         refined_last = any(a["kind"] == b["kind"] == "search" for a, b in zip(p["steps"], p["steps"][1:]))
         if key == ("no_results", "recover") and not refined_last:
             multi.add(i)                               # its only search needs a filter to drop
-    base = skeleton(seed=seed, paths=paths, multi=multi, id_prefix="r2")
+    # a different seed for the base skeleton: with the same one its first quota shuffle (personas) repeats the
+    # scenario shuffle above, which tied every persona to a single scenario type
+    base = skeleton(seed=seed + 1_000_003, paths=paths, multi=multi, id_prefix="r2")
     return [apply(s, types[i], variants.get(i), rng) for i, s in enumerate(base)]
 
 
