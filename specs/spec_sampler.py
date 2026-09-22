@@ -271,8 +271,8 @@ def skeleton(n=None, seed=None):
     all_effects = effect_values()
 
     paths = rng.sample(catalog, min(n, len(catalog)))            # without replacement: distinct paths
-    while len(paths) < n:
-        paths.append(rng.choice(catalog))
+    while len(paths) < n:                                        # every path once more before any repeats again
+        paths += rng.sample(catalog, min(n - len(paths), len(catalog)))
     persona_order = quota_list({p["persona_id"]: 1 for p in personas}, n, rng)
     by_id = {p["persona_id"]: p for p in personas}
     modes = quota_list(CFG["turn_mode"], n, rng)

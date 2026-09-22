@@ -21,9 +21,7 @@ from specs.persona_outline import quota_list
 from specs.spec_validator import date_core, normalize_person
 
 ROOT = Path(__file__).resolve().parent.parent
-SPECS = ROOT / "data" / "specs" / "specs_v0.jsonl"
 OUT = ROOT / "data" / "episodes"
-EPISODES = OUT / "episodes_v0.jsonl"
 WORKERS = 4
 FEATURES = {
     "initial_selection": lambda s: s["initial_selection"] is not None,
@@ -153,7 +151,7 @@ def compare(ep):
     return rows
 
 
-def write_review(episodes):
+def write_review(episodes, tag="v0"):
     lines = ["# Episodes v0 — review", ""]
     for ep in episodes:
         sp = ep["spec"]
@@ -179,28 +177,35 @@ def write_review(episodes):
         if queries:
             lines.append("- queries (spec → teacher): " + "; ".join(f"{q!r} → {t!r}" for q, t in queries))
         lines.append("")
-    (OUT / "review_v0.md").write_text("\n".join(lines))
+    (OUT / f"review_{tag}.md").write_text("\n".join(lines))
 
 
 # ---------------------------------------------------------------- main
-def main(limit=None):
-    specs = [json.loads(l) for l in SPECS.read_text().splitlines()]
+def main(tag="v0", limit=None, only=None, all_specs=False):
+    """Realize specs_{tag} -> episodes_{tag}. `only`: re-realize these episode ids in place."""
+    specs = [json.loads(l) for l in (ROOT / "data" / "specs" / f"specs_{tag}.jsonl").read_text().splitlines()]
+    episodes_path = OUT / f"episodes_{tag}.jsonl"
     personas = {json.loads(f.read_text())["persona_id"]: json.loads(f.read_text())
                 for f in (ROOT / "data" / "personas").glob("persona_*.json")}
     rng = random.Random(CFG["seed"])
-    chosen = pick_specs(specs, CFG["n_episodes"], rng)[:limit]
+    chosen = specs if all_specs else pick_specs(specs, CFG["n_episodes"], rng)
     styles = quota_list(CFG["style"], len(chosen), rng)
     seeds = [rng.randrange(2 ** 31) for _ in chosen]
+    todo = [k for k, s in enumerate(chosen) if not only or s["episode_id"] in only][:limit]
     user_llm, teacher = LLM("user_sim"), LLM("teacher")
 
     def one(k):
         return realize(chosen[k], personas[chosen[k]["persona"]], styles[k], user_llm, teacher, random.Random(seeds[k]))
 
     with ThreadPoolExecutor(max_workers=WORKERS) as pool:
-        episodes = list(pool.map(one, range(len(chosen))))
+        episodes = list(pool.map(one, todo))
     OUT.mkdir(parents=True, exist_ok=True)
-    EPISODES.write_text("".join(json.dumps(e, ensure_ascii=False) + "\n" for e in episodes))
-    write_review(episodes)
+    if only:                                   # splice the re-realized episodes into the saved batch
+        new = {e["episode_id"]: e for e in episodes}
+        saved = [json.loads(l) for l in episodes_path.read_text().splitlines()]
+        episodes = [new.get(e["episode_id"], e) for e in saved]
+    episodes_path.write_text("".join(json.dumps(e, ensure_ascii=False) + "\n" for e in episodes))
+    write_review(episodes, tag)
     matched = [sum(r["match"] for r in compare(e)) == len(compare(e)) for e in episodes]
     print(f"realized {len(episodes)}; all calls match the spec in {sum(matched)}; "
           f"flags: {dict(Counter(f for e in episodes for f in e['flags']))}")
@@ -211,9 +216,12 @@ def main(limit=None):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--review", action="store_true")
+    ap.add_argument("--tag", default="v0", help="specs_<tag>.jsonl -> episodes_<tag>.jsonl")
+    ap.add_argument("--all", action="store_true", help="realize every spec in the file (no feature pick)")
+    ap.add_argument("--only", nargs="*", help="re-realize these episode ids in place")
     ap.add_argument("--limit", type=int, help="only the first N chosen specs (smoke test)")
     args = ap.parse_args()
     if args.review:
-        write_review([json.loads(l) for l in EPISODES.read_text().splitlines()])
+        write_review([json.loads(l) for l in (OUT / f"episodes_{args.tag}.jsonl").read_text().splitlines()], args.tag)
     else:
-        main(args.limit)
+        main(args.tag, args.limit, set(args.only or []), args.all)

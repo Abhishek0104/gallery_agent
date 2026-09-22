@@ -11,20 +11,19 @@ from llm import LLM
 from verify.verifier import verify
 
 ROOT = Path(__file__).resolve().parent.parent
-EPISODES = ROOT / "data" / "episodes" / "episodes_v0.jsonl"
-OUT = ROOT / "data" / "episodes" / "verified_v0.jsonl"
+EPISODES = ROOT / "data" / "episodes"
 
 
-def main():
-    episodes = [json.loads(l) for l in EPISODES.read_text().splitlines()]
+def main(tag="v0", quiet=False):
+    episodes = [json.loads(l) for l in (EPISODES / f"episodes_{tag}.jsonl").read_text().splitlines()]
     personas = {json.loads(f.read_text())["persona_id"]: json.loads(f.read_text())
                 for f in (ROOT / "data" / "personas").glob("persona_*.json")}
     emb = LLM("embedding")
     verdicts = [verify(ep, personas[ep["spec"]["persona"]], emb.embed) for ep in episodes]
-    OUT.write_text("".join(json.dumps(v, ensure_ascii=False) + "\n" for v in verdicts))
+    (EPISODES / f"verified_{tag}.jsonl").write_text("".join(json.dumps(v, ensure_ascii=False) + "\n" for v in verdicts))
 
     print(f"{'episode':9} {'score':>5}  accept  groups")
-    for v in verdicts:
+    for v in verdicts if not quiet else [v for v in verdicts if not v["accept"]]:
         g = " ".join(f"{k}={s:.2f}" for k, s in v["groups"].items())
         print(f"{v['episode_id']:9} {v['score']:5.2f}  {'yes' if v['accept'] else 'NO ':6}  {g}")
         for f in v["failures"]:
@@ -38,4 +37,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--tag", default="v0")
+    ap.add_argument("--quiet", action="store_true", help="only list rejected episodes")
+    args = ap.parse_args()
+    main(args.tag, args.quiet)

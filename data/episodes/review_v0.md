@@ -66,7 +66,7 @@ Hey, can you make a collage out of these?
   - → `{"status": "moved", "count": 1, "album": "Collages", "created": true}`
 **Assistant:** I've moved the collage to your new "Collages" album.
 
-## ep_0010 · P061 · persona_13 · style casual · calls matched 3/4
+## ep_0010 · P061 · persona_13 · style casual · calls matched 4/4
 *Lucas is looking through Queenstown photos to find pictures of Eleni and his cousin. He wants to make a collage of the two of them and save it into a new album.*
 
 **User:** Hey, can you show me my photos from Queenstown?
@@ -74,14 +74,13 @@ Hey, can you make a collage out of these?
   - → `{"id": "r1", "count": 20}`
 **Assistant:** Here are your 20 photos from Queenstown.
 **User:** Thanks! Could you keep only the photos of Eleni and my cousin from these, turn them into a collage, and then put that collage into a new album called Queenstown Collages?
-- `search_images({"location": "Queenstown", "people": ["Eleni", "my cousin"]})`
+- `search_images({"people": ["Eleni", "cousin"], "location": "Queenstown"})`
   - → `{"id": "r2", "count": 2}`
 - `make_collage({"images": "r2"})`
   - → `{"status": "created", "collage": "r3"}`
-- `move_to_album({"album": "Queenstown Collages", "images": "r3"})`
+- `move_to_album({"images": "r3", "album": "Queenstown Collages"})`
   - → `{"status": "moved", "count": 1, "album": "Queenstown Collages", "created": true}`
-**Assistant:** I found 2 photos of Eleni and your cousin, created a collage with them, and added it to a new album called "Queenstown Collages."
-- ⚠️ planned search_images / actual search_images people: spec=['Eleni', 'cousin'] teacher=['Eleni', 'my cousin']
+**Assistant:** I found 2 photos of Eleni and your cousin from Queenstown, made a collage from them, and moved it to the new album "Queenstown Collages".
 
 ## ep_0013 · P083 · persona_16 · style casual · calls matched 3/3
 *Nitika wants to experiment with black and white edits on eight selected photos for her street photography hobby, tries making a collage from two of the results, but deletes the collage after deciding she dislikes how it turned out.*

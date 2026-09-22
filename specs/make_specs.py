@@ -21,7 +21,6 @@ from specs.spec_validator import validate
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "specs"
-SPECS = OUT / "specs_v0.jsonl"
 WORKERS = 4
 
 
@@ -37,9 +36,9 @@ def fill_one(llm, skel, persona, max_attempts):
     return None, history
 
 
-def generate(max_attempts, dry_run=False):
+def generate(max_attempts, dry_run=False, n=None, seed=None, tag="v0"):
     personas = {p["persona_id"]: p for p in load_personas()}
-    skels = skeleton()
+    skels = skeleton(n, seed)
     if dry_run:
         print(build_prompt(skels[0], personas[skels[0]["persona"]]))
         return
@@ -61,14 +60,14 @@ def generate(max_attempts, dry_run=False):
         for msgs in history[:-1] if spec else history:
             report["rejections_by_check"].update({classify(m) for m in msgs})
     report["accepted"] = len(accepted)
-    SPECS.write_text("".join(json.dumps(s, ensure_ascii=False) + "\n" for s in accepted))
-    (OUT / "_report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False))
+    (OUT / f"specs_{tag}.jsonl").write_text("".join(json.dumps(s, ensure_ascii=False) + "\n" for s in accepted))
+    (OUT / f"_report_{tag}.json" if tag != "v0" else OUT / "_report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False))
     report["album_flipped"] = [s["episode_id"] for s in accepted if s["sampling"].get("album_flipped")]
     first_try = sum(1 for _, (s, h) in zip(skels, results) if s and len(h) == 1)
     print(f"accepted {len(accepted)}/{len(skels)} ({first_try} on the first attempt); "
           f"rejections by check: {dict(report['rejections_by_check'])}; "
           f"existing album -> new (none fit): {report['album_flipped']}")
-    write_review(accepted, personas)
+    write_review(accepted, personas, tag)
 
 
 def classify(msg):
@@ -84,7 +83,7 @@ def fmt_args(args):
     return ", ".join(f"{k}={json.dumps(v, ensure_ascii=False)}" for k, v in args.items())
 
 
-def write_review(specs, personas):
+def write_review(specs, personas, tag="v0"):
     lines = ["# Episode specs v0 — review", "",
              f"{len(specs)} specs. Per spec: persona, path, motivation, steps (args → outcome), user turns.", ""]
     for sp in specs:
@@ -109,7 +108,7 @@ def write_review(specs, personas):
         if hints:
             lines.append(f"- query hints: {'; '.join(hints)}")
         lines.append("")
-    (OUT / "review_v0.md").write_text("\n".join(lines))
+    (OUT / f"review_{tag}.md").write_text("\n".join(lines))
 
 
 if __name__ == "__main__":
@@ -117,9 +116,12 @@ if __name__ == "__main__":
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--review", action="store_true")
     ap.add_argument("--max-attempts", type=int, default=3)
+    ap.add_argument("--n", type=int, help="number of specs (default: config)")
+    ap.add_argument("--seed", type=int, help="sampler seed (default: config)")
+    ap.add_argument("--tag", default="v0", help="output data/specs/specs_<tag>.jsonl")
     args = ap.parse_args()
     if args.review:
-        write_review([json.loads(l) for l in SPECS.read_text().splitlines()],
-                     {p["persona_id"]: p for p in load_personas()})
+        write_review([json.loads(l) for l in (OUT / f"specs_{args.tag}.jsonl").read_text().splitlines()],
+                     {p["persona_id"]: p for p in load_personas()}, args.tag)
     else:
-        generate(args.max_attempts, args.dry_run)
+        generate(args.max_attempts, args.dry_run, args.n, args.seed, args.tag)
