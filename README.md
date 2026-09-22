@@ -3,7 +3,7 @@
 Synthetic training/eval data for an on-device (< 1B, English-only) tool-calling gallery assistant.
 Meaning first, wording last: specs fix tool calls, arguments and outcomes before any dialogue is written;
 LLMs only make it natural; a code verifier checks every conversation against its spec.
-Design docs are in `docs/` (start with `CLAUDE.md`).
+**How to use it: [`docs/usage.md`](docs/usage.md).** Design docs are in `docs/` (start with `CLAUDE.md`).
 
 ## Setup
 ```bash

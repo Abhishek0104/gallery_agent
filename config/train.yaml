@@ -1,8 +1,8 @@
 # Short LoRA fine-tune for the end-to-end pipeline test (train/sft_lora.py). Run on a CUDA machine, not here.
 # The goal is to exercise export -> train -> serve -> eval, not to tune the model.
-data: data/export/e2e_v1          # sft_train.jsonl / sft_eval.jsonl from export/render_check.py
+data: data/export/e2e_v2          # sft_train.jsonl / sft_eval.jsonl from export/render_check.py
 base_model: Qwen/Qwen3.5-0.8B
-output_dir: runs/e2e_v1_lora
+output_dir: runs/e2e_v2_lora
 
 max_length: 2048                  # render_check: longest example 1388 tokens
 epochs: 2

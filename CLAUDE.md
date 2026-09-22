@@ -20,6 +20,7 @@ This repo builds the **synthetic data generation pipeline** used to train and ev
 - `docs/round2_design.md` — no_results, delete cancelled, collage over limit, missing-arg clarification.
 - `docs/export_design.md` — training export (per-turn prompt/completion), persona holdout, eval.
 - `docs/architecture_refactor.md` — registry-driven pipeline (phase 1 done; phase 2 only if publishing).
+- `docs/usage.md` — **how to use the pipeline**: run a batch, read results, change rules, add a tool, troubleshoot.
 - `README.md` — setup, pipeline commands, LLM providers, vLLM flags, end-to-end training run.
 
 ## Pipeline
