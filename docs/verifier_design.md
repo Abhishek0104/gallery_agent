@@ -16,7 +16,7 @@ tool calls) to rebuild the spec-handle → conversation-handle map; it does not 
 |---|---|---|---|
 | calls | planned vs actual tool sequence (aligned in order) | matched / max(planned, actual) | yes: must be 1.0 |
 | args | handles: `images` is the handle the spec step reads | fraction correct | yes |
-| args | people (set, after alias normalization), location, date (without leading preposition), effect, album | fraction of args exact | yes |
+| args | people (set, after alias normalization), location (without a leading "the"), date (without leading preposition), effect, album | fraction of args exact | yes |
 | query | teacher `query` vs spec `query`: embedding cosine | mean cosine | yes: each ≥ threshold |
 | query | teacher `query` is pure (shared purity check, persona-aware, people-subject rule) | fraction pure | yes |
 | ask | teacher `question` vs spec question: cosine; self-contained | mean | yes: ≥ threshold, self-contained |

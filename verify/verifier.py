@@ -58,6 +58,8 @@ def norm_arg(key, v):
         return sorted(normalize_person(x).lower() for x in v)
     if key == "date":
         return (date_core(v) or "").lower()
+    if key == "location" and isinstance(v, str):
+        return re.sub(r"^the\s+", "", v.strip().lower())         # "the Maldives" == "Maldives"
     if isinstance(v, str):
         return v.strip().lower()
     return v

@@ -87,3 +87,12 @@ def test_album_with_year_is_not_a_date():
     msg = "find my mom in a gondola in Queenstown and move them to my Queenstown 2022 album"
     args = [{"query": "gondola", "people": ["mom"], "location": "Queenstown"}]
     assert check_message(msg, ["mom", "Queenstown", "Queenstown 2022"], args, persona) == []
+
+
+def test_self_reference_rejected_when_search_has_no_me():
+    from realize.user_sim import check_message
+    persona = PERSONAS["persona_01"]
+    q = [{"query": "floral dress"}]
+    assert check_message("just the ones where I'm wearing a floral dress", [], q, persona)
+    assert check_message("show me photos of a floral dress", [], q, persona) == []
+    assert check_message("the ones where I'm wearing a floral dress", ["<me>"], [{"query": "floral dress", "people": ["me"]}], persona) == []

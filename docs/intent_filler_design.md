@@ -110,7 +110,8 @@ Leans on people and location, matching production traffic:
 
 ### Value hints (sampled from pools)
 - location from persona's places / home city
-- date phrase style: "last December", "2023", "last weekend", "my birthday", "during Diwali"
+- date phrase style: "last December", "2023", "last weekend", "during Diwali". Personal events ("my birthday",
+  "our anniversary") are not date hints: they are photo content and go in `query`.
 - person: name, relation, `me`, or named pet
 - query category + 3 example queries from the pool
 
@@ -178,6 +179,9 @@ Track rejection reasons by check — a high rate on one check means the filler p
   are set, so narrow searches (query + 2 people + location) can return 40+. Refinements only need
   `count < previous`, so some barely narrow (40 → 39). Later: shrink counts as filters are added and
   require a real cut (e.g. ≥ 30%) on refinement.
+- **Existing-album ratio is skewed.** Specs sample 50% moves into an existing album, but the filler answers
+  "none fits" for most (v1: 11/65 = 17% existing), since personas have only 2–6 albums. Later: sample
+  "existing" only when an album plausibly matches the search (its place or person).
 - **Festival date hints can clash with the persona.** Region festival lists include minority festivals, so
   e.g. a UK persona gets "during Eid" next to drinking pints. Later: split each region's festivals into
   major vs other and use only major ones for date hints (or give personas their own festivals).

@@ -33,6 +33,9 @@ Orchestrator LLM is text-only; vision lives behind tools (SigLIP search, interna
   `[user selected N photos → rN]`. The model treats it like any other handle; "these" resolves to the newest relevant handle.
 - **Raw phrases, app resolves:** dates ("last December") and locations ("Goa") are copied as the user said them.
   Locations are reverse-geocoded by the app; dates are resolved by a deterministic resolver.
+  Festivals and holidays are dates ("during Diwali"). Personal events ("my birthday", "our anniversary") are not
+  resolvable dates: they are photo content and go in `query`. A type of place ("beach", "hardware store") is `query`;
+  `location` is only for named places.
 - **People:** `"me"` is a reserved value for the gallery owner (I / me / myself / selfies).
   Names and relations are copied as spoken ("Riya", "daughter"). **The app resolves relations**
   (e.g., `daughter → {Riya, Priya}`); the model never resolves them itself.

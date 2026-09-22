@@ -23,6 +23,7 @@ TOOL_NAMES = re.compile(r"\b(search_images|ask_gallery|apply_effect|make_collage
 HANDLE = re.compile(r"\br\d+\b")
 ME = re.compile(r"\b(me|myself|i|i'm|i've|my selfies|selfies)\b", re.I)
 US = re.compile(r"\b(us|we|we're|we've)\b", re.I)
+SELF = re.compile(r"\b(i'm|i am|myself|of me|with me|me wearing|me in|me at|my selfies|selfies)\b", re.I)
 NARROW = ["Ask to narrow the photos you just saw down to only those {x}.",
           "Ask for just the ones {x}, out of the photos you just saw.",
           "Ask to filter the photos you just saw to the ones {x}.",
@@ -151,7 +152,8 @@ def slot_text(args, surface):
     if "people" in args:
         parts.append("of " + people_phrase(args["people"], surface))
     if "query" in args:
-        parts.append(f"showing: {args['query']} (describe this in your own words)")
+        parts.append(f"showing: {args['query']} (say this briefly in your own words, in about as many words; "
+                     "don't elaborate)")
     if "location" in args:
         parts.append(f"from {args['location']}")
     if "date" in args:
@@ -195,6 +197,8 @@ def extra_filters(msg, required, searches, persona):
             v.append(f"don't mention {n!r}: this request is not about them")
     if US.search(low) and "me" not in allowed_people:
         v.append("don't say \"us\" or \"we\": the photos are not filtered by people")
+    if SELF.search(low) and "me" not in allowed_people:
+        v.append("don't put yourself in the photos (\"of me\", \"I'm wearing\"): the request is not about you")
     has_loc = any("location" in a for a in searches)
     if not has_loc and any(_has_phrase(low, p) for p in places):
         v.append("don't mention a place: this request has no place")

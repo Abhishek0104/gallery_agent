@@ -22,7 +22,8 @@ location_source: {places_visited: 0.80, home_city: 0.20}
 # Date phrases: region phrases/festivals from config/regions.yaml, plus these generic ones.
 date_source: {generic: 0.60, region: 0.40}
 generic_dates: [last month, last weekend, last year, last summer, yesterday, two weeks ago,
-                my birthday, this year, last December, in 2023, back in 2022, over New Year]
+                this year, last December, in 2023, back in 2022, over New Year]
+# no personal events ("my birthday", "our anniversary"): they are photo content and go in query
 
 query_length: {short: 0.40, medium: 0.40, long: 0.20}
 query_examples: 3            # pool examples shown to the filler for the sampled category

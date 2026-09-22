@@ -86,3 +86,9 @@ def test_missing_query_scores_zero_without_embedding_empty_text():
     seen = []
     v = verify(ep, PERSONAS[ep["spec"]["persona"]], lambda t: (seen.extend(t), fake_embed(t))[1])
     assert "" not in seen and not v["accept"]
+
+
+def test_location_ignores_leading_the():
+    from verify.verifier import norm_arg
+    assert norm_arg("location", "the Maldives") == norm_arg("location", "Maldives")
+    assert norm_arg("location", "Theni") == "theni"

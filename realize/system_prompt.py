@@ -11,7 +11,7 @@ from registry import collage_bounds, load_registry
 
 ROOT = Path(__file__).resolve().parent.parent
 GUIDANCE = (ROOT / "realize" / "prompts" / "teacher_guidance.txt").read_text().strip()
-GUIDANCE_VERSION = 2
+GUIDANCE_VERSION = 3
 GUIDANCE_START, GUIDANCE_END = "<teacher_guidance>", "</teacher_guidance>"
 
 SYSTEM_PROMPT_V0 = (

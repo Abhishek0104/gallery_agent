@@ -58,3 +58,7 @@ def test_subject_rule_only_when_people_filled(text, bad):
 
 def kinds_p(text):
     return {c for c, _ in check_query(text, people=True)}
+
+
+def test_personal_events_are_content():
+    assert check_query("birthday party") == [] and check_query("anniversary dinner") == []

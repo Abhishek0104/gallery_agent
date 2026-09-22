@@ -43,6 +43,10 @@ class LLMError(RuntimeError):
     pass
 
 
+class EmptyResponseError(LLMError):
+    """The request succeeded but the model returned no content (a bad output, not an API failure)."""
+
+
 @dataclass
 class LLMResult:
     output: dict        # validated against the schema
@@ -257,7 +261,7 @@ def chat_gemini(llm, system, contents, tools, seed):
     if reason not in (None, "STOP"):
         raise LLMError(f"Gemini chat stopped with finish_reason={reason}")
     if not cand or not cand.content or not cand.content.parts:
-        raise LLMError("Gemini chat returned an empty message")
+        raise EmptyResponseError("Gemini chat returned an empty message")
     if not resp.model_version:
         raise LLMError("Gemini response did not report which model answered")
     return cand.content.model_dump(mode="json", exclude_none=True), resp.model_version

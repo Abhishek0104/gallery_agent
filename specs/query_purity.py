@@ -27,7 +27,7 @@ PHOTO_WORDS = {"photo", "photos", "picture", "pictures", "pic", "pics", "image",
 MONTHS = ("january february march april june july august september october november december "
           "jan feb mar apr jun jul aug sep sept oct nov dec").split()     # "may" left out: a common verb
 WEEKDAYS = "monday tuesday wednesday thursday friday saturday sunday".split()
-DATE_WORDS = {"today", "yesterday", "tonight", "ago", "weekend", "anniversary"}
+DATE_WORDS = {"today", "yesterday", "tonight", "ago", "weekend"}     # "birthday"/"anniversary" are content
 TIME_UNITS = r"(week|month|year|weekend|summer|winter|spring|autumn|fall|monsoon|vacation|holiday|holidays|trip)"
 PERSON_NOUNS = {"man", "men", "woman", "women", "girl", "girls", "boy", "boys", "kid", "kids", "child",
                 "children", "baby", "babies", "toddler", "toddlers", "teen", "teens", "teenager", "teenagers",

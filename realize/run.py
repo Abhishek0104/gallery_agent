@@ -13,7 +13,7 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from llm import LLM
+from llm import LLM, EmptyResponseError
 from realize.system_prompt import GUIDANCE_VERSION, system_prompt, teacher_system_prompt, tool_declarations
 from realize.user_sim import CFG, UserSimError, sample_surface, write_message
 from sim.simulator import Simulator
@@ -198,8 +198,8 @@ def main(tag="v0", limit=None, only=None, all_specs=False):
         try:
             return realize(chosen[k], personas[chosen[k]["persona"]], styles[k], user_llm, teacher,
                            random.Random(seeds[k]))
-        except UserSimError as e:            # content failure: drop this episode, keep the batch (API errors still raise)
-            return {"episode_id": chosen[k]["episode_id"], "realize_failed": str(e)}
+        except (UserSimError, EmptyResponseError) as e:   # bad output: drop this episode, keep the batch
+            return {"episode_id": chosen[k]["episode_id"], "realize_failed": f"{type(e).__name__}: {e}"}  # API errors raise
 
     with ThreadPoolExecutor(max_workers=WORKERS) as pool:
         results = list(pool.map(one, todo))

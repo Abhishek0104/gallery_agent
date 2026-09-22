@@ -16,5 +16,5 @@ Exact words the message must contain: $required
 ## Style
 $style
 Write like a real person typing on a phone: natural English, no lists, no quotation marks around words, no
-technical terms. Describe photo content in your own words, but only what is given: don't add people,
+technical terms. Describe photo content briefly in your own words (no longer than given), and only what is given: don't add people,
 places, times or other things to look for. Say only what this message asks for; don't add extra requests. You may react briefly to the assistant's last reply.$feedback
