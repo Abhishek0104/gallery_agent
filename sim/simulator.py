@@ -3,20 +3,28 @@ Lightweight simulator (docs/simulator_design.md): a handle ledger whose tool out
 
 The teacher's calls are matched in order against the spec's planned calls. A matched call returns the
 spec outcome; handles are allocated here in call order and spec handles are mapped onto them. An
-unplanned call gets a default outcome and flags the episode. Pure function of (spec, calls so far).
-"""
+unplanned call gets the tool's default outcome and flags the episode. Pure function of (spec, calls so far).
 
-DEFAULTS = {                     # unplanned calls only; the episode is flagged
-    "search_images": {"count": 5},
-    "ask_gallery": {"answer": "I couldn't find anything about that.", "count": 1},
-}
+Tool behavior comes from the registry (`pipeline.io`, `output`, `outcomes`, `errors`, `constraints`); nothing
+here names a tool.
+"""
+from registry import tools
+
+
+def render(template, values):
+    """Fill a result template: "$out", "$count", "$answer", "$created", "$max", "$arg.<name>"."""
+    if isinstance(template, dict):
+        return {k: render(v, values) for k, v in template.items()}
+    if isinstance(template, str) and template.startswith("$"):
+        return values[template[1:]]
+    return template
 
 
 class Simulator:
     def __init__(self, spec):
         self.spec = spec
+        self.tools = tools()
         self.planned = [s for s in spec["steps"] if "call" in s and not s.get("skipped")]
-        self.cmax = spec["config"]["collage_max"]
         self.pos = 0
         self.n = 0
         self.ledger = {}         # actual handle -> {"count", "alive", "src"}
@@ -49,49 +57,50 @@ class Simulator:
 
     def call(self, name, args):
         """Model-facing result for one tool call."""
+        tool = self.tools.get(name)
         exp = self.expected()
-        src = args.get("images")
-        if name == "make_collage" and src in self.ledger and not 2 <= self.ledger[src]["count"] <= self.cmax:
-            self.flags.append("collage_outside_limits")          # backend safety net; the plan is not advanced
-            return {"error": "too_many_images", "max": self.cmax}
+        src = args.get(tool.io.consumes if tool and tool.io.consumes else "images")
+        limit = tool.count_constraint if tool else None
+        if limit and src in self.ledger:                       # backend safety net; the plan is not advanced
+            hi = self.spec["config"][limit["config_key"]]
+            if not limit["min"] <= self.ledger[src]["count"] <= hi:
+                err = tool.errors[limit["reject"]]
+                self.flags.append(err["flag"])
+                return render(err["result"], {"max": hi})
         planned = exp is not None and exp["call"] == name
         if planned:
             self.pos += 1
             out = exp["outcome"]
         else:
             self.flags.append(f"unplanned_call:{name}")
-            out = DEFAULTS.get(name, {})
+            out = tool.output.get("default_outcome", {}) if tool else {}
         if src is not None and (src not in self.ledger or not self.ledger[src]["alive"]):
             self.flags.append(f"bad_handle:{name}:{src}")
-        src_count = self.ledger.get(src, {}).get("count", 1)
+        if tool is None:
+            self.flags.append(f"unknown_tool:{name}")
+            return {"error": "unknown tool"}
 
-        def produce(count, kind):
-            h = self._new(count, kind)
+        src_count = self.ledger.get(src, {}).get("count", 1)
+        count = {"outcome": lambda: out["count"], "outcome_or_input": lambda: out.get("count", src_count),
+                 "one": lambda: 1}[tool.io.count]
+        _, variant = tool.match_outcome(out)
+        if variant:                                            # e.g. no_results, cancelled
+            if tool.destructive and not variant.get("keeps_input") and src in self.ledger:
+                self.ledger[src]["alive"] = False
+            return render(variant["result"], {"count": out.get("count", src_count)})
+        values = {"count": None, "answer": out.get("answer"), "created": out.get("created", True),
+                  **{f"arg.{k}": v for k, v in args.items()}}
+        if tool.io.produces != "none":
+            values["count"] = count()
+            h = self._new(values["count"], tool.catalog.short)
             if planned and exp.get("out"):
                 self.map[exp["out"]] = h
-            return h
-
-        if name == "search_images":
-            if out.get("error") == "no_results":
-                return {"error": "no_results"}                   # no handle is created
-            return {"id": produce(out["count"], "search"), "count": out["count"]}
-        if name == "ask_gallery":
-            return {"answer": out["answer"], "id": produce(out["count"], "ask"), "count": out["count"]}
-        if name == "apply_effect":
-            return {"status": "created", "images": produce(out.get("count", src_count), "effect")}
-        if name == "make_collage":
-            return {"status": "created", "collage": produce(1, "collage")}
-        if name == "move_to_album":
-            return {"status": "moved", "count": out.get("count", src_count), "album": args.get("album"),
-                    "created": out.get("created", True)}
-        if name == "delete_images":
-            if out.get("status") == "cancelled":
-                return {"status": "cancelled", "count": 0}      # the user cancelled the app's dialog
-            if src in self.ledger:
-                self.ledger[src]["alive"] = False
-            return {"status": "deleted", "count": out.get("count", src_count)}
-        self.flags.append(f"unknown_tool:{name}")
-        return {"error": "unknown tool"}
+            values["out"] = h
+        else:
+            values["count"] = count()
+        if tool.destructive and src in self.ledger:
+            self.ledger[src]["alive"] = False
+        return render(tool.output["result"], values)
 
     def done(self):
         return self.pos == len(self.planned)

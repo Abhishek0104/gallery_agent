@@ -5,6 +5,11 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - &id001
+    tool: ask_gallery
+    in: null
+    out: r1
 - id: P002
   initial: empty
   calls: 1
@@ -12,6 +17,11 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - &id003
+    tool: search_images
+    in: null
+    out: r1
 - id: P003
   initial: empty
   calls: 2
@@ -19,6 +29,15 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id001
+  - &id002
+    tool: select
+    in: r1
+    out: r2
+  - tool: make_collage
+    in: r2
+    out: r3
 - id: P004
   initial: empty
   calls: 2
@@ -26,6 +45,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id001
+  - *id002
+  - tool: delete_images
+    in: r2
+    out: null
 - id: P005
   initial: empty
   calls: 2
@@ -33,6 +58,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id001
+  - *id002
+  - tool: apply_effect
+    in: r2
+    out: r3
 - id: P006
   initial: empty
   calls: 2
@@ -40,6 +71,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id001
+  - *id002
+  - tool: move_to_album
+    in: r2
+    out: null
 - id: P007
   initial: empty
   calls: 2
@@ -47,6 +84,11 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id001
+  - tool: make_collage
+    in: r1
+    out: r2
 - id: P008
   initial: empty
   calls: 2
@@ -54,6 +96,11 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id001
+  - tool: delete_images
+    in: r1
+    out: null
 - id: P009
   initial: empty
   calls: 2
@@ -61,6 +108,11 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id001
+  - tool: apply_effect
+    in: r1
+    out: r2
 - id: P010
   initial: empty
   calls: 2
@@ -68,6 +120,11 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id001
+  - tool: move_to_album
+    in: r1
+    out: null
 - id: P011
   initial: empty
   calls: 2
@@ -75,6 +132,16 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - &id004
+    tool: select
+    in: r1
+    out: r2
+  - &id005
+    tool: make_collage
+    in: r2
+    out: r3
 - id: P012
   initial: empty
   calls: 2
@@ -82,6 +149,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id004
+  - tool: delete_images
+    in: r2
+    out: null
 - id: P013
   initial: empty
   calls: 2
@@ -89,6 +162,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id004
+  - &id006
+    tool: apply_effect
+    in: r2
+    out: r3
 - id: P014
   initial: empty
   calls: 2
@@ -96,6 +176,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id004
+  - tool: move_to_album
+    in: r2
+    out: null
 - id: P015
   initial: empty
   calls: 2
@@ -103,6 +189,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - &id007
+    tool: make_collage
+    in: r1
+    out: r2
 - id: P016
   initial: empty
   calls: 2
@@ -110,6 +202,11 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - tool: delete_images
+    in: r1
+    out: null
 - id: P017
   initial: empty
   calls: 2
@@ -117,6 +214,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - &id008
+    tool: apply_effect
+    in: r1
+    out: r2
 - id: P018
   initial: empty
   calls: 2
@@ -124,6 +227,11 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - tool: move_to_album
+    in: r1
+    out: null
 - id: P019
   initial: empty
   calls: 2
@@ -131,6 +239,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - &id010
+    tool: search_images
+    in: null
+    out: r2
 - id: P020
   initial: empty
   calls: 3
@@ -138,6 +252,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id004
+  - *id005
+  - tool: delete_images
+    in: r3
+    out: null
 - id: P021
   initial: empty
   calls: 3
@@ -145,6 +266,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id004
+  - *id005
+  - &id012
+    tool: apply_effect
+    in: r3
+    out: r4
 - id: P022
   initial: empty
   calls: 3
@@ -152,6 +281,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id004
+  - *id005
+  - tool: move_to_album
+    in: r3
+    out: null
 - id: P023
   initial: empty
   calls: 3
@@ -159,6 +295,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id004
+  - *id006
+  - &id013
+    tool: make_collage
+    in: r3
+    out: r4
 - id: P024
   initial: empty
   calls: 3
@@ -166,6 +310,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id004
+  - *id006
+  - tool: delete_images
+    in: r3
+    out: null
 - id: P025
   initial: empty
   calls: 3
@@ -173,6 +324,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id004
+  - *id006
+  - tool: move_to_album
+    in: r3
+    out: null
 - id: P026
   initial: empty
   calls: 3
@@ -180,6 +338,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id007
+  - tool: delete_images
+    in: r2
+    out: null
 - id: P027
   initial: empty
   calls: 3
@@ -187,6 +351,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id007
+  - &id014
+    tool: apply_effect
+    in: r2
+    out: r3
 - id: P028
   initial: empty
   calls: 3
@@ -194,6 +365,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id007
+  - tool: move_to_album
+    in: r2
+    out: null
 - id: P029
   initial: empty
   calls: 3
@@ -201,6 +378,17 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id008
+  - &id009
+    tool: select
+    in: r2
+    out: r3
+  - &id015
+    tool: make_collage
+    in: r3
+    out: r4
 - id: P030
   initial: empty
   calls: 3
@@ -208,6 +396,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id008
+  - *id009
+  - tool: delete_images
+    in: r3
+    out: null
 - id: P031
   initial: empty
   calls: 3
@@ -215,6 +410,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id008
+  - *id009
+  - tool: move_to_album
+    in: r3
+    out: null
 - id: P032
   initial: empty
   calls: 3
@@ -222,6 +424,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id008
+  - &id016
+    tool: make_collage
+    in: r2
+    out: r3
 - id: P033
   initial: empty
   calls: 3
@@ -229,6 +438,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id008
+  - tool: delete_images
+    in: r2
+    out: null
 - id: P034
   initial: empty
   calls: 3
@@ -236,6 +451,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id008
+  - tool: move_to_album
+    in: r2
+    out: null
 - id: P035
   initial: empty
   calls: 3
@@ -243,6 +464,17 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - &id011
+    tool: select
+    in: r2
+    out: r3
+  - &id017
+    tool: make_collage
+    in: r3
+    out: r4
 - id: P036
   initial: empty
   calls: 3
@@ -250,6 +482,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id011
+  - tool: delete_images
+    in: r3
+    out: null
 - id: P037
   initial: empty
   calls: 3
@@ -257,6 +496,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id011
+  - &id018
+    tool: apply_effect
+    in: r3
+    out: r4
 - id: P038
   initial: empty
   calls: 3
@@ -264,6 +511,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id011
+  - tool: move_to_album
+    in: r3
+    out: null
 - id: P039
   initial: empty
   calls: 3
@@ -271,6 +525,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - &id019
+    tool: make_collage
+    in: r2
+    out: r3
 - id: P040
   initial: empty
   calls: 3
@@ -278,6 +539,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - tool: delete_images
+    in: r2
+    out: null
 - id: P041
   initial: empty
   calls: 3
@@ -285,6 +552,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - &id020
+    tool: apply_effect
+    in: r2
+    out: r3
 - id: P042
   initial: empty
   calls: 3
@@ -292,6 +566,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - tool: move_to_album
+    in: r2
+    out: null
 - id: P043
   initial: empty
   calls: 4
@@ -299,6 +579,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id004
+  - *id005
+  - *id012
+  - tool: delete_images
+    in: r4
+    out: null
 - id: P044
   initial: empty
   calls: 4
@@ -306,6 +594,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id004
+  - *id005
+  - *id012
+  - tool: move_to_album
+    in: r4
+    out: null
 - id: P045
   initial: empty
   calls: 4
@@ -313,6 +609,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id004
+  - *id006
+  - *id013
+  - tool: delete_images
+    in: r4
+    out: null
 - id: P046
   initial: empty
   calls: 4
@@ -320,6 +624,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id004
+  - *id006
+  - *id013
+  - tool: move_to_album
+    in: r4
+    out: null
 - id: P047
   initial: empty
   calls: 4
@@ -327,6 +639,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id007
+  - *id014
+  - tool: delete_images
+    in: r3
+    out: null
 - id: P048
   initial: empty
   calls: 4
@@ -334,6 +653,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id007
+  - *id014
+  - tool: move_to_album
+    in: r3
+    out: null
 - id: P049
   initial: empty
   calls: 4
@@ -341,6 +667,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id008
+  - *id009
+  - *id015
+  - tool: delete_images
+    in: r4
+    out: null
 - id: P050
   initial: empty
   calls: 4
@@ -348,6 +682,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id008
+  - *id009
+  - *id015
+  - tool: move_to_album
+    in: r4
+    out: null
 - id: P051
   initial: empty
   calls: 4
@@ -355,6 +697,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id008
+  - *id016
+  - tool: delete_images
+    in: r3
+    out: null
 - id: P052
   initial: empty
   calls: 4
@@ -362,6 +711,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id008
+  - *id016
+  - tool: move_to_album
+    in: r3
+    out: null
 - id: P053
   initial: empty
   calls: 4
@@ -369,6 +725,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id011
+  - *id017
+  - tool: delete_images
+    in: r4
+    out: null
 - id: P054
   initial: empty
   calls: 4
@@ -376,6 +740,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id011
+  - *id017
+  - tool: apply_effect
+    in: r4
+    out: r5
 - id: P055
   initial: empty
   calls: 4
@@ -383,6 +755,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id011
+  - *id017
+  - tool: move_to_album
+    in: r4
+    out: null
 - id: P056
   initial: empty
   calls: 4
@@ -390,6 +770,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id011
+  - *id018
+  - tool: make_collage
+    in: r4
+    out: r5
 - id: P057
   initial: empty
   calls: 4
@@ -397,6 +785,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id011
+  - *id018
+  - tool: delete_images
+    in: r4
+    out: null
 - id: P058
   initial: empty
   calls: 4
@@ -404,6 +800,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id011
+  - *id018
+  - tool: move_to_album
+    in: r4
+    out: null
 - id: P059
   initial: empty
   calls: 4
@@ -411,6 +815,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id019
+  - tool: delete_images
+    in: r3
+    out: null
 - id: P060
   initial: empty
   calls: 4
@@ -418,6 +829,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id019
+  - tool: apply_effect
+    in: r3
+    out: r4
 - id: P061
   initial: empty
   calls: 4
@@ -425,6 +843,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id019
+  - tool: move_to_album
+    in: r3
+    out: null
 - id: P062
   initial: empty
   calls: 4
@@ -432,6 +857,17 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id020
+  - &id021
+    tool: select
+    in: r3
+    out: r4
+  - tool: make_collage
+    in: r4
+    out: r5
 - id: P063
   initial: empty
   calls: 4
@@ -439,6 +875,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id020
+  - *id021
+  - tool: delete_images
+    in: r4
+    out: null
 - id: P064
   initial: empty
   calls: 4
@@ -446,6 +890,14 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id020
+  - *id021
+  - tool: move_to_album
+    in: r4
+    out: null
 - id: P065
   initial: empty
   calls: 4
@@ -453,6 +905,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id020
+  - tool: make_collage
+    in: r3
+    out: r4
 - id: P066
   initial: empty
   calls: 4
@@ -460,6 +919,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id020
+  - tool: delete_images
+    in: r3
+    out: null
 - id: P067
   initial: empty
   calls: 4
@@ -467,6 +933,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id003
+  - *id010
+  - *id020
+  - tool: move_to_album
+    in: r3
+    out: null
 - id: P068
   initial: selection
   calls: 1
@@ -474,6 +947,11 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - &id022
+    tool: make_collage
+    in: r0
+    out: r1
 - id: P069
   initial: selection
   calls: 1
@@ -481,6 +959,10 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - tool: delete_images
+    in: r0
+    out: null
 - id: P070
   initial: selection
   calls: 1
@@ -488,6 +970,11 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - &id023
+    tool: apply_effect
+    in: r0
+    out: r1
 - id: P071
   initial: selection
   calls: 1
@@ -495,6 +982,10 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - tool: move_to_album
+    in: r0
+    out: null
 - id: P072
   initial: selection
   calls: 2
@@ -502,6 +993,11 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id022
+  - tool: delete_images
+    in: r1
+    out: null
 - id: P073
   initial: selection
   calls: 2
@@ -509,6 +1005,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id022
+  - &id025
+    tool: apply_effect
+    in: r1
+    out: r2
 - id: P074
   initial: selection
   calls: 2
@@ -516,6 +1018,11 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id022
+  - tool: move_to_album
+    in: r1
+    out: null
 - id: P075
   initial: selection
   calls: 2
@@ -523,6 +1030,16 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id023
+  - &id024
+    tool: select
+    in: r1
+    out: r2
+  - &id026
+    tool: make_collage
+    in: r2
+    out: r3
 - id: P076
   initial: selection
   calls: 2
@@ -530,6 +1047,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id023
+  - *id024
+  - tool: delete_images
+    in: r2
+    out: null
 - id: P077
   initial: selection
   calls: 2
@@ -537,6 +1060,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id023
+  - *id024
+  - tool: move_to_album
+    in: r2
+    out: null
 - id: P078
   initial: selection
   calls: 2
@@ -544,6 +1073,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id023
+  - &id027
+    tool: make_collage
+    in: r1
+    out: r2
 - id: P079
   initial: selection
   calls: 2
@@ -551,6 +1086,11 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id023
+  - tool: delete_images
+    in: r1
+    out: null
 - id: P080
   initial: selection
   calls: 2
@@ -558,6 +1098,11 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id023
+  - tool: move_to_album
+    in: r1
+    out: null
 - id: P081
   initial: selection
   calls: 3
@@ -565,6 +1110,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id022
+  - *id025
+  - tool: delete_images
+    in: r2
+    out: null
 - id: P082
   initial: selection
   calls: 3
@@ -572,6 +1123,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id022
+  - *id025
+  - tool: move_to_album
+    in: r2
+    out: null
 - id: P083
   initial: selection
   calls: 3
@@ -579,6 +1136,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id023
+  - *id024
+  - *id026
+  - tool: delete_images
+    in: r3
+    out: null
 - id: P084
   initial: selection
   calls: 3
@@ -586,6 +1150,13 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id023
+  - *id024
+  - *id026
+  - tool: move_to_album
+    in: r3
+    out: null
 - id: P085
   initial: selection
   calls: 3
@@ -593,6 +1164,12 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id023
+  - *id027
+  - tool: delete_images
+    in: r2
+    out: null
 - id: P086
   initial: selection
   calls: 3
@@ -600,3 +1177,9 @@
   weight: 1.0
   status: keep
   notes: ''
+  steps:
+  - *id023
+  - *id027
+  - tool: move_to_album
+    in: r2
+    out: null

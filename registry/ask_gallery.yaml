@@ -4,7 +4,15 @@ model_facing:
   args:
     question: {type: str, required: true}   # self-contained, no pronouns
 pipeline:
-  constraints: {top_k: 4}                   # internal; not model-facing
-  output: {answer: str, images: ImageSet}   # model sees {answer, id: rN, count}
   effect: read
+  constraints: {top_k: 4}                   # internal; not model-facing
+  io: {produces: set, count: outcome}       # the photos backing the answer
+  catalog:
+    short: ask
+    start: true
+    after: []                               # only as the opening step
+    max_calls_when_first: 2                 # a question plus at most one action
+  output:
+    result: {answer: $answer, id: $out, count: $count}
+    default_outcome: {answer: "I couldn't find anything about that.", count: 1}
   errors: {}

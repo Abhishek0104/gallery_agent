@@ -4,8 +4,13 @@ model_facing:
   args:
     images: {type: ImageSet, required: true}
 pipeline:
-  constraints: {images.count: {min: 2, max: 9, randomize_max: [4, 6, 9, 12]}}
-  output: {status: "enum[created]", collage: ImageSet}
   effect: write
+  constraints:
+    images.count: {min: 2, max: 9, randomize_max: [4, 6, 9, 12], config_key: collage_max, reject: too_many_images}
+  io: {consumes: images, input: set, produces: single, count: one}   # needs a multi-image set; makes one image
+  catalog: {short: collage}
+  output:
+    result: {status: created, collage: $out}
   errors:
-    too_many_images: {expect: "ask the user to select at most {max}"}
+    too_many_images: {expect: "ask the user to select at most {max}",
+                      result: {error: too_many_images, max: $max}, flag: collage_outside_limits}

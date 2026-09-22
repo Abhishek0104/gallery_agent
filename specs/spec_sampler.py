@@ -12,12 +12,11 @@ then counts are sampled forward inside those bounds.
 """
 import json
 import random
-import re
 from pathlib import Path
 
 import yaml
 
-from registry import collage_bounds, effect_values
+from registry import collage_bounds, effect_values, tools
 from specs.persona_outline import quota_list
 from specs.query_purity import describes_subject
 
@@ -30,21 +29,19 @@ FILL = "<fill>"
 
 TOOL = {"search": "search_images", "ask": "ask_gallery", "effect": "apply_effect",
         "collage": "make_collage", "move": "move_to_album", "delete": "delete_images"}
-TOKEN = re.compile(r"^(\[select\]|\w+)(?:\((r\d+)\))?(?:→(r\d+))?$")
 SLOTS = ["people", "location", "date", "query"]
 INF = 10 ** 6
 
 
 # ---------------------------------------------------------------- inputs
 def load_catalog():
+    """Catalog paths with status keep; steps as {kind, in, out} (kind = the tool's short name, or "select")."""
+    short = {t.name: t.catalog.short for t in tools().values()} | {"select": "select"}
     out = []
     for c in yaml.safe_load((ROOT / "catalog" / "path_catalog.yaml").read_text()):
         if c["status"] != "keep":
             continue
-        steps = []
-        for tok in c["path"].split("  ▸  "):
-            kind, hin, hout = TOKEN.match(tok.strip()).groups()
-            steps.append({"kind": "select" if kind == "[select]" else kind, "in": hin, "out": hout})
+        steps = [{"kind": short[s["tool"]], "in": s["in"], "out": s["out"]} for s in c["steps"]]
         out.append({**c, "steps": steps})
     return out
 

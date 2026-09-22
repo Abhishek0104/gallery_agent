@@ -5,8 +5,11 @@ model_facing:
     images: {type: ImageSet, required: true}
     effect: {type: enum, values: "{effects}", required: true}
 pipeline:
+  effect: write
   constraints: {effect: {values: [cool, warm, sepia, black_and_white],
                          randomize: true}}
-  output: {status: "enum[created]", images: ImageSet}   # new handle
-  effect: write
+  io: {consumes: images, produces: same, count: outcome_or_input}   # new copies: same kind and count as the input
+  catalog: {short: effect, max_per_path: 1}
+  output:
+    result: {status: created, images: $out}
   errors: {}

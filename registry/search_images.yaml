@@ -7,7 +7,17 @@ model_facing:
     location: {type: str}         # raw phrase; reverse-geocoded
     date:     {type: str}         # raw phrase; app resolves
 pipeline:
-  output: ImageSet                # model sees {id: "rN", count: N}
   effect: read
+  io: {produces: set, count: outcome}          # a new photo set; its count comes from the spec outcome
+  catalog:
+    short: search                              # name in catalog path strings
+    start: true                                # may open a conversation
+    after: [search_images]                     # refinement: a search may directly follow a search ...
+    max_per_path: 2                            # ... once
+  output:                                      # what the model sees ($out = new handle, $count = its count)
+    result: {id: $out, count: $count}
+    default_outcome: {count: 5}                # an unplanned call (the episode is flagged)
+  outcomes:
+    no_results: {when: {error: no_results}, result: {error: no_results}, produces: none}
   errors:
     no_results: {expect: "say nothing was found, suggest loosening a filter; never invent results"}

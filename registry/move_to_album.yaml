@@ -5,6 +5,9 @@ model_facing:
     images: {type: ImageSet, required: true}   # rN handle
     album:  {type: str, required: true}        # as the user said it
 pipeline:
-  output: {status: "enum[moved]", count: int, album: str, created: bool}
   effect: write
+  io: {consumes: images, produces: none, count: outcome_or_input}
+  catalog: {short: move, terminal: true}       # nothing follows a move
+  output:
+    result: {status: moved, count: $count, album: $arg.album, created: $created}
   errors: {}
