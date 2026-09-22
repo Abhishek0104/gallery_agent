@@ -180,7 +180,8 @@ def render(p):
     return "  ▸  ".join(parts)
 
 
-if __name__ == "__main__":
+def build_catalog():
+    """Every valid path, sorted and numbered (P001, ...)."""
     catalog = []
     for init in INITIAL_STATES:
         for p in enumerate_paths(init):
@@ -192,6 +193,11 @@ if __name__ == "__main__":
     catalog.sort(key=lambda c: (c["initial"], c["calls"], c["path"]))
     for i, c in enumerate(catalog, 1):
         c["id"] = f"P{i:03d}"
+    return catalog
+
+
+if __name__ == "__main__":
+    catalog = build_catalog()
     with open("path_catalog.yaml", "w") as f:
         yaml.safe_dump([{"id": c["id"], "initial": c["initial"], "calls": c["calls"],
                          "path": c["path"], "weight": 1.0, "status": "keep",

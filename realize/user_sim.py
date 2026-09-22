@@ -301,18 +301,24 @@ def render_persona(p):
             f"People in your life: {people}. Pets: {pets}.")
 
 
+def build_user_prompt(spec, persona, turn, surface, history, extra="", feedback=""):
+    """The user-simulator prompt for one turn (pure: no LLM). Also used by the golden tests."""
+    lines, required, forbidden = turn_intent(spec, turn, surface)
+    return PROMPT.substitute(
+        persona=render_persona(persona), style=STYLE[surface["style"]],   # no motivation: no backstory to leak
+        history=history or "(this is your first message)",
+        intent="\n".join(f"- {l}" for l in lines) + (f"\n- {extra}" if extra else ""),
+        required=", ".join("yourself (me / I)" if r == "<me>" else f"\"{r}\"" for r in required) or "(none)",
+        forbidden=", ".join(f"\"{f}\"" for f in forbidden) or "(none)",
+        feedback=feedback)
+
+
 def write_message(llm, spec, persona, turn_no, turn, surface, history, extra=""):
     """One user message for a turn. Returns (message, meta, attempts)."""
-    lines, required, forbidden = turn_intent(spec, turn, surface)
+    _, required, forbidden = turn_intent(spec, turn, surface)
     feedback = ""
     for attempt in range(CFG["user_sim"]["max_attempts"]):
-        prompt = PROMPT.substitute(
-            persona=render_persona(persona), style=STYLE[surface["style"]],   # no motivation: no backstory to leak
-            history=history or "(this is your first message)",
-            intent="\n".join(f"- {l}" for l in lines) + (f"\n- {extra}" if extra else ""),
-            required=", ".join("yourself (me / I)" if r == "<me>" else f"\"{r}\"" for r in required) or "(none)",
-            forbidden=", ".join(f"\"{f}\"" for f in forbidden) or "(none)",
-            feedback=feedback)
+        prompt = build_user_prompt(spec, persona, turn, surface, history, extra, feedback)
         res = llm.json(prompt, UserMessage, seed=f"{spec['episode_id']}/u{turn_no}/a{attempt}")
         msg = res.output["message"].strip()
         v = check_message(msg, required, search_args_in_turn(spec, turn), persona, forbidden)
