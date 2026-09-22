@@ -103,8 +103,10 @@ python -m export.build_export     # train/eval JSONL, eval ids, manifest (split 
 python -m export.render_check     # per-turn prompt/completion for the base model; checks every turn round-trips
 python -m train.sft_lora --check  # data + loss masking only; safe anywhere
 ```
-Training and serving need a CUDA machine; the exact `train.sft_lora`, `vllm serve` and eval commands are in
-README "End-to-end training run". Eval puts the trained model in the teacher's seat
+Training and serving need a CUDA machine. `bash scripts/e2e_cuda.sh [prep|train|eval]` runs the whole chain
+(stage names in the script header); `python -m scripts.preflight_cuda` checks the configs, the exported data,
+the eval ids and the training deps first, so a typo fails in a second instead of after a download. The
+commands it wraps are in README "End-to-end training run". Eval puts the trained model in the teacher's seat
 (`realize.run --assistant-role student --only-file data/export/<version>/eval_ids_<tag>.txt --out-tag student_<tag>`)
 and scores it with the same verifier.
 
