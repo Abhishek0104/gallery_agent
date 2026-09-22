@@ -18,7 +18,7 @@ from realize.system_prompt import GUIDANCE_VERSION, system_prompt, teacher_syste
 from realize.user_sim import CFG, UserSimError, sample_surface, write_message
 from sim.simulator import Simulator
 from specs.persona_outline import quota_list
-from specs.spec_validator import date_core, normalize_person
+from registry.args import date_core, normalize_person
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "episodes"

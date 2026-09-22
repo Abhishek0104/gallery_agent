@@ -1,0 +1,66 @@
+# Argument types: how each tool argument is sampled, said by the user and compared by the verifier.
+# Keyed by argument name. File order matters: it is the search-slot order ("people+location+date+query") and
+# the order of the verifier's exact-match checks.
+#
+#   slot      a search filter (search_images); slot patterns in config/specs.yaml name these
+#   sample    spec-sampler strategy for a slot (specs/spec_sampler.py SLOT_SAMPLERS)
+#   phrase    how the user-simulator intent mentions the slot ({value} = how the user says it)
+#   say       how the user says a value: verbatim | people (sampled names/aliases, "me") | date_core (no
+#             leading preposition: "in 2023" -> "2023") | effect_synonym (the episode's word for the effect)
+#   required  the spoken value must appear in the user's message
+#   loosen    how the user names the slot when asking to drop it after no results; loosen_forbid: said = the
+#             dropped value must not be repeated
+#   compare   verifier: normalize: [ops] (+ as: set for lists) = exact after normalizing; semantic: cosine
+#             threshold; handle = the photo set the spec step reads
+#   group     verifier score group (default: args, or the argument name for semantic ones)
+
+people:
+  slot: true
+  sample: persona_people
+  phrase: "of {value}"
+  say: people
+  required: true
+  loosen: "the people filter"
+  loosen_forbid: said
+  compare: {normalize: [relation_alias, lower], as: set}   # "mum" == "mom"; order doesn't matter (AND)
+location:
+  slot: true
+  sample: persona_place
+  phrase: "from {value}"
+  say: verbatim
+  required: true
+  loosen: "the place"
+  loosen_forbid: said
+  compare: {normalize: [strip, lower, strip_leading_the]}  # "the Maldives" == "Maldives"
+date:
+  slot: true
+  sample: date_phrase
+  phrase: "from {value}"
+  say: date_core
+  required: true
+  loosen: "the date"
+  loosen_forbid: said
+  compare: {normalize: [date_core, lower]}                 # "in 2023" == "2023"
+query:
+  slot: true
+  sample: pool_fill
+  phrase: "showing: {value} (say this briefly in your own words, in about as many words; don't elaborate)"
+  say: verbatim
+  loosen: "the description of what is in the photos"
+  compare: {semantic: 0.75, missing_fails: true}
+  purity: true                                             # visual content only (specs/query_purity.py)
+effect:
+  say: effect_synonym
+  compare: {normalize: [strip, lower]}
+album:
+  say: verbatim
+  compare: {normalize: [strip, lower]}
+question:
+  compare: {semantic: 0.75}
+  group: ask
+  self_contained: true                                     # no unresolved "it" / "that" / "there"
+images:
+  compare: handle
+
+# The order the user mentions search slots in a request ("photos of Riya, showing: ..., from Goa, from 2023").
+say_order: [people, query, location, date]

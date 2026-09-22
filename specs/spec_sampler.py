@@ -27,7 +27,7 @@ REGIONS = yaml.safe_load((ROOT / "config" / "regions.yaml").read_text())
 QP_CFG = yaml.safe_load((ROOT / "config" / "query_pool.yaml").read_text())
 SPEC_VERSION = 1
 
-SLOTS = ["people", "location", "date", "query"]
+from registry.args import ARG_TYPES, SLOTS  # noqa: E402  search slots (config/arg_types.yaml)
 FILL = strategies.FILL
 INF = 10 ** 6
 
@@ -191,17 +191,19 @@ def query_hint(slots, persona, pool, rng, also=None, category=None):
             "example_ids": [e["id"] for e in ex]}
 
 
+SLOT_SAMPLERS = {                      # config/arg_types.yaml `sample`
+    "persona_people": sample_people,
+    "persona_place": lambda persona, rng: sample_location(persona, rng),
+    "date_phrase": lambda persona, rng: sample_date(persona, rng),
+    "pool_fill": lambda persona, rng: FILL,    # the intent filler writes it from query-pool examples
+}
+
+
 def search_args(slots, persona, rng):
-    args = {}
-    if "people" in slots:
-        args["people"] = sample_people(persona, rng)
-    if "location" in slots:
-        args["location"] = sample_location(persona, rng)
-    if "date" in slots:
-        args["date"] = sample_date(persona, rng)
-    if "query" in slots:
-        args["query"] = FILL
-    return {k: args[k] for k in ("query", "people", "location", "date") if k in args}
+    """Values for the given search slots (sampled in slot order), in the tool's argument order."""
+    args = {s: SLOT_SAMPLERS[ARG_TYPES[s]["sample"]](persona, rng) for s in SLOTS if s in slots}
+    order = next(t for t in tools().values() if t.raw["pipeline"].get("sample") == "slot_filters").model_facing["args"]
+    return {k: args[k] for k in order if k in args}
 
 
 def assign_categories(assign, refines, rng, multi=frozenset()):

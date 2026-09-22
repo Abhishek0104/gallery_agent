@@ -14,7 +14,7 @@ from pydantic import BaseModel
 
 from registry import tools
 from specs.query_purity import DATE_PATTERNS, MONTHS, WEEKDAYS, _has_phrase, _lexicon
-from specs.spec_validator import date_core
+from registry.args import ARG_TYPES, SAY_ORDER, SLOTS, date_core
 
 ROOT = Path(__file__).resolve().parent.parent
 CFG = yaml.safe_load((ROOT / "config" / "realize.yaml").read_text())
@@ -113,8 +113,15 @@ def describe_target(spec, handle):
 
 
 def spoken(arg, value, surface):
-    """How the user says an argument value in this episode (the effect's sampled surface form, else as is)."""
-    return surface["effects"][value] if arg == "effect" else value
+    """How the user says an argument value in this episode (config/arg_types.yaml `say`)."""
+    say = ARG_TYPES.get(arg, {}).get("say", "verbatim")
+    if say == "effect_synonym":
+        return surface["effects"][value]
+    if say == "people":
+        return people_phrase(value, surface)
+    if say == "date_core":
+        return date_core(value)
+    return value
 
 
 def tool_request(tool, step, target, surface, withheld=None):
@@ -193,13 +200,12 @@ def turn_intent(spec, turn, surface):
             if "loosens" in s:
                 src = by_i[s["loosens"]]["args"]
                 dropped = next(x for x in src if x not in a)
-                what = {"people": "the people filter", "location": "the place", "date": "the date",
-                        "query": "the description of what is in the photos"}[dropped]
-                lines.append(f"Nothing was found. Ask to try again without {what} (keep everything else).")
-                if dropped != "query":
+                t = ARG_TYPES[dropped]
+                lines.append(f"Nothing was found. Ask to try again without {t['loosen']} (keep everything else).")
+                if t.get("loosen_forbid") == "said":                 # don't repeat the dropped value
                     val = src[dropped]
-                    forbidden += [surface["people"].get(v, v) for v in val if v != "me"] if dropped == "people" \
-                        else [date_core(val) if dropped == "date" else val]
+                    forbidden += [surface["people"].get(v, v) for v in val if v != "me"] if t["say"] == "people" \
+                        else [spoken(dropped, val, surface)]
                 continue
             if "refines" in s:
                 prev_args = by_i[s["refines"]]["args"]
@@ -218,27 +224,21 @@ def turn_intent(spec, turn, surface):
 
 
 def slot_text(args, surface):
-    parts = []
-    if "people" in args:
-        parts.append("of " + people_phrase(args["people"], surface))
-    if "query" in args:
-        parts.append(f"showing: {args['query']} (say this briefly in your own words, in about as many words; "
-                     "don't elaborate)")
-    if "location" in args:
-        parts.append(f"from {args['location']}")
-    if "date" in args:
-        parts.append(f"from {date_core(args['date'])}")
-    return ", ".join(parts)
+    """How the intent mentions the search slots (config/arg_types.yaml `phrase`, in `say_order`)."""
+    return ", ".join(ARG_TYPES[s]["phrase"].format(value=spoken(s, args[s], surface))
+                     for s in SAY_ORDER if s in args)
 
 
 def required_for(args, surface):
+    """Spoken slot values the message must contain (`required` slots, in slot order); "<me>" = refer to yourself."""
     req = []
-    for v in args.get("people", []):
-        req.append("<me>" if v == "me" else surface["people"][v])
-    if "location" in args:
-        req.append(args["location"])
-    if "date" in args:
-        req.append(date_core(args["date"]))
+    for s in SLOTS:
+        if s not in args or not ARG_TYPES[s].get("required"):
+            continue
+        if ARG_TYPES[s]["say"] == "people":
+            req += ["<me>" if v == "me" else surface["people"][v] for v in args[s]]
+        else:
+            req.append(spoken(s, args[s], surface))
     return req
 
 

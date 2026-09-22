@@ -18,7 +18,7 @@ from specs.persona_outline import Dealer, quota_list
 from specs.spec_sampler import CFG, ROOT, load_catalog, skeleton
 
 R2 = yaml.safe_load((ROOT / "config" / "round2.yaml").read_text())
-SLOTS = ["people", "location", "date", "query"]
+from registry.args import SLOTS  # noqa: E402  search slots, in slot-pattern order
 
 
 # ---------------------------------------------------------------- eligibility (on catalog paths)

@@ -15,14 +15,12 @@ validate(spec, persona) -> list of (check, message); empty = accepted. Checks:
 import json
 import re
 
-import yaml
 
 from registry import load_registry
-from specs.query_purity import ROOT, check_query
+from registry.args import SLOTS, date_core, normalize_person  # noqa: F401  (re-exported)
+from specs.query_purity import check_query
 from specs.spec_sampler import FILL
 
-REL = yaml.safe_load((ROOT / "config" / "relations.yaml").read_text())
-ALIAS_TO_CANON = {a.lower(): canon for canon, aliases in REL.items() for a in aliases + [canon]}
 PRONOUNS = re.compile(r"\b(it|that|those|these|them|this|they|he|she|him|there)\b", re.I)
 POSSESSIVES = re.compile(r"\b(its|her|his|hers|their)\b", re.I)
 
@@ -35,19 +33,6 @@ def self_contained(q):
     return m is None or re.search(r"(?<!^)\b[A-Z][a-z]+", q[:m.start()]) is not None
 MAX_ALBUM_CHARS = 30
 MAX_ANSWER_CHARS = 200
-
-
-def normalize_person(v):
-    """Tool-wrapper normalization: relation alias -> canonical word; names and "me" pass through."""
-    return ALIAS_TO_CANON.get(v.lower(), v)
-
-
-DATE_PREPOSITIONS = re.compile(r"^(back in|in|during|from|on|over|at)\s+", re.I)
-
-
-def date_core(v):
-    """A date phrase without its leading preposition: "in 2023" -> "2023", "during Eid" -> "Eid"."""
-    return DATE_PREPOSITIONS.sub("", v.strip()) if isinstance(v, str) else v
 
 
 def type_ok(value, typ):
@@ -118,7 +103,7 @@ def validate(spec, persona):
         if s["call"] == "search_images":
             if not args:
                 add("schema", f"step {s['i']}: search with no arguments")
-            got = "+".join(x for x in ("people", "location", "date", "query") if x in args)
+            got = "+".join(x for x in SLOTS if x in args)
             want = next(patterns, None)
             if got != want:
                 add("slots", f"step {s['i']}: slots {got} != sampled {want}")

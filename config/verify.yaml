@@ -1,4 +1,3 @@
 # Verifier thresholds and weights (docs/verifier_design.md). Tune after looking at a batch.
-query_threshold: 0.75        # cosine(teacher query, spec query)
-question_threshold: 0.75     # cosine(teacher ask_gallery question, spec question)
+# Argument comparison rules and similarity thresholds are per argument type: config/arg_types.yaml.
 weights: {calls: 0.30, args: 0.30, query: 0.15, ask: 0.05, replies: 0.15, flags: 0.05, round2: 0.20}   # round2: only when present
