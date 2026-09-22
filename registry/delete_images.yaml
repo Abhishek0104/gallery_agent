@@ -4,6 +4,6 @@ model_facing:
   args:
     images: {type: ImageSet, required: true}   # rN handle
 pipeline:
-  output: {status: enum[deleted, cancelled], count: int}
+  output: {status: "enum[deleted, cancelled]", count: int}
   effect: destructive      # app shows its own confirmation dialog
   errors: {}

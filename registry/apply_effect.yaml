@@ -7,6 +7,6 @@ model_facing:
 pipeline:
   constraints: {effect: {values: [cool, warm, sepia, black_and_white],
                          randomize: true}}
-  output: {status: enum[created], images: ImageSet}   # new handle
+  output: {status: "enum[created]", images: ImageSet}   # new handle
   effect: write
   errors: {}

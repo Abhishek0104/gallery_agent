@@ -171,3 +171,13 @@ Reject the spec if any check fails:
 7. `move_to_album` album name matches the sampled outcome (existing persona album vs new name).
 
 Track rejection reasons by check — a high rate on one check means the filler prompt needs fixing.
+---
+
+## Parking list
+- **Counts ignore search specificity.** Search counts are uniform in 1..40 regardless of how many filters
+  are set, so narrow searches (query + 2 people + location) can return 40+. Refinements only need
+  `count < previous`, so some barely narrow (40 → 39). Later: shrink counts as filters are added and
+  require a real cut (e.g. ≥ 30%) on refinement.
+- **Festival date hints can clash with the persona.** Region festival lists include minority festivals, so
+  e.g. a UK persona gets "during Eid" next to drinking pints. Later: split each region's festivals into
+  major vs other and use only major ones for date hints (or give personas their own festivals).

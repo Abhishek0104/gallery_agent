@@ -7,6 +7,7 @@ same rules.
 
     check_query(text)                 -> global checks (relations, places, dates, pronouns, format)
     check_query(text, persona=p)      -> also this persona's people and pet names
+    check_query(text, people=True)    -> also: the query must not re-describe the people already in `people`
     persona_name_hits(text)           -> ids of personas whose names appear in text
 """
 import json
@@ -28,6 +29,12 @@ MONTHS = ("january february march april june july august september october novem
 WEEKDAYS = "monday tuesday wednesday thursday friday saturday sunday".split()
 DATE_WORDS = {"today", "yesterday", "tonight", "ago", "weekend", "anniversary"}
 TIME_UNITS = r"(week|month|year|weekend|summer|winter|spring|autumn|fall|monsoon|vacation|holiday|holidays|trip)"
+PERSON_NOUNS = {"man", "men", "woman", "women", "girl", "girls", "boy", "boys", "kid", "kids", "child",
+                "children", "baby", "babies", "toddler", "toddlers", "teen", "teens", "teenager", "teenagers",
+                "lady", "ladies", "guy", "guys", "person", "people", "couple", "family", "adult", "adults"}
+# words that introduce someone *else* ("hugging a baby", "with kids"), so a person noun after them is fine
+RELATIONAL_LEAD = {"with", "and", "holding", "carrying", "hugging", "feeding", "kissing", "beside", "next",
+                   "near", "behind", "among", "between", "of", "for", "to", "playing", "helping", "watching"}
 DATE_PATTERNS = [
     re.compile(r"\b(19|20)\d{2}\b"),
     re.compile(rf"\b(last|this|next|previous)\s+{TIME_UNITS}\b"),
@@ -57,7 +64,15 @@ def _has_phrase(text, phrase):
     return re.search(rf"(?<![\w']){re.escape(phrase)}(?![\w'])", text) is not None
 
 
-def check_query(text, persona=None):
+def describes_subject(words):
+    """True if a person noun is the query's subject (within the first 3 words, not introduced as someone else)."""
+    for k, w in enumerate(words[:3]):
+        if w in PERSON_NOUNS:
+            return not any(x in RELATIONAL_LEAD for x in words[:k])
+    return False
+
+
+def check_query(text, persona=None, people=False):
     """List of (check, message); empty = pure."""
     relations, places, festivals, _ = _lexicon()
     v = []
@@ -86,6 +101,8 @@ def check_query(text, persona=None):
         add("date", f"festival/holiday name: {hits}")
     if any(w in MONTHS or w in WEEKDAYS or w in DATE_WORDS for w in words) or any(p.search(low) for p in DATE_PATTERNS):
         add("date", "date expression")
+    if people and describes_subject(words):
+        add("subject", "re-describes the person already in `people` (\"woman in a red saree\" -> \"in a red saree\")")
     if persona is not None:
         if hits := sorted(n for n in persona_names(persona) if _has_phrase(low, n)):
             add("name", f"persona name: {hits}")

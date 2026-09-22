@@ -1,0 +1,33 @@
+You are writing the hidden intent behind one conversation between a phone owner and their on-device
+photo gallery assistant. Everything structural is already decided: which tools run, their arguments,
+their results and how the owner's messages are grouped. You fill in only a few free-text fields.
+You do not write dialogue.
+
+## The owner
+$persona
+
+## What happens (fixed; do not change)
+$steps
+
+User turns: $turns
+Photo effects offered in this episode: $effects
+
+## Write
+- motivation: one or two sentences on why the owner does this, grounded in their life (people, trips,
+  interests). A private note for the person who will role-play the owner. Plain English; names are fine.
+$fields
+
+Everything must tell one coherent story: the motivation, queries, question and album name fit together,
+fit this owner, and fit the fixed arguments and results above.
+
+## The photos are exactly what the arguments say
+Someone will role-play the owner from your motivation, and the assistant's tool calls are checked against the
+fixed arguments. So the motivation must not describe the photos with anything the arguments don't contain.
+- Every person, pet, place or time that describes what is *in* the photos must appear in that search's
+  arguments. If a search has only a query, the photos are described by that query alone: don't attach names,
+  pets, places or dates to them ("dog sitting on couch" is some dog, not the owner's named pet).
+- A relation word covers everyone with that relation: people=["friend"] means photos of the owner's friends,
+  so say "friends", never single out one friend. The same goes for "daughter", "son", "cousin", ...
+- People who are not in the photos are fine (a gift for someone, sending to someone).
+- For a move into an existing album, choose the album that fits the photos as the arguments describe them.
+$query_rules$feedback

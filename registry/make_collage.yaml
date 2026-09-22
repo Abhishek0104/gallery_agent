@@ -5,7 +5,7 @@ model_facing:
     images: {type: ImageSet, required: true}
 pipeline:
   constraints: {images.count: {min: 2, max: 9, randomize_max: [4, 6, 9, 12]}}
-  output: {status: enum[created], collage: ImageSet}
+  output: {status: "enum[created]", collage: ImageSet}
   effect: write
   errors:
     too_many_images: {expect: "ask the user to select at most {max}"}

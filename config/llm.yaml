@@ -9,9 +9,14 @@
 cache_dir: data/cache/llm
 
 roles:
-  generation:               # personas, query pool, intent filler, user simulator, teacher
+  generation:               # personas, query pool (kept on this model so reruns hit the cache)
     provider: gemini
     model: gemini-3.1-pro-preview
+    thinking: high
+    max_tokens: 16000
+  filler:                   # intent filler (and later the other high-volume stages); own rate limit
+    provider: gemini
+    model: gemini-3.8-flash
     thinking: high
     max_tokens: 16000
   embedding:                # query-pool dedup (near-duplicate detection)

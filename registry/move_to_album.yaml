@@ -5,6 +5,6 @@ model_facing:
     images: {type: ImageSet, required: true}   # rN handle
     album:  {type: str, required: true}        # as the user said it
 pipeline:
-  output: {status: enum[moved], count: int, album: str, created: bool}
+  output: {status: "enum[moved]", count: int, album: str, created: bool}
   effect: write
   errors: {}

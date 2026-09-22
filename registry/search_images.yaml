@@ -3,7 +3,7 @@ model_facing:
   description: "Find photos by content, people, place, date"
   args:
     query:    {type: str}         # visual content → SigLIP
-    people: {type: list[str]}     # "me" = owner; names or relations as spoken, app resolves
+    people:   {type: "list[str]"} # "me" = owner; names, relations or named pets as spoken; AND across elements
     location: {type: str}         # raw phrase; reverse-geocoded
     date:     {type: str}         # raw phrase; app resolves
 pipeline:

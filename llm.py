@@ -128,7 +128,8 @@ def with_retries(fn, error_cls, what):
             return fn()
         except error_cls as e:
             code = getattr(e, "code", None)
-            if code not in RETRY_CODES or attempt == MAX_RETRIES:
+            daily = "per_day" in str(e).lower() or "perday" in str(e).lower()   # waiting won't help
+            if code not in RETRY_CODES or daily or attempt == MAX_RETRIES:
                 raise LLMError(f"{what} failed ({code}): {getattr(e, 'message', e)}") from e
             m = re.search(r"retry in ([\d.]+)s", str(e))
             wait = float(m.group(1)) + 1 if m else 30 * (attempt + 1)
