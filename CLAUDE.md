@@ -83,10 +83,28 @@ Data (all in this private repo; publishing anything needs a company policy check
   (752M text params), non-thinking.
 - Tags: `personas-v0`, `v1`, `v2`, `r2`, `e2e_v2`.
 
+Eval — two metrics, both against the same export:
+- **Interactive (primary)**: the model takes the teacher's seat unguided, then the verifier scores it. Measures
+  model + Gemini user simulator + embeddings jointly; needs CUDA (vLLM) and the API.
+- **Teacher-forced (secondary)**: `export.eval_forced` predicts each turn from the gold history. Pure function
+  of model + data — no simulator, no API, runs on a Mac (MPS). Headline is the structural match; it cannot see
+  error recovery or exposure bias.
+- Untrained base, 24 sampled rows (`data/export/e2e_v2/forced_eval_base_24.*`): calls are well-formed
+  (0 malformed / 0 truncated, tool name 0.85) but structural 0.54 — it packs filter slots into `query` and
+  calls a tool where the gold asks the user something (reply `kind` 0.55). Directional only at n=24.
+- **`accept` is a data filter, not a model metric.** Every hard check must pass, so one extra call or one
+  `off_script` clarification rejects an otherwise fine conversation (the teacher lost r2_0136 at score 0.984 on
+  a 0.750 cosine tie). Read the continuous `score` and the per-group means for a model; keep `accept` for
+  filtering training data.
+
 Next:
-1. End-to-end pipeline test on a CUDA machine: `train.sft_lora` → serve with vLLM → `realize.run --assistant-role
-   student` on the eval ids → `verify.run` (README "End-to-end training run"). Goal: test the pipeline, not the model.
+1. End-to-end pipeline test on a CUDA machine: `bash scripts/e2e_cuda.sh [prep|train|eval]` (preflight →
+   `train.sft_lora` → vLLM → `realize.run --assistant-role student` → `verify.run`). Run
+   `python -m scripts.preflight_cuda` first. Goal: test the pipeline, not the model.
 2. Then scale (≈5k episodes, ≈60 personas; `docs/export_design.md` §6).
 3. When a real new tool is added: move the spec validator's content checks and the verifier's reply checks into
    the registry (`docs/architecture_refactor.md` §9).
 4. Phase 2 (package, CLI, typed records, guides) only if publishing is approved.
+
+Parked (not started): LLM judge for faithfulness / naturalness; out-of-scope requests (nothing in the specs
+asks for something the tools can't do); offline query similarity (needs the 0.75 threshold re-tuned).

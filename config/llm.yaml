@@ -80,3 +80,5 @@ roles:
 #     device: cpu                     # optional: cpu / cuda / mps
 #
 # Changing a role's provider or model changes its cache keys, so that stage is regenerated.
+# Open-weight models that can take each role, and what each role actually requires of a model:
+# README.md "Open-weight alternatives to the Gemini roles".

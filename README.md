@@ -35,6 +35,36 @@ Each role in `config/llm.yaml` (generation, filler, user_sim, teacher, embedding
 
 Commented examples for `openai_compatible` and `local` are at the end of `config/llm.yaml`.
 
+## Open-weight alternatives to the Gemini roles
+Nothing in the pipeline needs Gemini specifically; each role needs one **capability**, and any server that
+provides it can take that role. What to match:
+
+| role | capability the code requires | what breaks without it |
+|---|---|---|
+| `teacher` | function calling: `tools=[...]` with `tool_choice="auto"`, and a working vLLM `--tool-call-parser` | the assistant can't call tools at all |
+| `filler`, `user_sim`, `cleanup` | structured outputs: `response_format={"type": "json_schema", ...}` | outputs miss the schema and the episode is dropped |
+| `generation` (personas, query pool) | long, diverse, high-quality text; runs **once** | thin or repetitive personas poison everything downstream |
+| `embedding` | `/v1/embeddings` (vLLM detects pooling models automatically) | query-pool dedup and the verifier's query check |
+
+Candidates **as of 2026-09**, none of them tested on this pipeline — treat as a starting shortlist, and check
+the licence on the model card yourself (reports disagree, and they change):
+
+| role | open-weight options | notes |
+|---|---|---|
+| `teacher` | Llama 3.3 70B (~42 GB at Q4_K_M, highest reported well-formed-call rate ~97%); GLM-4.7 32B (~20 GB, 128K context); Qwen3 32B (~20 GB, the well-rounded fallback); Gemma 4 27B (~16 GB, strongest for its size) | pick the `--tool-call-parser` for the family from the table below; Q4_K_M is the reported floor — heavier quantization degrades tool calling before it degrades chat |
+| `filler`, `user_sim`, `cleanup` | the same families at smaller sizes; vLLM's structured outputs are backend-agnostic, so schema adherence is the server's job, not the model's | these are the highest-volume roles, so this is where self-hosting saves the most |
+| `generation` | the largest model you can serve — quality matters more than speed, and it runs once | see the caveat below before swapping this one |
+| `embedding` | Qwen3-Embedding (0.6B / 4B / 8B, Apache 2.0, 32K context) — the 8B has led MTEB since mid-2025; BAAI `bge-*` remains a small, fast default | see the threshold caveat below |
+
+Three caveats before swapping anything:
+- **A model swap re-runs that stage.** Cache keys include the provider and model (`config/llm.yaml`), so the
+  stage regenerates from scratch and its episodes need re-verifying. It is not a free substitution.
+- **`generation` is pinned on purpose** (`gemini-3.1-pro-preview`) so persona and query-pool reruns hit the
+  cache. Only change it when you are regenerating personas anyway — e.g. the ~60-persona scale-up.
+- **Changing the embedding model invalidates the 0.75 similarity threshold** in `config/verify.yaml`, which was
+  set against `gemini-embedding-2`. Re-tune it against the new model's score distribution before trusting any
+  verdict (`docs/verifier_design.md`, parking list).
+
 ## Serving a model with vLLM
 The `openai_compatible` provider sends `tools=[...]` with `tool_choice="auto"` for the teacher, and
 `response_format={"type": "json_schema", ...}` for structured outputs (filler, user simulator).
