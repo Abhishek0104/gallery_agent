@@ -4,8 +4,7 @@
 #
 # thinking: one knob, mapped per provider
 #   gemini    -> thinking_level: minimal | low | medium | high
-#   anthropic -> effort:         low | medium | high | xhigh | max
-# Credentials come from the environment: GEMINI_API_KEY (or GOOGLE_API_KEY) / ANTHROPIC_API_KEY.
+# Credentials come from the environment: GEMINI_API_KEY (or GOOGLE_API_KEY); vLLM roles: api_key_env.
 cache_dir: data/cache/llm
 # Every request has a timeout (default 180 s; per role: `timeout: <seconds>`). A timed-out request is retried
 # like a dropped connection (same request, same model, printed), up to 5 times, then the run stops.
@@ -53,8 +52,6 @@ roles:
     provider: null          # pick a different model than generation when judges are built
     model: null
 
-anthropic:
-  fallbacks: null           # no silent model switching: a failed request fails loudly
 
 # ---------------------------------------------------------------------------------------------------
 # Other providers (Gemini stays the default). To use a vLLM server for a role, replace that role's block,

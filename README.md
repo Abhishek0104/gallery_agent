@@ -32,7 +32,6 @@ Each role in `config/llm.yaml` (generation, filler, user_sim, teacher, embedding
 | `gemini` (default) | all roles | `GEMINI_API_KEY` |
 | `openai_compatible` | JSON, tool-calling chat, embeddings | any OpenAI-compatible server, e.g. vLLM: `base_url` + `model` |
 | `local` | embeddings only | in-process `sentence-transformers` (optional install) |
-| `anthropic` | JSON only | `ANTHROPIC_API_KEY` |
 
 Commented examples for `openai_compatible` and `local` are at the end of `config/llm.yaml`.
 
