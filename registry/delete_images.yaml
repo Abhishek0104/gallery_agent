@@ -7,8 +7,13 @@ pipeline:
   effect: destructive      # app shows its own confirmation dialog; terminal; the input set is gone
   io: {consumes: images, produces: none, count: outcome_or_input}
   catalog: {short: delete}
+  sample: {images: handle}
+  spec_outcome: {status: deleted, count: $in_count}
   output:
     result: {status: deleted, count: $count}
   outcomes:
-    cancelled: {when: {status: cancelled}, result: {status: cancelled, count: 0}, keeps_input: true}
+    cancelled: {when: {status: cancelled}, result: {status: cancelled, count: 0}, keeps_input: true,
+                story: "the owner cancels in the app's confirmation dialog; nothing is deleted"}
+  conversation:
+    outcome: "deleted {count}"
   errors: {}

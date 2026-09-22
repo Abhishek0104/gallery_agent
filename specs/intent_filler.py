@@ -13,7 +13,10 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
+from registry import tools
 from specs.spec_sampler import FILL
+
+TOOLS = tools()
 
 ROOT = Path(__file__).resolve().parent.parent
 PROMPT = Template((ROOT / "specs" / "prompts" / "intent_filler.txt").read_text())
@@ -75,9 +78,18 @@ def render_args(args):
     parts = []
     for k, v in args.items():
         if v == FILL:
-            v = {"query": "<QUERY>", "question": "<QUESTION>", "album": "<ALBUM>"}[k]
+            v = f"<{k.upper()}>"                       # <QUERY>, <QUESTION>, <ALBUM>
         parts.append(f"{k}={json.dumps(v, ensure_ascii=False)}")
     return ", ".join(parts)
+
+
+def outcome_text(tool, outcome, step):
+    """The tool's `conversation.outcome` template, filled from the step's outcome."""
+    conv = tool.conversation
+    values = {**outcome, "out": step["out"]}
+    for key, table in conv.get("outcome_values", {}).items():      # e.g. created: true -> "new album created"
+        values[key] = table[outcome[key]]
+    return conv["outcome"].format(**values)
 
 
 def render_steps(skel):
@@ -102,21 +114,12 @@ def render_steps(skel):
         if s.get("skipped"):
             lines.append(f"{s['i']}. (asked for, but not done because nothing was found) {call}({render_args(s['args'])})")
             continue
-        if o.get("error") == "no_results":
-            lines.append(f"{s['i']}. {call}({render_args(s['args'])}) → no photos found")
+        tool = TOOLS[call]
+        _, variant = tool.match_outcome(o)
+        if variant:                                     # an alternative outcome (no_results, cancelled): its story
+            lines.append(f"{s['i']}. {call}({render_args(s['args'])}) → {variant['story']}")
             continue
-        if call == "delete_images" and o.get("status") == "cancelled":
-            lines.append(f"{s['i']}. {call}({render_args(s['args'])}) → the owner cancels in the app's confirmation "
-                         "dialog; nothing is deleted")
-            continue
-        result = {
-            "search_images": lambda: f"{o['count']} photos ({s['out']})",
-            "ask_gallery": lambda: f"answer <ANSWER>, backed by {o['count']} photos ({s['out']})",
-            "apply_effect": lambda: f"{o['count']} new copies ({s['out']}); originals unchanged",
-            "make_collage": lambda: f"1 collage image ({s['out']})",
-            "move_to_album": lambda: f"moved {o['count']} ({'new album created' if o['created'] else 'existing album'})",
-            "delete_images": lambda: f"deleted {o['count']}",
-        }[call]()
+        result = outcome_text(tool, o, s)
         note = (f"   (refines the search in step {s['refines']})" if "refines" in s else
                 f"   (the owner tries again without one filter from step {s['loosens']})" if "loosens" in s else "")
         lines.append(f"{s['i']}. {call}({render_args(s['args'])}) → {result}{note}")

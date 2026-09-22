@@ -16,7 +16,8 @@ from pathlib import Path
 
 import yaml
 
-from registry import collage_bounds, effect_values, tools
+from registry import by_short, tools
+from specs import strategies
 from specs.persona_outline import quota_list
 from specs.query_purity import describes_subject
 
@@ -25,11 +26,9 @@ CFG = yaml.safe_load((ROOT / "config" / "specs.yaml").read_text())
 REGIONS = yaml.safe_load((ROOT / "config" / "regions.yaml").read_text())
 QP_CFG = yaml.safe_load((ROOT / "config" / "query_pool.yaml").read_text())
 SPEC_VERSION = 1
-FILL = "<fill>"
 
-TOOL = {"search": "search_images", "ask": "ask_gallery", "effect": "apply_effect",
-        "collage": "make_collage", "move": "move_to_album", "delete": "delete_images"}
 SLOTS = ["people", "location", "date", "query"]
+FILL = strategies.FILL
 INF = 10 ** 6
 
 
@@ -56,8 +55,11 @@ def load_pool():
 
 # ---------------------------------------------------------------- counts
 def need_bounds(steps, cmax):
-    """Backward pass: handle -> (lo, hi) its count must satisfy for every downstream consumer."""
+    """Backward pass: handle -> (lo, hi) its count must satisfy for every downstream consumer.
+    From the registry: a count constraint on the input (collage: 2..collage_max); a tool whose output has
+    the same count as its input passes its bound through (effect); any other consumer needs 1+ photos."""
     need = {}
+    specs = by_short()
 
     def narrow(h, lo, hi):
         a, b = need.get(h, (1, INF))
@@ -65,20 +67,26 @@ def need_bounds(steps, cmax):
 
     for s in reversed(steps):
         k = s["kind"]
-        if k == "collage":
-            narrow(s["in"], 2, cmax)
-        elif k == "effect":
-            narrow(s["in"], *need.get(s["out"], (1, INF)))
-        elif k == "select":
+        if k == "select":
             narrow(s["in"], max(2, need.get(s["out"], (1, INF))[0]), INF)
-        elif k in ("move", "delete"):
+            continue
+        t = specs[k]
+        if t.io.consumes is None:
+            continue
+        if t.count_constraint:
+            narrow(s["in"], t.count_constraint["min"], cmax)
+        elif t.io.produces == "same":
+            narrow(s["in"], *need.get(s["out"], (1, INF)))
+        else:
             narrow(s["in"], 1, INF)
     return need
 
 
 def sample_counts(steps, initial, cmax, rng):
-    """Forward pass inside the backward bounds. Returns handle -> count."""
+    """Forward pass inside the backward bounds. Returns handle -> count. Tools that consume nothing sample
+    from config/specs.yaml `counts` (by short name); a refinement (the tool may follow itself) narrows."""
     need = need_bounds(steps, cmax)
+    specs = by_short()
     counts = {}
 
     def pick(h, lo, hi):
@@ -93,26 +101,27 @@ def sample_counts(steps, initial, cmax, rng):
         pick("r0", *CFG["counts"]["initial_selection"])
     for i, s in enumerate(steps):
         k = s["kind"]
-        if k == "search":
-            if s["out"] in counts:                  # already set as the first of a refinement pair
-                continue
-            nxt = steps[i + 1] if i + 1 < len(steps) else None
-            if nxt and nxt["kind"] == "search":     # refinement narrows: sample the second first
-                c2 = pick(nxt["out"], *CFG["counts"]["search"])
-                pick(s["out"], c2 + 1, max(CFG["counts"]["search"][1], c2 + 5))
-            else:
-                pick(s["out"], *CFG["counts"]["search"])
-        elif k == "ask":
-            pick(s["out"], *CFG["counts"]["ask"])
-        elif k == "select":
+        if k == "select":
             src = counts[s["in"]]
             lo, hi = need.get(s["out"], (1, INF))
             hi = min(hi, src - 1 if src - 1 >= lo else src)   # a real subset when possible
             pick(s["out"], lo, hi)
-        elif k == "effect":
+            continue
+        t = specs[k]
+        if t.io.consumes is None:
+            if s["out"] in counts:                  # already set as the first of a refinement pair
+                continue
+            nxt = steps[i + 1] if i + 1 < len(steps) else None
+            lo, hi = CFG["counts"][k]
+            if nxt and nxt["kind"] == k and t.name in t.catalog.after:   # refinement narrows: second first
+                c2 = pick(nxt["out"], lo, hi)
+                pick(s["out"], c2 + 1, max(hi, c2 + 5))
+            else:
+                pick(s["out"], lo, hi)
+        elif t.io.produces == "same":
             counts[s["out"]] = counts[s["in"]]
-        elif k == "collage":
-            counts[s["out"]] = 1
+        elif t.io.produces != "none":
+            counts[s["out"]] = 1 if t.io.count == "one" else counts[s["in"]]
     return counts
 
 
@@ -266,8 +275,7 @@ def skeleton(n=None, seed=None, paths=None, multi=(), id_prefix="ep"):
     seed = CFG["seed"] if seed is None else seed
     rng = random.Random(seed)
     catalog, personas, pool = load_catalog(), load_personas(), load_pool()
-    cmin, cmax_options = collage_bounds()
-    all_effects = effect_values()
+    specs_by_short = by_short()
 
     if paths is None:
         n = n or CFG["n_specs"]
@@ -301,9 +309,8 @@ def skeleton(n=None, seed=None, paths=None, multi=(), id_prefix="ep"):
     specs = []
     for i, path in enumerate(paths):
         persona = by_id[persona_order[i]]
-        cmax = rng.choice(cmax_options)
-        effects = rng.sample(all_effects, rng.randint(*CFG["effects_shown"]))
-        counts = sample_counts(path["steps"], path["initial"], cmax, rng)
+        config = strategies.episode_config(rng, CFG["episode_config"], tools())
+        counts = sample_counts(path["steps"], path["initial"], config["collage_max"], rng)
         steps, fill, sampling = [], [], {"turn_mode": modes[i], "slot_patterns": []}
         prev_search = None
         refine_add = {}                                 # step index of a refinement -> slot it adds
@@ -313,8 +320,9 @@ def skeleton(n=None, seed=None, paths=None, multi=(), id_prefix="ep"):
                 steps.append({"i": j, "event": "select", "from": s["in"], "out": s["out"],
                               "count": counts[s["out"]]})
                 continue
-            step = {"i": j, "call": TOOL[k], "args": {}, "out": s["out"], "outcome": {}}
-            if k == "search":
+            t = specs_by_short[k]
+            step = {"i": j, "call": t.name, "args": {}, "out": s["out"], "outcome": {}}
+            if t.raw["pipeline"].get("sample") == "slot_filters":
                 if prev_search is None:
                     slots = assign[i].split("+")
                     step["args"] = search_args(slots, persona, rng)
@@ -338,29 +346,15 @@ def skeleton(n=None, seed=None, paths=None, multi=(), id_prefix="ep"):
                                  "with": {x: v for x, v in step["args"].items() if x != "query"}})
                 step["outcome"] = {"count": counts[s["out"]]}
                 prev_search = step
-            elif k == "ask":
-                before_action = j < len(path["steps"])
-                qtype = rng.choice(CFG["ask_types"]["before_action" if before_action else "standalone"])
-                step["args"] = {"question": FILL}
-                step["outcome"] = {"answer": FILL, "count": counts[s["out"]]}
-                fill.append({"field": "question", "step": j, "type": qtype, "count": counts[s["out"]],
-                             "before_action": before_action})
-            elif k == "effect":
-                step["args"] = {"images": s["in"], "effect": rng.choice(effects)}
-                step["outcome"] = {"status": "created", "count": counts[s["out"]]}
-            elif k == "collage":
-                step["args"] = {"images": s["in"]}
-                step["outcome"] = {"status": "created", "count": 1}
-            elif k == "move":
-                exists = rng.random() < CFG["album_exists"]   # the filler picks which album fits the story
-                step["args"] = {"images": s["in"], "album": FILL}
-                step["outcome"] = {"status": "moved", "count": counts[s["in"]], "album": FILL,
-                                   "created": not exists}
-                fill.append({"field": "album", "step": j, "exists": exists})
-            elif k == "delete":
-                step["args"] = {"images": s["in"]}
-                step["outcome"] = {"status": "deleted", "count": counts[s["in"]]}
-                step["out"] = None
+            else:                                       # arguments from the registry's sample strategies
+                ctx = strategies.StepContext(rng=rng, j=j, step=s, path=path, counts=counts, config=config)
+                for arg, how in t.raw["pipeline"]["sample"].items():
+                    ctx.arg, ctx.arg_spec = arg, t.model_facing["args"][arg]
+                    step["args"][arg] = strategies.ARG_STRATEGIES[how](ctx)
+                fill += ctx.fill
+                step["outcome"] = strategies.render(t.raw["pipeline"]["spec_outcome"], {
+                    "count": counts.get(s["out"]), "in_count": counts.get(s["in"]), "fill": FILL,
+                    **ctx.vars, **{f"arg.{a}": v for a, v in step["args"].items()}})
             steps.append(step)
 
         specs.append({
@@ -369,7 +363,7 @@ def skeleton(n=None, seed=None, paths=None, multi=(), id_prefix="ep"):
             "path": path["id"],
             "path_str": path["path"],
             "persona": persona["persona_id"],
-            "config": {"collage_max": cmax, "effects": effects},
+            "config": config,
             "initial_selection": {"handle": "r0", "count": counts["r0"]} if path["initial"] == "selection" else None,
             "motivation": FILL,
             "steps": steps,

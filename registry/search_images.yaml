@@ -14,10 +14,14 @@ pipeline:
     start: true                                # may open a conversation
     after: [search_images]                     # refinement: a search may directly follow a search ...
     max_per_path: 2                            # ... once
+  sample: slot_filters                         # spec sampler: slot patterns + refinement (specs/strategies.py)
+  spec_outcome: {count: $count}                # happy-path outcome written into the spec
   output:                                      # what the model sees ($out = new handle, $count = its count)
     result: {id: $out, count: $count}
     default_outcome: {count: 5}                # an unplanned call (the episode is flagged)
   outcomes:
-    no_results: {when: {error: no_results}, result: {error: no_results}, produces: none}
+    no_results: {when: {error: no_results}, result: {error: no_results}, produces: none, story: "no photos found"}
+  conversation:
+    outcome: "{count} photos ({out})"          # how the intent filler is told the result
   errors:
     no_results: {expect: "say nothing was found, suggest loosening a filter; never invent results"}

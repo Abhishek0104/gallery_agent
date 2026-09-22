@@ -8,6 +8,11 @@ pipeline:
   effect: write
   io: {consumes: images, produces: none, count: outcome_or_input}
   catalog: {short: move, terminal: true}       # nothing follows a move
+  sample: {images: handle, album: album_fill}
+  spec_outcome: {status: moved, count: $in_count, album: $arg.album, created: $created}
   output:
     result: {status: moved, count: $count, album: $arg.album, created: $created}
+  conversation:
+    outcome: "moved {count} ({created})"
+    outcome_values: {created: {true: "new album created", false: "existing album"}}
   errors: {}

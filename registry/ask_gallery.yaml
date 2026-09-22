@@ -12,7 +12,11 @@ pipeline:
     start: true
     after: []                               # only as the opening step
     max_calls_when_first: 2                 # a question plus at most one action
+  sample: {question: question_fill}
+  spec_outcome: {answer: $fill, count: $count}
   output:
     result: {answer: $answer, id: $out, count: $count}
     default_outcome: {answer: "I couldn't find anything about that.", count: 1}
+  conversation:
+    outcome: "answer <ANSWER>, backed by {count} photos ({out})"
   errors: {}

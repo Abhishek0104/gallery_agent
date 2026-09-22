@@ -34,7 +34,11 @@ counts:
   ask: [1, 4]                # ask_gallery returns at most top_k images
   initial_selection: [1, 20]
 album_exists: 0.5            # move_to_album into an existing persona album vs a new one
-effects_shown: [2, 4]        # how many of the registry effects this episode's prompt lists (random order)
+# Volatile values sampled per episode, in this order, and filled into the model-facing tool specs
+# ("{min}–{max}" in a description, "{effects}" as an enum). Each points at a registry constraint.
+episode_config:
+  collage_max: {tool: make_collage, constraint: images.count, choose_from: randomize_max}
+  effects:     {tool: apply_effect, constraint: effect, sample_size: [2, 4]}   # a random subset, random order
 
 # User-turn grouping; forced boundaries (before a selection, after ask_gallery, between refinement
 # searches) always apply.

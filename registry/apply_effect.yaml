@@ -10,6 +10,10 @@ pipeline:
                          randomize: true}}
   io: {consumes: images, produces: same, count: outcome_or_input}   # new copies: same kind and count as the input
   catalog: {short: effect, max_per_path: 1}
+  sample: {images: handle, effect: episode_value}
+  spec_outcome: {status: created, count: $count}
   output:
     result: {status: created, images: $out}
+  conversation:
+    outcome: "{count} new copies ({out}); originals unchanged"
   errors: {}

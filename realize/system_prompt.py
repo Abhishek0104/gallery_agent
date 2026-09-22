@@ -7,7 +7,7 @@ teacher guidance block, which is never exported.
 """
 from pathlib import Path
 
-from registry import collage_bounds, load_registry
+from registry import tools
 
 ROOT = Path(__file__).resolve().parent.parent
 GUIDANCE = (ROOT / "realize" / "prompts" / "teacher_guidance.txt").read_text().strip()
@@ -28,16 +28,20 @@ TYPE = {
 
 
 def tool_declarations(config):
-    """Neutral declarations [{name, description, parameters}] for one episode's config."""
-    cmin, _ = collage_bounds()
+    """Neutral declarations [{name, description, parameters}] for one episode's config. Volatile values come
+    from the episode: "{min}"/"{max}" in a description from the tool's count constraint, an enum's
+    "{<key>}" values from config[<key>]."""
     decls = []
-    for name, spec in load_registry().items():
-        mf = spec["model_facing"]
-        desc = mf["description"].replace("{min}", str(cmin)).replace("{max}", str(config["collage_max"]))
+    for name, t in tools().items():
+        mf = t.model_facing
+        desc = mf["description"]
+        if t.count_constraint:
+            c = t.count_constraint
+            desc = desc.replace("{min}", str(c["min"])).replace("{max}", str(config[c["config_key"]]))
         props, required = {}, []
         for arg, a in mf["args"].items():
             if a["type"] == "enum":
-                props[arg] = {"type": "string", "enum": list(config["effects"])}
+                props[arg] = {"type": "string", "enum": list(config[a["values"].strip("{}")])}
             else:
                 props[arg] = dict(TYPE[a["type"]])
             if a.get("required"):

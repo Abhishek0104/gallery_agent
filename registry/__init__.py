@@ -110,11 +110,3 @@ def by_short():
 def model_facing(name):
     return load_registry()[name]["model_facing"]
 
-
-def collage_bounds():
-    c = load_registry()["make_collage"]["pipeline"]["constraints"]["images.count"]
-    return c["min"], c["randomize_max"]
-
-
-def effect_values():
-    return list(load_registry()["apply_effect"]["pipeline"]["constraints"]["effect"]["values"])
