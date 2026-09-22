@@ -67,100 +67,27 @@ Orchestrator LLM is text-only; vision lives behind tools (SigLIP search, interna
 
 ## 3. Tool specs
 
-### search_images
-```yaml
-name: search_images
-model_facing:
-  description: "Find photos by content, people, place, date"
-  args:
-    query:    {type: str}         # visual content → SigLIP
-    people:   {type: list[str]}   # "me" = owner; names, relations or named pets as spoken; AND across elements
-    location: {type: str}         # raw phrase; reverse-geocoded
-    date:     {type: str}         # raw phrase; app resolves
-pipeline:
-  output: ImageSet                # model sees {id: "rN", count: N}
-  effect: read
-  errors:
-    no_results: {expect: "say nothing was found, suggest loosening a filter; never invent results"}
-```
+**Source of truth: the YAML files in `registry/` (one per tool).** They are what the pipeline reads, so they are
+not copied here. Each has:
+- `model_facing`: what the on-device model sees (description + args), with volatile values filled per episode.
+- `pipeline`: `effect` (read / write / destructive), `io` (what it consumes and produces), `catalog` rules,
+  `sample` + `spec_outcome` (spec sampler), `output` (the model-facing result), `outcomes` (alternative results
+  such as `no_results` / `cancelled`), `constraints`, `errors` (with the `expect` behavior), `conversation`
+  templates (user requests, filler outcome text, guidance).
 
-### delete_images
-```yaml
-name: delete_images
-model_facing:
-  description: "Delete photos (moves them to Recycle bin)"
-  args:
-    images: {type: ImageSet, required: true}   # rN handle
-pipeline:
-  output: {status: enum[deleted, cancelled], count: int}
-  effect: destructive      # app shows its own confirmation dialog
-  errors: {}
-```
+How each argument is sampled, said and compared is in `config/arg_types.yaml`. Adding a tool shaped like an
+existing one is one registry file (see `docs/architecture_refactor.md` and `tests/test_new_tool.py`).
 
-### move_to_album
-```yaml
-name: move_to_album
-model_facing:
-  description: "Move photos to an album (creates it if missing)"
-  args:
-    images: {type: ImageSet, required: true}   # rN handle
-    album:  {type: str, required: true}        # as the user said it
-pipeline:
-  output: {status: enum[moved], count: int, album: str, created: bool}
-  effect: write
-  errors: {}
-```
+Behavior decisions per tool (not expressible as fields):
 
-### make_collage
-```yaml
-name: make_collage
-model_facing:
-  description: "Make a grid collage from {min}–{max} photos"
-  args:
-    images: {type: ImageSet, required: true}
-pipeline:
-  constraints: {images.count: {min: 2, max: 9, randomize_max: [4, 6, 9, 12]}}
-  output: {status: enum[created], collage: ImageSet}   # new handle, count 1
-  effect: write
-  errors:
-    too_many_images: {expect: "ask the user to select at most {max}"}
-```
-Behavior: read the count before calling. If count > max (or < min), don't call — ask the user to select.
-Backend rejection is a safety net only.
-
-### apply_effect
-```yaml
-name: apply_effect
-model_facing:
-  description: "Apply a photo effect; saves new copies, originals unchanged"
-  args:
-    images: {type: ImageSet, required: true}   # any count
-    effect: {type: enum, values: "{effects}", required: true}
-pipeline:
-  constraints: {effect: {values: [cool, warm, sepia, black_and_white],
-                         randomize: true}}
-  output: {status: enum[created], images: ImageSet}   # new handle, same count as input
-  effect: write
-  errors: {}
-```
-Behavior: synonyms map onto the listed effects ("grayscale" → `black_and_white`).
-No reasonable match → say it's unavailable and name what is.
-
-### ask_gallery
-```yaml
-name: ask_gallery
-model_facing:
-  description: "Answer any question about the user's photos"
-  args:
-    question: {type: str, required: true}   # self-contained, no pronouns
-pipeline:
-  constraints: {top_k: 4}                   # internal; not model-facing
-  output: {answer: str, images: ImageSet}   # model sees {answer, id: rN, count}
-  effect: read
-  errors: {}
-```
-Behavior: the internal pipeline handles intent, search and VQA. The orchestrator's job is to write a
-self-contained question (resolve "it" / "that" from context) and relay the answer verbatim.
+| Tool | Decision |
+|---|---|
+| `search_images` | Every match is returned (no cap). No results → say nothing was found, suggest loosening a filter; never invent results. |
+| `delete_images` | Destructive: the app shows its own confirmation dialog. Call directly, say what is being deleted, handle `cancelled` gracefully. |
+| `move_to_album` | Creates the album if missing. A missing album name → ask. |
+| `make_collage` | Read the count before calling. If count > max (or < min), don't call — ask the user to select. Backend rejection is a safety net only. |
+| `apply_effect` | Saves new copies; originals unchanged. Synonyms map onto the listed effects ("grayscale" → `black_and_white`). No reasonable match → say it's unavailable and name what is. A missing effect → ask, naming the available ones. |
+| `ask_gallery` | The internal pipeline handles intent, search and VQA. The orchestrator writes a self-contained question (resolve "it" / "that" from context) and relays the answer verbatim. |
 
 ---
 
@@ -173,19 +100,9 @@ self-contained question (resolve "it" / "that" from context) and relay the answe
 
 ## 5. v2.0 backlog
 
-```yaml
-name: select_images
-model_facing:
-  args:
-    images: {type: ImageSet, required: true}
-    k:      {type: int, required: true}
-    by:     {type: enum[relevance, aesthetic], default: aesthetic}
-pipeline:
-  output: ImageSet            # new handle, count k
-  effect: read
-```
-Enables "collage of my best 5" without user selection. When added, collage-overflow scenarios get a
-second valid resolution (select top-k vs ask the user) — data must cover both.
+`select_images` (top-k by relevance or aesthetic score): spec in `registry/v2/select_images.yaml`, never loaded
+by the pipeline. Enables "collage of my best 5" without user selection. When added, collage-overflow scenarios
+get a second valid resolution (select top-k vs ask the user) — data must cover both.
 
 ## 6. Notes for later stages
 

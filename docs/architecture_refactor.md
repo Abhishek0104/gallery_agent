@@ -1,7 +1,7 @@
 # Architecture refactor — registry-driven pipeline (proposal for review)
 
 ## Goal
-The repo will be published. Two things must become easy and local:
+The code may be published (the data stays private; see §7). Two things must become easy and local:
 1. **Change a rule for a tool argument** (e.g. how `search_images` dates are compared, a new search slot) by
    editing YAML, not code spread across stages.
 2. **Add a new tool** so that catalog paths, specs, dialogues, simulator outputs and verification for it are
@@ -212,10 +212,11 @@ prompt changes stay separate commits with a regeneration noted.
 ## 7. Decisions (2026-09-22)
 Approved in two phases. **Phase 1 (now):** step 0 golden tests, registry-driven `io` / `output` / `conversation`
 fields, `config/arg_types.yaml`, and the acceptance test with a sample tool — each its own commit, golden tests
-unchanged. **Phase 2 (later, only if publishing):** `src/` package, CLI, typed records, module splits, guides.
+unchanged. **Phase 2 (later, only if publishing, after the policy check):** `src/` package, CLI, typed records,
+module splits, guides.
 1. The §2.4 boundary is right: round-2 scenario kinds stay code.
 2. Names: `gallery_agent` (package) / `gallery-data` (CLI).
-3. Data can be published with the repo.
+3. **Data stays in the private repo.** Publishing anything (code or data) needs a company policy check first.
 4. Drop the `anthropic` provider.
 
 ## 8. Open questions (original, answered above)
@@ -225,7 +226,7 @@ unchanged. **Phase 2 (later, only if publishing):** `src/` package, CLI, typed r
    separately (e.g. a Hugging Face dataset) and keep only small samples here?
 4. Keep the `anthropic` provider (JSON only, unused by the pipeline) or drop it before publishing?
 
-## 9. Phase 1 status (done)
+## 9. Phase 1 status (done; phase 1 stops here)
 | Step | Commit | Golden tests |
 |---|---|---|
 | 0 golden tests (32 pinned artifacts, 3 hash seeds) | `cc47584` | recorded |
@@ -248,6 +249,8 @@ sampling strategy, thresholds).
 Hardcoded tool references went from ~140 in 12 files to 24 in 5; per-tool branches from 33 to 18. What is left:
 - `specs/scenarios.py`, `realize/user_sim.py` round-2 answer lines: scenario kinds, which stay code (§8.1).
 - `specs/spec_validator.py`: per-tool content checks (ask count ≤ top_k, effect in the episode's list, collage
-  count, album consistency, delete counts). Candidates to derive from constraints / outcomes next.
-- `verify/verifier.py`: reply checks for ask ("answer relayed"), delete ("says deleted") and cancelled deletes.
+  count, album consistency, delete counts). **Decision:** these move into the registry when a real new tool is
+  added; until then a new tool gets the generic schema / handle / argument checks only.
+- `verify/verifier.py`: reply checks for ask ("answer relayed"), delete ("says deleted") and cancelled deletes
+  (same decision as the validator's content checks).
 - `realize/run.py`: the feature tags used only to pick a varied review batch.
