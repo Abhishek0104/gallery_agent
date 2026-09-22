@@ -4,8 +4,9 @@
 #
 #   bash scripts/e2e_cuda.sh              # every stage
 #   bash scripts/e2e_cuda.sh prep         # preflight + export + render check + train --check   (no GPU)
+#   bash scripts/e2e_cuda.sh baseline     # teacher-forced eval of the UNTRAINED base  (run before training)
 #   bash scripts/e2e_cuda.sh train        # LoRA SFT
-#   bash scripts/e2e_cuda.sh eval         # start vLLM, run the student on the held-out specs, verify, stop vLLM
+#   bash scripts/e2e_cuda.sh eval         # teacher-forced eval of the adapter, then vLLM + interactive eval
 #
 # Needs: pip install -r requirements-train.txt, vllm on PATH, GEMINI_API_KEY (the user simulator still
 # runs on Gemini during eval). Every value below comes from the configs — nothing is hardcoded here.
@@ -44,6 +45,12 @@ if stage prep; then
   "$PY" -m train.sft_lora --check
 fi
 
+if stage baseline; then
+  # Cheap, no server, no API. Without it a trained number has nothing to be compared against.
+  echo "== 3a'. teacher-forced eval of the untrained base"
+  "$PY" -m export.eval_forced
+fi
+
 if stage train; then
   echo "== 3b. LoRA SFT"
   "$PY" -m train.sft_lora
@@ -51,6 +58,9 @@ if stage train; then
 fi
 
 if stage eval; then
+  echo "== 3c. teacher-forced eval of the adapter (no server, no API)"
+  "$PY" -m export.eval_forced --adapter "$ADAPTER/adapter"
+
   echo "== 4. serve $BASE_MODEL + adapter on :$PORT (tool-call parser $PARSER)"
   vllm serve "$BASE_MODEL" --language-model-only --max-model-len "$MAXLEN" \
     --enable-lora --lora-modules "gallery-lora=$ADAPTER/adapter" --max-lora-rank 16 \
@@ -74,5 +84,9 @@ if stage eval; then
           --assistant-role student --out-tag "student_$tag"
     "$PY" -m verify.run --tag "student_$tag"
   done
-  echo "== done: data/episodes/verified_student_*.jsonl, reviews in data/episodes/review_student_*.md"
+  echo "== done"
+  echo "   teacher-forced: $EXPORT_DIR/forced_eval_{base,$(basename "$ADAPTER")}.{json,jsonl,md}  (.md = the misses)"
+  echo "   interactive:    data/episodes/verified_student_*.jsonl, reviews in review_student_*.md"
+  echo "   note: verify.run's accept flag is a data filter — every hard check must pass. For a model, read"
+  echo "         the mean score and the per-group means (README / docs/verifier_design.md)."
 fi

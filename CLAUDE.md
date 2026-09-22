@@ -98,9 +98,10 @@ Eval — two metrics, both against the same export:
   filtering training data.
 
 Next:
-1. End-to-end pipeline test on a CUDA machine: `bash scripts/e2e_cuda.sh [prep|train|eval]` (preflight →
-   `train.sft_lora` → vLLM → `realize.run --assistant-role student` → `verify.run`). Run
-   `python -m scripts.preflight_cuda` first. Goal: test the pipeline, not the model.
+1. End-to-end pipeline test on a CUDA machine: `bash scripts/e2e_cuda.sh [prep|baseline|train|eval]`
+   (preflight → base teacher-forced baseline → `train.sft_lora` → adapter teacher-forced → vLLM →
+   `realize.run --assistant-role student` → `verify.run`). Goal: test the pipeline, not the model — the
+   numbers only need to be sane and better than the baseline, not good.
 2. Then scale (≈5k episodes, ≈60 personas; `docs/export_design.md` §6).
 3. When a real new tool is added: move the spec validator's content checks and the verifier's reply checks into
    the registry (`docs/architecture_refactor.md` §9).

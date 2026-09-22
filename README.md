@@ -115,9 +115,12 @@ Code is set up and dry-checked; training and serving run on a CUDA machine. Pipe
 ```bash
 python -m scripts.preflight_cuda      # configs, exported data, eval ids, training deps, CUDA — no run
 bash scripts/e2e_cuda.sh prep         # preflight + export + render check + train --check   (no GPU needed)
+bash scripts/e2e_cuda.sh baseline     # teacher-forced eval of the untrained base  (run before training)
 bash scripts/e2e_cuda.sh train        # LoRA SFT
-bash scripts/e2e_cuda.sh eval         # serve with vLLM, student eval on the held-out specs, verify, stop
+bash scripts/e2e_cuda.sh eval         # teacher-forced eval of the adapter, then vLLM + interactive eval
 ```
+Run `baseline` before `train`: a trained number means nothing without the untrained one next to it, and it
+costs one cheap forward pass over the eval split.
 
 The stages by hand:
 
