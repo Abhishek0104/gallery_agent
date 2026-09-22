@@ -224,3 +224,30 @@ unchanged. **Phase 2 (later, only if publishing):** `src/` package, CLI, typed r
 3. Published data: keep `data/` (personas, pool, specs, episodes, exports) in the repo, or publish datasets
    separately (e.g. a Hugging Face dataset) and keep only small samples here?
 4. Keep the `anthropic` provider (JSON only, unused by the pipeline) or drop it before publishing?
+
+## 9. Phase 1 status (done)
+| Step | Commit | Golden tests |
+|---|---|---|
+| 0 golden tests (32 pinned artifacts, 3 hash seeds) | `cc47584` | recorded |
+| drop the `anthropic` provider | `357cec7` | unchanged |
+| 1 registry `io` / `catalog` / `output` → catalog generator + simulator | `870e99a` | unchanged |
+| 2 `sample` / `spec_outcome` / `conversation.outcome` → spec sampler, system prompt, intent filler | `06e2ae7` | unchanged |
+| 3 `conversation` templates → user simulator, cleanup, teacher guidance | `c39894c` | unchanged |
+| 4 `config/arg_types.yaml` → sampling, wording, verifier comparison | `3289359` | unchanged |
+| 5 acceptance test: `tests/fixtures/favorite_images.yaml` | this commit | unchanged |
+
+**Adding a tool shaped like an existing one is now one YAML file.** The acceptance test copies the registry,
+adds `favorite_images.yaml`, and runs the unmodified pipeline: the catalog grows from 86 to 114 paths (28 with
+the tool), and all 28 sampled specs pass the spec validator, get user requests from the tool's template
+("Ask to mark the edited collage as favorites."), are realized against the simulator (result from the tool's
+output template) and are accepted by the verifier.
+
+**Changing an argument rule is one YAML edit** in `config/arg_types.yaml` (comparison, wording, required,
+sampling strategy, thresholds).
+
+Hardcoded tool references went from ~140 in 12 files to 24 in 5; per-tool branches from 33 to 18. What is left:
+- `specs/scenarios.py`, `realize/user_sim.py` round-2 answer lines: scenario kinds, which stay code (§8.1).
+- `specs/spec_validator.py`: per-tool content checks (ask count ≤ top_k, effect in the episode's list, collage
+  count, album consistency, delete counts). Candidates to derive from constraints / outcomes next.
+- `verify/verifier.py`: reply checks for ask ("answer relayed"), delete ("says deleted") and cancelled deletes.
+- `realize/run.py`: the feature tags used only to pick a varied review batch.

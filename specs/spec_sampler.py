@@ -11,6 +11,7 @@ reads (collage needs 2..collage_max, a selection needs a set of 2+, effect passe
 then counts are sampled forward inside those bounds.
 """
 import json
+import os
 import random
 from pathlib import Path
 
@@ -37,7 +38,8 @@ def load_catalog():
     """Catalog paths with status keep; steps as {kind, in, out} (kind = the tool's short name, or "select")."""
     short = {t.name: t.catalog.short for t in tools().values()} | {"select": "select"}
     out = []
-    for c in yaml.safe_load((ROOT / "catalog" / "path_catalog.yaml").read_text()):
+    path = os.environ.get("GALLERY_AGENT_CATALOG") or ROOT / "catalog" / "path_catalog.yaml"
+    for c in yaml.safe_load(Path(path).read_text()):
         if c["status"] != "keep":
             continue
         steps = [{"kind": short[s["tool"]], "in": s["in"], "out": s["out"]} for s in c["steps"]]

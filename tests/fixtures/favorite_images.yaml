@@ -1,0 +1,20 @@
+# A sample tool defined only in YAML (tests/test_new_tool.py). Nothing in the pipeline code names it.
+name: favorite_images
+model_facing:
+  description: "Mark photos as favorites"
+  args:
+    images: {type: ImageSet, required: true}
+pipeline:
+  effect: write
+  io: {consumes: images, produces: none, count: outcome_or_input}
+  catalog: {short: favorite, terminal: true}
+  sample: {images: handle}
+  spec_outcome: {status: favorited, count: $in_count}
+  output:
+    result: {status: favorited, count: $count}
+  conversation:
+    outcome: "marked {count} as favorites"
+    request: "Ask to mark {images} as favorites."
+    request_words: [favorite, favourite, favorites, star, heart]
+    guidance: "Favoriting changes nothing else; don't ask for confirmation."
+  errors: {}

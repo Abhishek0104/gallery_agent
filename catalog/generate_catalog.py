@@ -20,7 +20,7 @@ from registry import tools  # noqa: E402
 MAX_CALLS = 4
 SELECT = "select"                # user selection event (not a tool call)
 INITIAL_STATES = ["empty", "selection"]
-OUT = Path(__file__).resolve().parent / "path_catalog.yaml"
+OUT = Path(__file__).resolve().parent / "path_catalog.yaml"   # (GALLERY_AGENT_CATALOG overrides where it is read)
 
 
 def enumerate_paths(initial):
