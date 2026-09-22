@@ -29,6 +29,11 @@ roles:
     model: gemini-3.8-flash
     thinking: high
     max_tokens: 16000         # 8000 was hit once (round 2); not part of the cache key
+  cleanup:                  # backstory cleanup pass over existing episodes (realize/cleanup.py)
+    provider: gemini
+    model: gemini-3.8-flash
+    thinking: medium
+    max_tokens: 16000         # 8000 was hit once on r2
   student:                  # a trained model under eval (realize.run --assistant-role student); served by vLLM
     provider: openai_compatible
     base_url: http://localhost:8000/v1

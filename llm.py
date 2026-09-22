@@ -272,7 +272,9 @@ def call_gemini(llm, system, prompt, schema, seed):
     cand = resp.candidates[0] if resp.candidates else None
     reason = cand.finish_reason.name if cand and cand.finish_reason else None
     if reason == "MAX_TOKENS":
-        raise LLMError(f"output truncated at max_tokens={llm.max_tokens}")
+        raise TruncatedResponseError(f"output truncated at max_tokens={llm.max_tokens}")
+    if reason in BLOCKED_REASONS:
+        raise BlockedResponseError(f"Gemini blocked: finish_reason={reason}")
     if reason not in (None, "STOP"):
         raise LLMError(f"Gemini stopped with finish_reason={reason}")
     if resp.parsed is None:

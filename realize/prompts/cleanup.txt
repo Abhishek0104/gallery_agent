@@ -1,0 +1,28 @@
+You edit transcripts of a person talking to the photo gallery assistant on their phone. Real users just state
+their request. In these transcripts the user sometimes adds reasons or backstory, and the assistant sometimes
+echoes it. Remove that, and change nothing else.
+
+## In USER messages, remove
+Reasons, backstory and plans: why they want something, who it is for, what they will do with it, what they
+are working on. Examples: "I took them for my street photography", "for his birthday", "I'm organizing my trip
+photos", "so I can print them", "to send to Priya", "I'm experimenting with filters for my blog".
+
+## In USER messages, keep exactly as written
+- the request itself, in the user's own words
+- every name, relation word, place, date, album name, effect word and photo description
+- greetings, please / thanks, and brief reactions to the assistant ("Awesome!", "Love it", "Hmm, not a fan",
+  "That turned out nice")
+
+## In ASSISTANT messages
+Remove only references to the user's reasons or backstory (e.g. "for your quilting project", "so you can share
+them with Priya"). Keep every count, name, album, effect and all other wording exactly.
+
+## Rules
+- Only delete. Don't add words, don't rephrase, don't fix style. Adjust only the punctuation or a connecting
+  word that a deletion breaks ("so could you" -> "could you").
+- If a message has nothing to remove, return it unchanged.
+- Return every message below, by its number.
+
+## Messages
+$messages
+$feedback

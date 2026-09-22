@@ -32,7 +32,8 @@ STYLE = {
     "terse": "Very short, like a quick text: lowercase is fine, no greeting, no please.",
     "casual": "Everyday chat, relaxed and friendly.",
     "polite": "Polite and complete sentences (\"could you please ...\").",
-    "chatty": "Add a little context or feeling, but keep it to one short message.",
+    "chatty": "Casual, talkative wording (\"hey\", \"could you maybe\", \"awesome\"), still one short message. "
+              "Chatty is about wording, not explanations: no reasons or backstory.",
 }
 
 
@@ -306,7 +307,7 @@ def write_message(llm, spec, persona, turn_no, turn, surface, history, extra="")
     feedback = ""
     for attempt in range(CFG["user_sim"]["max_attempts"]):
         prompt = PROMPT.substitute(
-            persona=render_persona(persona), motivation=spec["motivation"], style=STYLE[surface["style"]],
+            persona=render_persona(persona), style=STYLE[surface["style"]],   # no motivation: no backstory to leak
             history=history or "(this is your first message)",
             intent="\n".join(f"- {l}" for l in lines) + (f"\n- {extra}" if extra else ""),
             required=", ".join("yourself (me / I)" if r == "<me>" else f"\"{r}\"" for r in required) or "(none)",

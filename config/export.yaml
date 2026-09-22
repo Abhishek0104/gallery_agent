@@ -2,8 +2,8 @@
 version: e2e_v1
 # episodes_<episodes>.jsonl + verified_<episodes>.jsonl; eval ids are written per spec tag (for realize.run --tag)
 sources:
-  - {episodes: v2, specs: v2}
-  - {episodes: r2, specs: r2}
+  - {episodes: v2c, specs: v2}          # v2 after the backstory cleanup (realize/cleanup.py)
+  - {episodes: r2c, specs: r2}
 
 # Eval = every episode of these personas (never seen in training). Chosen to cover regions (2 India, 1 US,
 # 1 other), households and tricky names: hyphen (Abdul-Karim), apostrophe (Rif'at), two-word (John Luke, Wei Jie).

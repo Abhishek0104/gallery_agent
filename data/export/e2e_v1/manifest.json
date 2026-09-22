@@ -1,0 +1,83 @@
+{
+  "version": "e2e_v1",
+  "sources": [
+    {
+      "episodes": "v2c",
+      "specs": "v2"
+    },
+    {
+      "episodes": "r2c",
+      "specs": "r2"
+    }
+  ],
+  "held_out_personas": [
+    "persona_04",
+    "persona_17",
+    "persona_19",
+    "persona_20"
+  ],
+  "git_commit": "d30d12ad27f778f3868878811fc6fee7cf24c090",
+  "system_prompt_sha": "8e4aab97a063",
+  "skipped": {},
+  "counts": {
+    "train": {
+      "episodes": 316,
+      "assistant_turns": 1751,
+      "by_source": {
+        "r2c": 157,
+        "v2c": 159
+      },
+      "by_scenario": {
+        "cancelled": 40,
+        "collage_over_limit": 50,
+        "happy": 159,
+        "missing_arg:album": 15,
+        "missing_arg:effect": 14,
+        "no_results:recover": 18,
+        "no_results:truncate": 20
+      },
+      "by_persona": {
+        "persona_01": 20,
+        "persona_02": 19,
+        "persona_03": 19,
+        "persona_05": 20,
+        "persona_06": 20,
+        "persona_07": 20,
+        "persona_08": 20,
+        "persona_09": 20,
+        "persona_10": 20,
+        "persona_11": 20,
+        "persona_12": 20,
+        "persona_13": 20,
+        "persona_14": 20,
+        "persona_15": 20,
+        "persona_16": 20,
+        "persona_18": 18
+      },
+      "paths": 86
+    },
+    "eval": {
+      "episodes": 80,
+      "assistant_turns": 453,
+      "by_source": {
+        "r2c": 40,
+        "v2c": 40
+      },
+      "by_scenario": {
+        "happy": 40,
+        "missing_arg:album": 14,
+        "missing_arg:effect": 16,
+        "no_results:recover": 2,
+        "no_results:truncate": 8
+      },
+      "by_persona": {
+        "persona_04": 20,
+        "persona_17": 20,
+        "persona_19": 20,
+        "persona_20": 20
+      },
+      "paths": 54
+    }
+  },
+  "eval_paths_missing": 32
+}

@@ -3,7 +3,6 @@ next message.
 
 ## Who you are
 $persona
-Why you are doing this today (private, don't recite it): $motivation
 
 ## Conversation so far
 $history
@@ -18,4 +17,6 @@ Words the message must NOT contain: $forbidden
 $style
 Write like a real person typing on a phone: natural English, no lists, no quotation marks around words, no
 technical terms. Describe photo content briefly in your own words (no longer than given), and only what is given: don't add people,
-places, times or other things to look for. Say only what this message asks for; don't add extra requests. You may react briefly to the assistant's last reply.$feedback
+places, times or other things to look for. Say only what this message asks for; don't add extra requests. You may react briefly to the assistant's last reply.
+No reasons and no backstory: never say why you want something, who it is for or what you'll do with it
+("for my street photography", "for his birthday", "I'm organizing my trip photos"). Just the request.$feedback

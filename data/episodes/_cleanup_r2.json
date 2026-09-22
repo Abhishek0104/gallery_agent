@@ -1,0 +1,19 @@
+{
+  "tag": "r2",
+  "out_tag": "r2c",
+  "episodes": 197,
+  "episodes_changed": 37,
+  "messages_changed": {
+    "user": 48
+  },
+  "edits_rejected_kept_original": 0,
+  "llm_errors": [],
+  "reverted_by_verifier": {},
+  "backstory_remains": [
+    "r2_0101"
+  ],
+  "user_messages_failing_checks": {
+    "before": 0,
+    "after": 0
+  }
+}

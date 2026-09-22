@@ -13,7 +13,7 @@ v0 = happy path, as in the specs: no clarifications, no errors, no closing "than
 
 | Actor | Kind | Sees | Produces |
 |---|---|---|---|
-| User simulator | LLM (`user_sim` role) | persona, motivation, conversation text so far, this turn's intent + required phrases | one user message per spec turn |
+| User simulator | LLM (`user_sim` role) | persona, conversation text so far, this turn's intent + required / forbidden phrases (**not** the motivation) | one user message per spec turn |
 | Teacher | LLM (`teacher` role), function calling | on-device system prompt + tool declarations + **teacher guidance** + conversation | tool calls and assistant replies |
 | Simulator | code (`sim/`) | spec, calls so far | tool results from the spec; app events |
 
@@ -76,6 +76,9 @@ must match exactly (relations after alias normalization).
 
 ## 6. User simulator
 - One LLM call per spec turn. Output `{message}`.
+- **No backstory.** Real users just state the request. The simulator does not get the spec's `motivation` (only
+  the intent filler uses it), and its prompt says: no reasons, no backstory — never why, who it is for or what
+  they'll do with it. "Chatty" means casual wording, not explanations.
 - Never sees tool names, handles or argument syntax.
 - Code checks, with retry + feedback (max 3): every required phrase present (case-insensitive), no `r\d+` ids,
   no tool names, not empty, at most ~60 words.
@@ -106,6 +109,13 @@ Messages are provider-neutral; the teacher guidance is stored by version only.
 Realize 10–20 episodes from `data/specs/specs_v0.jsonl` (spread over paths, including selection, ask,
 refinement and delete paths) and review by eye **before** building the verifier. A quick realization report
 (tool sequence vs spec, exact-arg matches, flags) helps the review but is not the verifier.
+
+## Backstory cleanup (episodes realized before the no-backstory rule)
+`realize/cleanup.py` edits existing episodes (`episodes_<tag>.jsonl` → `episodes_<tag>c.jsonl`): one LLM call per
+episode removes reasons / backstory from user messages and any echo of it in assistant replies. Code keeps app
+event lines, tool calls and tool results untouched, accepts an edit only if it just deletes words, and re-runs the
+user-message checks (required / forbidden phrases, no extra people, places or dates) and assistant numbers;
+rejected edits keep the original. The verifier is rerun on the cleaned batch.
 
 ## Parking list
 - Closing / small-talk turns ("thanks!") without tool calls.

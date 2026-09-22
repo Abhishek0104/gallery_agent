@@ -1,0 +1,22 @@
+{
+  "tag": "v2",
+  "out_tag": "v2c",
+  "episodes": 199,
+  "episodes_changed": 35,
+  "messages_changed": {
+    "user": 41,
+    "assistant": 1
+  },
+  "edits_rejected_kept_original": 0,
+  "llm_errors": [],
+  "reverted_by_verifier": {},
+  "backstory_remains": [
+    "ep_0013",
+    "ep_0068",
+    "ep_0078"
+  ],
+  "user_messages_failing_checks": {
+    "before": 0,
+    "after": 0
+  }
+}
