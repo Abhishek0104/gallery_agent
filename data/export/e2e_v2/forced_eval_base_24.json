@@ -1,0 +1,372 @@
+{
+  "overall": {
+    "kind": {
+      "n": 24,
+      "hits": 18,
+      "rate": 0.75
+    },
+    "truncated": {
+      "n": 24,
+      "hits": 0,
+      "rate": 0.0
+    },
+    "malformed": {
+      "n": 24,
+      "hits": 0,
+      "rate": 0.0
+    },
+    "name": {
+      "n": 13,
+      "hits": 11,
+      "rate": 0.846
+    },
+    "args": {
+      "n": 13,
+      "hits": 7,
+      "rate": 0.538
+    },
+    "images": {
+      "n": 6,
+      "hits": 6,
+      "rate": 1.0
+    },
+    "structural": {
+      "n": 13,
+      "hits": 7,
+      "rate": 0.538
+    },
+    "reply_nonempty": {
+      "n": 6,
+      "hits": 6,
+      "rate": 1.0
+    },
+    "reply_no_handles": {
+      "n": 6,
+      "hits": 6,
+      "rate": 1.0
+    },
+    "query_exact": {
+      "n": 1,
+      "hits": 1,
+      "rate": 1.0
+    },
+    "question_exact": {
+      "n": 1,
+      "hits": 0,
+      "rate": 0.0
+    }
+  },
+  "by_kind": {
+    "call": {
+      "kind": {
+        "n": 13,
+        "hits": 12,
+        "rate": 0.923
+      },
+      "truncated": {
+        "n": 13,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "malformed": {
+        "n": 13,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "name": {
+        "n": 13,
+        "hits": 11,
+        "rate": 0.846
+      },
+      "args": {
+        "n": 13,
+        "hits": 7,
+        "rate": 0.538
+      },
+      "images": {
+        "n": 6,
+        "hits": 6,
+        "rate": 1.0
+      },
+      "structural": {
+        "n": 13,
+        "hits": 7,
+        "rate": 0.538
+      },
+      "query_exact": {
+        "n": 1,
+        "hits": 1,
+        "rate": 1.0
+      },
+      "question_exact": {
+        "n": 1,
+        "hits": 0,
+        "rate": 0.0
+      }
+    },
+    "reply": {
+      "kind": {
+        "n": 11,
+        "hits": 6,
+        "rate": 0.545
+      },
+      "truncated": {
+        "n": 11,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "malformed": {
+        "n": 11,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "reply_nonempty": {
+        "n": 6,
+        "hits": 6,
+        "rate": 1.0
+      },
+      "reply_no_handles": {
+        "n": 6,
+        "hits": 6,
+        "rate": 1.0
+      }
+    }
+  },
+  "by_tool": {
+    "apply_effect": {
+      "kind": {
+        "n": 2,
+        "hits": 2,
+        "rate": 1.0
+      },
+      "truncated": {
+        "n": 2,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "malformed": {
+        "n": 2,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "name": {
+        "n": 2,
+        "hits": 2,
+        "rate": 1.0
+      },
+      "args": {
+        "n": 2,
+        "hits": 1,
+        "rate": 0.5
+      },
+      "images": {
+        "n": 2,
+        "hits": 2,
+        "rate": 1.0
+      },
+      "structural": {
+        "n": 2,
+        "hits": 1,
+        "rate": 0.5
+      }
+    },
+    "ask_gallery": {
+      "kind": {
+        "n": 1,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "truncated": {
+        "n": 1,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "malformed": {
+        "n": 1,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "name": {
+        "n": 1,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "args": {
+        "n": 1,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "structural": {
+        "n": 1,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "question_exact": {
+        "n": 1,
+        "hits": 0,
+        "rate": 0.0
+      }
+    },
+    "delete_images": {
+      "kind": {
+        "n": 2,
+        "hits": 2,
+        "rate": 1.0
+      },
+      "truncated": {
+        "n": 2,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "malformed": {
+        "n": 2,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "name": {
+        "n": 2,
+        "hits": 2,
+        "rate": 1.0
+      },
+      "args": {
+        "n": 2,
+        "hits": 2,
+        "rate": 1.0
+      },
+      "images": {
+        "n": 2,
+        "hits": 2,
+        "rate": 1.0
+      },
+      "structural": {
+        "n": 2,
+        "hits": 2,
+        "rate": 1.0
+      }
+    },
+    "make_collage": {
+      "kind": {
+        "n": 1,
+        "hits": 1,
+        "rate": 1.0
+      },
+      "truncated": {
+        "n": 1,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "malformed": {
+        "n": 1,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "name": {
+        "n": 1,
+        "hits": 1,
+        "rate": 1.0
+      },
+      "args": {
+        "n": 1,
+        "hits": 1,
+        "rate": 1.0
+      },
+      "images": {
+        "n": 1,
+        "hits": 1,
+        "rate": 1.0
+      },
+      "structural": {
+        "n": 1,
+        "hits": 1,
+        "rate": 1.0
+      }
+    },
+    "move_to_album": {
+      "kind": {
+        "n": 1,
+        "hits": 1,
+        "rate": 1.0
+      },
+      "truncated": {
+        "n": 1,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "malformed": {
+        "n": 1,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "name": {
+        "n": 1,
+        "hits": 1,
+        "rate": 1.0
+      },
+      "args": {
+        "n": 1,
+        "hits": 1,
+        "rate": 1.0
+      },
+      "images": {
+        "n": 1,
+        "hits": 1,
+        "rate": 1.0
+      },
+      "structural": {
+        "n": 1,
+        "hits": 1,
+        "rate": 1.0
+      }
+    },
+    "search_images": {
+      "kind": {
+        "n": 6,
+        "hits": 6,
+        "rate": 1.0
+      },
+      "truncated": {
+        "n": 6,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "malformed": {
+        "n": 6,
+        "hits": 0,
+        "rate": 0.0
+      },
+      "name": {
+        "n": 6,
+        "hits": 5,
+        "rate": 0.833
+      },
+      "args": {
+        "n": 6,
+        "hits": 2,
+        "rate": 0.333
+      },
+      "structural": {
+        "n": 6,
+        "hits": 2,
+        "rate": 0.333
+      },
+      "query_exact": {
+        "n": 1,
+        "hits": 1,
+        "rate": 1.0
+      }
+    }
+  },
+  "completion_loss": 0.5883,
+  "meta": {
+    "version": "e2e_v2",
+    "split": "eval",
+    "rows": 24,
+    "base_model": "Qwen/Qwen3.5-0.8B",
+    "adapter": null,
+    "device": "mps",
+    "dtype": "float16",
+    "max_new_tokens": 96,
+    "sample": 24,
+    "seed": 13
+  }
+}

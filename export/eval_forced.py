@@ -17,6 +17,7 @@ model here they are reported as exact-string rates only, and nothing is gated on
 """
 import argparse
 import json
+import random
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -59,10 +60,11 @@ def score_row(row, pred_text, tools):
             if k in g:
                 m[f"{k}_exact"] = m["name"] and g[k].strip().lower() == (p.get(k) or "").strip().lower()
     else:
-        # Reply wording is free (the verifier never string-matches it); check what it does check.
-        body = pred_a if pred_kind == "text" else ""
-        m["reply_nonempty"] = bool(body.strip())
-        m["reply_no_handles"] = not HANDLE.search(body)
+        # Reply wording is free (the verifier never string-matches it); check what it does check. Only when
+        # the model actually produced text — otherwise `kind` already counts it and these would double-count.
+        body = pred_a if pred_kind == "text" else None
+        m["reply_nonempty"] = bool(body.strip()) if body is not None else None
+        m["reply_no_handles"] = (not HANDLE.search(body)) if body is not None else None
     return m
 
 
@@ -180,7 +182,9 @@ def main():
     ap.add_argument("--adapter", help="LoRA adapter dir; omit to evaluate the untrained base model")
     ap.add_argument("--device", default="auto", choices=("auto", "cuda", "mps", "cpu"))
     ap.add_argument("--dtype", default="float16", choices=("float32", "float16", "bfloat16"))
-    ap.add_argument("--limit", type=int, help="only the first N rows (smoke test)")
+    ap.add_argument("--limit", type=int, help="only the first N rows (one or two episodes; smoke test)")
+    ap.add_argument("--sample", type=int, help="N rows sampled across the split (spans tools; seeded)")
+    ap.add_argument("--seed", type=int, default=13)
     ap.add_argument("--max-new-tokens", type=int, default=160)
     ap.add_argument("--out", help="report path (default data/export/<version>/forced_<split>_<name>.json)")
     args = ap.parse_args()
@@ -189,17 +193,23 @@ def main():
     rows = [json.loads(l) for l in (out_dir / f"sft_{args.split}.jsonl").read_text().splitlines()]
     tools_by_id = {json.loads(l)["id"]: json.loads(l)["tools"]
                    for l in (out_dir / f"{args.split}.jsonl").read_text().splitlines()}
-    if args.limit:
+    if args.sample:
+        rows = sorted(random.Random(args.seed).sample(rows, min(args.sample, len(rows))),
+                      key=lambda r: (r["id"], r["turn"]))
+    elif args.limit:
         rows = rows[: args.limit]
 
     tok, model, device = load_model(CFG["base_model"], args.adapter, args.device, args.dtype)
     name = Path(args.adapter).parent.name if args.adapter else "base"
+    if args.sample or args.limit:
+        name += f"_{args.sample or args.limit}"
     print(f"{CFG['version']} {args.split}: {len(rows)} rows | {CFG['base_model']}"
           f"{' + ' + args.adapter if args.adapter else ' (untrained base)'} | {device} {args.dtype}")
     report, _, predictions = run(rows, tools_by_id, predictor(tok, model, device, args.max_new_tokens))
     report["meta"] = meta = {"version": CFG["version"], "split": args.split, "rows": len(rows),
                              "base_model": CFG["base_model"], "adapter": args.adapter,
-                             "device": device, "dtype": args.dtype, "max_new_tokens": args.max_new_tokens}
+                             "device": device, "dtype": args.dtype, "max_new_tokens": args.max_new_tokens,
+                             "sample": args.sample, "seed": args.seed if args.sample else None}
     path = Path(args.out) if args.out else out_dir / f"forced_{args.split}_{name}.json"
     path.write_text(json.dumps(report, indent=2, ensure_ascii=False))
     preds = path.with_suffix(".jsonl")
