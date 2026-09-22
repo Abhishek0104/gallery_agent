@@ -30,3 +30,19 @@ def test_cache_records_served_model(tmp_path, monkeypatch):
 
     client.json("hi", Echo, seed=2)                   # new seed -> new call
     assert len(calls) == 2
+
+
+def test_timeouts_are_set_and_retried(monkeypatch):
+    import httpx
+    client = llm_mod.LLM("teacher")
+    assert llm_mod.gemini_client(client)._api_client._http_options.timeout == llm_mod.DEFAULT_TIMEOUT * 1000
+    calls = []
+
+    def flaky():
+        calls.append(1)
+        if len(calls) < 3:
+            raise httpx.ReadTimeout("timed out")
+        return "ok"
+
+    monkeypatch.setattr(llm_mod.time, "sleep", lambda s: None)
+    assert llm_mod.with_retries(flaky, Exception, "test") == "ok" and len(calls) == 3

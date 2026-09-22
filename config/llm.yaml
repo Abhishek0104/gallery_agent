@@ -7,6 +7,8 @@
 #   anthropic -> effort:         low | medium | high | xhigh | max
 # Credentials come from the environment: GEMINI_API_KEY (or GOOGLE_API_KEY) / ANTHROPIC_API_KEY.
 cache_dir: data/cache/llm
+# Every request has a timeout (default 180 s; per role: `timeout: <seconds>`). A timed-out request is retried
+# like a dropped connection (same request, same model, printed), up to 5 times, then the run stops.
 
 roles:
   generation:               # personas, query pool (kept on this model so reruns hit the cache)

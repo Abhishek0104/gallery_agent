@@ -209,6 +209,17 @@ class LLM:
         return self.cache_dir / f"{hashlib.sha256(blob.encode()).hexdigest()[:24]}.json"
 
 
+DEFAULT_TIMEOUT = 180       # seconds per request; a hung request fails and is retried instead of blocking forever
+
+
+def gemini_client(llm):
+    from google import genai
+    from google.genai import types
+
+    timeout = llm.spec.get("timeout", DEFAULT_TIMEOUT)
+    return genai.Client(http_options=types.HttpOptions(timeout=int(timeout * 1000)))   # milliseconds
+
+
 def int_seed(seed):
     """Stable 31-bit integer from any seed value (for providers that accept a sampling seed)."""
     return int(hashlib.sha256(str(seed).encode()).hexdigest(), 16) % (2 ** 31)
@@ -223,7 +234,7 @@ def with_retries(fn, error_cls, what):
     retries) raises LLMError."""
     import httpx
 
-    transient = (httpx.RemoteProtocolError, httpx.ConnectError, httpx.ReadTimeout)
+    transient = (httpx.RemoteProtocolError, httpx.ConnectError, httpx.TimeoutException)   # incl. request timeouts
     try:
         import openai
         transient += (openai.APIConnectionError,)          # includes APITimeoutError
@@ -257,7 +268,7 @@ def call_gemini(llm, system, prompt, schema, seed):
 
     with llm._lock:
         if llm._client is None:
-            llm._client = genai.Client()
+            llm._client = gemini_client(llm)
     config = types.GenerateContentConfig(
         system_instruction=system or None,
         response_mime_type="application/json",
@@ -292,7 +303,7 @@ def embed_gemini(llm, texts, batch=100):
 
     with llm._lock:
         if llm._client is None:
-            llm._client = genai.Client()
+            llm._client = gemini_client(llm)
     config = types.EmbedContentConfig(output_dimensionality=llm.dimensions) if llm.dimensions else None
     out = []
     for i in range(0, len(texts), batch):
@@ -315,7 +326,7 @@ def chat_gemini(llm, system, contents, tools, seed):
 
     with llm._lock:
         if llm._client is None:
-            llm._client = genai.Client()
+            llm._client = gemini_client(llm)
     decls = [types.FunctionDeclaration(name=t["name"], description=t["description"],
                                        parameters_json_schema=t["parameters"]) for t in tools]
     config = types.GenerateContentConfig(
@@ -389,7 +400,7 @@ def openai_client(llm):
                 raise LLMError(f"openai_compatible role needs base_url (model {llm.model!r})")
             key = os.environ.get(llm.spec.get("api_key_env") or "", "") or "EMPTY"   # vLLM ignores it without --api-key
             llm._client = openai.OpenAI(base_url=base_url, api_key=key,
-                                        timeout=llm.spec.get("timeout", 600), max_retries=0)
+                                        timeout=llm.spec.get("timeout", DEFAULT_TIMEOUT), max_retries=0)
     return llm._client, openai
 
 

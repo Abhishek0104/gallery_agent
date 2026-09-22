@@ -1,9 +1,9 @@
 # Export (docs/export_design.md). Only verifier-accepted episodes are exported.
-version: e2e_v1
+version: e2e_v2
 # episodes_<episodes>.jsonl + verified_<episodes>.jsonl; eval ids are written per spec tag (for realize.run --tag)
 sources:
   - {episodes: v2c, specs: v2}          # v2 after the backstory cleanup (realize/cleanup.py)
-  - {episodes: r2c, specs: r2}
+  - {episodes: r2b, specs: r2b}         # round 2 regenerated: seed fix (personas x scenarios) + no-backstory prompt
 
 # Eval = every episode of these personas (never seen in training). Chosen to cover regions (2 India, 1 US,
 # 1 other), households and tricky names: hyphen (Abdul-Karim), apostrophe (Rif'at), two-word (John Luke, Wei Jie).

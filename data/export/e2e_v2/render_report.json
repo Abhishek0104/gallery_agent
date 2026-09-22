@@ -1,0 +1,33 @@
+{
+  "base_model": "Qwen/Qwen3.5-0.8B",
+  "chat_template_kwargs": {
+    "enable_thinking": false
+  },
+  "generation_marker": "<|im_start|>assistant\n<think>\n\n</think>\n\n",
+  "splits": {
+    "train": {
+      "episodes": 314,
+      "examples": 1748,
+      "by_kind": {
+        "call": 902,
+        "reply": 846
+      },
+      "tokens_max": 1299,
+      "tokens_mean": 966,
+      "completion_tokens_max": 72,
+      "completion_tokens_total": 49845
+    },
+    "eval": {
+      "episodes": 78,
+      "examples": 425,
+      "by_kind": {
+        "call": 227,
+        "reply": 198
+      },
+      "tokens_max": 1332,
+      "tokens_mean": 966,
+      "completion_tokens_max": 76,
+      "completion_tokens_total": 12253
+    }
+  }
+}

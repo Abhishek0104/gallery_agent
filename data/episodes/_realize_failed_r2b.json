@@ -1,0 +1,14 @@
+[
+  {
+    "episode_id": "r2_0031",
+    "realize_failed": "EmptyResponseError: Gemini chat returned an empty message"
+  },
+  {
+    "episode_id": "r2_0057",
+    "realize_failed": "BlockedResponseError: Gemini chat blocked: finish_reason=PROHIBITED_CONTENT"
+  },
+  {
+    "episode_id": "r2_0068",
+    "realize_failed": "EmptyResponseError: Gemini chat returned an empty message"
+  }
+]
