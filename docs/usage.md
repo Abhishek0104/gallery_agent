@@ -108,7 +108,9 @@ Training and serving need a CUDA machine. `bash scripts/e2e_cuda.sh [prep|train|
 the eval ids and the training deps first, so a typo fails in a second instead of after a download. The
 commands it wraps are in README "End-to-end training run". Eval puts the trained model in the teacher's seat
 (`realize.run --assistant-role student --only-file data/export/<version>/eval_ids_<tag>.txt --out-tag student_<tag>`)
-and scores it with the same verifier.
+and scores it with the same verifier. Its user simulator and embedding model are local by default
+(`LLM_OVERLAY=config/llm_local.yaml`, README "Local models for eval": not comparable with Gemini-run numbers,
+and the query/question thresholds need calibrating); `LLM_OVERLAY=` keeps them on Gemini. Run `LIMIT=5` first.
 
 `python -m export.eval_forced` is the cheap secondary metric: each held-out assistant turn predicted from the
 gold history, scored without the simulator, the user simulator or the embedding API — so it runs on a Mac and

@@ -101,9 +101,27 @@ def parse_args(arguments):
         raise BadOutputError(f"tool call arguments are not valid JSON: {arguments!r}") from e
 
 
+OVERLAY_ENV = "LLM_OVERLAY"
+
+
+def load_config(config_path=ROOT / "config" / "llm.yaml"):
+    """config/llm.yaml, with the roles of the file named by $LLM_OVERLAY (e.g. config/llm_local.yaml) replacing
+    the same-named roles whole. Unset or empty = no overlay; a named file that doesn't exist is an error."""
+    cfg = yaml.safe_load(Path(config_path).read_text())
+    overlay = os.environ.get(OVERLAY_ENV, "").strip()
+    if overlay:
+        path = Path(overlay) if Path(overlay).is_absolute() else ROOT / overlay
+        if not path.exists():
+            raise LLMError(f"${OVERLAY_ENV}={overlay!r}: no such file")
+        extra = yaml.safe_load(path.read_text()) or {}
+        cfg["roles"] = {**cfg["roles"], **(extra.get("roles") or {})}
+        cfg["overlay"] = {"path": overlay, **{k: v for k, v in extra.items() if k != "roles"}}
+    return cfg
+
+
 class LLM:
     def __init__(self, role="generation", config_path=ROOT / "config" / "llm.yaml"):
-        cfg = yaml.safe_load(Path(config_path).read_text())
+        cfg = load_config(config_path)
         spec = cfg["roles"][role]
         if not spec.get("provider") or not spec.get("model"):
             raise LLMError(f"no provider/model configured for role {role!r} in {config_path}")

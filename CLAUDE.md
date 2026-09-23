@@ -73,6 +73,9 @@ docs/
 - **LLM roles** (`config/llm.yaml`): `gemini-3.1-pro-preview` for personas and the query pool;
   `gemini-3.8-flash` for the intent filler, user simulator, teacher and cleanup; `gemini-embedding-2`.
   No silent fallbacks; bad outputs drop the episode; API errors stop the run.
+  `LLM_OVERLAY=config/llm_local.yaml` swaps in local roles (whole-role replace): the e2e eval uses it by default
+  (user simulator on vLLM, in-process embeddings); the 0.75 query/question thresholds are tuned on Gemini
+  embeddings, so calibrate (`verify.run --compare`) before trusting local verdicts.
 
 ## Current status / next steps
 Data (all in this private repo; publishing anything needs a company policy check first):

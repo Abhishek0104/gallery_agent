@@ -2,7 +2,8 @@
 Preflight for the end-to-end training run (README "End-to-end training run").
 
     python -m scripts.preflight_cuda            # checks only; no training, no API calls
-    python -m scripts.preflight_cuda --serving  # also check the vLLM server on the student role's base_url
+    python -m scripts.preflight_cuda --serving  # also check the vLLM servers (student; local user simulator)
+    python -m scripts.preflight_cuda --serve-plan   # servers $LLM_OVERLAY asks for (read by scripts/e2e_cuda.sh)
 
 Reads the configs and the exported data and fails fast on the things that would otherwise waste a GPU
 session: a config pointing at the wrong export, an eval id with no spec, a missing training dependency,
@@ -14,6 +15,8 @@ import os
 from pathlib import Path
 
 import yaml
+
+from llm import OVERLAY_ENV, load_config
 
 ROOT = Path(__file__).resolve().parent.parent
 ERRORS, WARNINGS = [], []
@@ -31,7 +34,7 @@ def check_configs():
     """export.yaml, train.yaml and llm.yaml must describe the same run."""
     exp = yaml.safe_load((ROOT / "config" / "export.yaml").read_text())
     trn = yaml.safe_load((ROOT / "config" / "train.yaml").read_text())
-    llm = yaml.safe_load((ROOT / "config" / "llm.yaml").read_text())
+    llm = load_config()                 # config/llm.yaml + $LLM_OVERLAY
 
     version = exp["version"]
     out = ROOT / "data" / "export" / version
@@ -115,21 +118,48 @@ def check_deps():
         pass
 
 
+EVAL_ROLES = ("user_sim", "embedding")      # what step 5 needs besides the student
+
+
 def check_env(trn):
-    """Credentials and output paths."""
-    # The user simulator still runs on Gemini while the student plays the assistant (step 5).
+    """Credentials, optional dependencies and output paths for the roles step 5 actually uses."""
+    roles = load_config()["roles"]
+    print(f"  overlay       {os.environ.get(OVERLAY_ENV) or 'none (config/llm.yaml)'}")
+    for r in EVAL_ROLES:
+        print(f"  {r:<13} {roles[r]['provider']}: {roles[r]['model']}")
+    gemini = [r for r in EVAL_ROLES if roles[r]["provider"] == "gemini"]
     dotenv = ROOT / ".env"
     in_env = bool(os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"))
     in_file = dotenv.exists() and any(
         l.split("=", 1)[0].strip() in ("GEMINI_API_KEY", "GOOGLE_API_KEY") and l.split("=", 1)[-1].strip()
         for l in dotenv.read_text().splitlines()
     )
-    if not (in_env or in_file):
-        err("no GEMINI_API_KEY / GOOGLE_API_KEY in the environment or .env — the user simulator "
-            "can't run in step 5")
+    if gemini and not (in_env or in_file):
+        err(f"no GEMINI_API_KEY / GOOGLE_API_KEY in the environment or .env — {', '.join(gemini)} run on Gemini "
+            f"in step 5 (or set {OVERLAY_ENV}=config/llm_local.yaml)")
+    if roles["embedding"]["provider"] == "local":
+        try:
+            import sentence_transformers  # noqa: F401
+        except ImportError:
+            err("embedding role is local but sentence-transformers is not installed — pip install -r requirements-train.txt")
+    if roles["embedding"]["model"] != "gemini-embedding-2":
+        warn(f"embedding is {roles['embedding']['model']}: the 0.75 query/question thresholds (config/arg_types.yaml) "
+             "were tuned on gemini-embedding-2 — calibrate before trusting accept (README \"Local models for eval\")")
     adapter = ROOT / trn["output_dir"]
     if adapter.exists():
         warn(f"{trn['output_dir']} already exists — training will overwrite it")
+
+
+def serve_plan():
+    """One line per server the overlay's `serve:` block asks for: role model port gpu_fraction max_len devices."""
+    cfg = load_config()
+    from urllib.parse import urlparse
+
+    for role, s in (cfg.get("overlay", {}).get("serve") or {}).items():
+        r = cfg["roles"].get(role, {})
+        dev = s.get("cuda_visible_devices")
+        print(role, r.get("model", "-"), urlparse(r.get("base_url", "")).port or "-",
+              s.get("gpu_memory_utilization") or "-", s.get("max_model_len") or "-", "-" if dev is None else dev)
 
 
 def post(url, payload, timeout=120):
@@ -196,10 +226,33 @@ def check_serving(student):
             f"(config/train.yaml tool_call_parser) against the model family")
 
 
+def check_user_sim_serving(role):
+    """A local user simulator must return schema-valid JSON (structured outputs), or every episode is dropped."""
+    if role["provider"] != "openai_compatible":
+        return
+    base = role["base_url"].rstrip("/")
+    schema = {"type": "object", "properties": {"message": {"type": "string"}}, "required": ["message"]}
+    payload = {"model": role["model"], "temperature": 0, "max_tokens": 200,
+               "messages": [{"role": "user", "content": "Write one short message asking a gallery app to find beach photos."}],
+               "response_format": {"type": "json_schema", "json_schema": {"name": "Probe", "schema": schema}}}
+    payload.update(role.get("extra_body") or {})
+    try:
+        content = post(f"{base}/chat/completions", payload)["choices"][0]["message"]["content"] or ""
+        msg = json.loads(content)["message"]
+        print(f"  user_sim      json_schema ok ({msg[:60]!r})")
+    except Exception as e:
+        err(f"user_sim probe at {base} failed ({e.__class__.__name__}: {str(e)[:120]}) — is it served, "
+            "structured outputs on, thinking off?")
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--serving", action="store_true", help="also check the vLLM server (after step 4)")
+    ap.add_argument("--serving", action="store_true", help="also check the vLLM servers (after step 4)")
+    ap.add_argument("--serve-plan", action="store_true", help="print the servers $LLM_OVERLAY asks for, and exit")
     args = ap.parse_args()
+    if args.serve_plan:
+        serve_plan()
+        return
 
     exp, trn, student, version, out = check_configs()
     check_export(out, trn)
@@ -210,6 +263,7 @@ def main():
     check_env(trn)
     if args.serving:
         check_serving(student)
+        check_user_sim_serving(load_config()["roles"]["user_sim"])
 
     for w in WARNINGS:
         print(f"warn: {w}")

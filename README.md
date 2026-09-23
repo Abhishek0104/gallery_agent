@@ -118,7 +118,10 @@ bash scripts/e2e_cuda.sh prep         # preflight + export + render check + trai
 bash scripts/e2e_cuda.sh baseline     # teacher-forced eval of the untrained base  (run before training)
 bash scripts/e2e_cuda.sh train        # LoRA SFT
 bash scripts/e2e_cuda.sh eval         # teacher-forced eval of the adapter, then vLLM + interactive eval
+LIMIT=5 bash scripts/e2e_cuda.sh eval # the same on 5 held-out episodes per tag — do this first
 ```
+The eval needs no API key by default: the user simulator and the embedding model run locally (see "Local models
+for eval" below). `LLM_OVERLAY= bash scripts/e2e_cuda.sh eval` puts them back on Gemini.
 Run `baseline` before `train`: a trained number means nothing without the untrained one next to it, and it
 costs one cheap forward pass over the eval split.
 
@@ -151,8 +154,31 @@ done
   The script takes it from `config/train.yaml` (`tool_call_parser`), and `preflight_cuda --serving` sends one
   real tool call to check the server actually parses it — a wrong parser is silent, not loud: the call stays in
   `content` and every episode scores as a miss.
-- The user simulator still runs on Gemini during eval; its calls miss the cache once the student's replies differ
-  from the teacher's (~3 calls per held-out episode).
+- The user simulator's calls miss the cache once the student's replies differ from the teacher's (~3 calls per
+  held-out episode) — cheap locally, API calls on Gemini.
+
+### Local models for eval
+`LLM_OVERLAY=config/llm_local.yaml` (the script's default) replaces two roles of `config/llm.yaml` for any
+command run under it: `user_sim` → a vLLM server on :8001 (`Qwen/Qwen3-8B`, thinking off, structured outputs),
+`embedding` → in-process sentence-transformers (`Qwen/Qwen3-Embedding-0.6B`). The data-generation roles stay on
+Gemini; moving one later is a role block added to the overlay. The script starts the servers the overlay's
+`serve:` block lists, one at a time, with the GPU fractions given there (student 0.25, user sim 0.55 of one GPU —
+adjust for your card, or set `cuda_visible_devices` to give the user simulator its own GPU).
+`preflight_cuda --serving` checks the user simulator returns schema-valid JSON.
+
+Before reading the numbers:
+- **Not comparable with Gemini-run evals.** A different user simulator writes different messages, and a
+  different embedding model scores `query` / `question` differently. Compare a local run with a local run.
+- **The 0.75 similarity thresholds** (`config/arg_types.yaml`) were tuned on `gemini-embedding-2`; with another
+  model the query/question checks, and so `score` and `accept`, shift. Calibrate once by re-verifying a batch
+  already verified with Gemini, into a new file:
+  ```bash
+  LLM_OVERLAY=config/llm_local.yaml python -m verify.run --tag v2c --out-tag v2c_localemb --compare v2c
+  ```
+  It prints accept agreement, flips, and every cosine old → new; re-tune the threshold from that only as a
+  deliberate change (it is on the parking list). Verdicts now record `embedding_model`.
+- **A weak user simulator drops episodes** (`UserSimError` → `_realize_failed_*.json`), which quietly shrinks
+  the eval. Check that file after the `LIMIT=5` run before the full one.
 
 **Teacher-forced eval (no CUDA, no API)** — predict each held-out assistant turn from the gold history. It
 isolates the model from the user simulator and the embedding model, and runs on a Mac (MPS or CPU), so the

@@ -4,3 +4,4 @@ transformers>=5.17
 torch>=2.4
 peft>=0.21
 accelerate>=1.0
+sentence-transformers>=3.0   # local embedding role (config/llm_local.yaml: verifier query/question similarity)

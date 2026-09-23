@@ -1,0 +1,30 @@
+# Local overlay for config/llm.yaml: the roles here replace the same-named roles there, whole, when
+# LLM_OVERLAY=config/llm_local.yaml is set (scripts/e2e_cuda.sh sets it by default; LLM_OVERLAY= keeps Gemini).
+# Only the two roles the eval stage needs besides the student are here. The data-generation roles
+# (generation, filler, teacher, cleanup) stay on Gemini for now; moving one is a block added below.
+#
+# A different model means different cache keys: nothing cached under Gemini is reused, and numbers are not
+# comparable with runs that used Gemini for these roles.
+
+roles:
+  user_sim:                 # plays the owner in the interactive eval; structured output (json_schema) required
+    provider: openai_compatible
+    base_url: http://localhost:8001/v1
+    model: Qwen/Qwen3-8B      # untested here: a weak model fails the user-sim checks and episodes are dropped
+    max_tokens: 4000
+    temperature: 0.7
+    thinking: none            # cache-key label; thinking is switched off below
+    extra_body:
+      chat_template_kwargs: {enable_thinking: false}   # with thinking on, <think> lands in content and JSON fails
+  embedding:                # verifier: query / question similarity
+    provider: local           # in-process sentence-transformers (cuda / mps / cpu picked automatically)
+    model: Qwen/Qwen3-Embedding-0.6B
+    # The 0.75 thresholds in config/arg_types.yaml were tuned on gemini-embedding-2. With this model the
+    # query/question checks (and so score and accept) shift; calibrate first (README "Local models for eval").
+
+# vLLM servers scripts/e2e_cuda.sh starts for the eval stage, one at a time, each waited for. Model and port come
+# from the role above (base_url). gpu_memory_utilization is a fraction of one GPU's memory: the servers share it,
+# so leave room for the others and the in-process embedding. cuda_visible_devices puts a server on its own GPU.
+serve:
+  student:  {gpu_memory_utilization: 0.25}                        # model, port, parser: config/train.yaml
+  user_sim: {gpu_memory_utilization: 0.55, max_model_len: 8192, cuda_visible_devices: null}
