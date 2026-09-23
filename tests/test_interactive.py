@@ -240,3 +240,13 @@ def test_vllm_backend_picks_model_and_never_caches(monkeypatch, tmp_path):
     with pytest.raises(SystemExit):
         vllm(monkeypatch, tmp_path, ["a", "b"])                    # configured name not served, ambiguous
     assert vllm(monkeypatch, tmp_path, ["only-one"])[0].llm.model == "only-one"
+
+
+def test_warnings_are_shown():
+    shown = []
+    b = Scripted(call("search_images", query="x"), say("."), call("make_collage", images="r1,r2"), say("Made it as r2."))
+    s = it.Session(b, PERSONA, 5, show=shown.append)
+    s.send("find x")
+    s.send("collage")
+    assert shown[-2].endswith("⚠ bad_handle:make_collage:r1,r2")
+    assert shown[-1] == "assistant: Made it as r2.   ⚠ handle in reply: r2"

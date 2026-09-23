@@ -31,6 +31,7 @@ from realize.system_prompt import system_prompt, tool_declarations
 from registry import tools as registry_tools
 from sim.simulator import Simulator
 from specs.strategies import episode_config, render
+from verify.verifier import HANDLE
 
 ROOT = Path(__file__).resolve().parent.parent
 ICFG = yaml.safe_load((ROOT / "config" / "interactive.yaml").read_text())
@@ -208,7 +209,8 @@ class Printing:
     def chat(self, system, contents, tools, seed):
         res = self.backend.chat(system, contents, tools, seed)
         if res.text:
-            self.show(f"assistant: {res.text}")
+            leaked = sorted(set(HANDLE.findall(res.text)))
+            self.show(f"assistant: {res.text}" + (f"   ⚠ handle in reply: {', '.join(leaked)}" if leaked else ""))
         return res
 
 
@@ -292,8 +294,10 @@ class LiveSimulator(Simulator):
         self.planned[self.pos:] = [{"i": self.calls, "call": name, "outcome": out}]
         self.calls += 1
         self.show(f"  → {fmt_call(name, args)}")
+        n_flags = len(self.flags)
         result = super().call(name, args)
-        self.show(f"  ← {fmt_result(result)}{note}")
+        warn = "".join(f"   ⚠ {f}" for f in self.flags[n_flags:])    # e.g. bad_handle: the backend would not take it
+        self.show(f"  ← {fmt_result(result)}{note}{warn}")
         return result
 
     def last_set(self):
