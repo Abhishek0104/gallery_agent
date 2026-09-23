@@ -115,6 +115,38 @@ gold history, scored without the simulator, the user simulator or the embedding 
 on the untrained base. Use it per checkpoint; use the interactive run for anything that depends on the model's
 own history.
 
+### Talk to a model by hand
+
+`python -m realize.interactive` puts you in the user's seat and the model in the assistant's: the on-device
+system prompt and tools for a sampled persona and episode config (no teacher guidance), its calls answered by
+the realization simulator, every call and result printed as it happens.
+
+```bash
+python -m realize.interactive --model http://localhost:8000/v1       # vLLM (config/llm.yaml `student`: greedy, non-thinking)
+python -m realize.interactive --model runs/e2e_v2_lora/adapter       # in-process: adapter dir, model dir or HF id (MPS/CPU ok)
+python -m realize.interactive --model ... --persona 04 --selection 6 --seed 7
+```
+```
+you> show me goa photos of aisha
+  → search_images(people=["Aisha"], location="Goa")
+  ← {id: r1, count: 7}
+assistant: I found 7 photos of Aisha in Goa.
+```
+With no spec, search / ask counts come from `config/interactive.yaml` (seeded per call) and every other tool
+takes its happy path. `/outcome no_results`, `/outcome cancelled` or `/outcome count=0` forces the next
+result; an outcome that doesn't fit the next call stays pending until one it fits. `count=0` always becomes the
+registry's empty outcome, never a 0-photo set. `/select N` selects from the last set, `/state` shows the
+handles, `/persona` shows the persona (and whether it was held out of training — probe held-out ones),
+`/save note` appends the session to `data/interactive/sessions.jsonl` in the episode format. A bad output or API
+error rolls the turn back.
+
+`--replay data/interactive/sessions.jsonl` re-runs the saved inputs (messages, selections, forced outcomes)
+with the same persona, seed and config against a new `--model`, prints `≠ was: ...` wherever its calls differ,
+and writes the new sessions to `data/interactive/replay_<time>.jsonl`. The saved episode config is reused; sampled
+counts are re-drawn per call from the seed, so they match as long as `config/interactive.yaml` is unchanged and
+the model makes its calls in the same order. A turn that crashed (bad output, a call the simulator can't take)
+is rolled back and kept under `interactive.errors` in the saved session.
+
 ## 6. Changing things
 
 ### Tune ratios, counts, styles

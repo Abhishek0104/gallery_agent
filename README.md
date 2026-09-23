@@ -167,3 +167,7 @@ Headline is the structural match (tool name + handle + exactly-compared args); `
 reported as exact-string diagnostics only. Each run writes the scores (`.json`), every prediction next to its
 gold (`.jsonl`) and the misses grouped by tool (`.md`) — read the `.md` first. It cannot see error recovery or exposure bias — the history is
 always gold — so the interactive run above stays primary. `docs/export_design.md` §5.
+
+**By hand** — `python -m realize.interactive --model <vllm-url | adapter dir>`: chat with the model against the
+simulator, force failure outcomes, save sessions, and `--replay` them against another checkpoint
+(`docs/usage.md` §5).

@@ -41,10 +41,10 @@ LLMs only make it natural; the verifier checks calls against the spec.
 ```
 registry/        # tool YAML specs + typed loader (registry/args.py: argument types, normalizers); v2/ = backlog
 catalog/         # path catalog generator + path_catalog.yaml
-config/          # llm roles, personas, query pool, specs, round2, realize, verify, arg_types, export, train
+config/          # llm roles, personas, query pool, specs, round2, realize, verify, arg_types, export, train, interactive
 specs/           # personas, query pool, spec sampler + strategies, scenarios, intent filler, validator, purity
 sim/             # handle ledger, tool-output simulator
-realize/         # user simulator, teacher loop, system prompt + teacher guidance, cleanup pass
+realize/         # user simulator, teacher loop, system prompt + teacher guidance, cleanup pass, interactive CLI
 verify/          # verifier + runner
 export/          # canonical export, render check
 train/           # LoRA SFT script

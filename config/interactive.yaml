@@ -1,0 +1,18 @@
+# Interactive CLI (realize/interactive.py): talk to a trained model against the simulator, by hand.
+# There is no spec, so tool outcomes come from here. Everything else (persona, episode config, system prompt,
+# tools, handles, result shapes) is the same as in realization.
+
+# Photo counts for tools whose count comes from the outcome (registry `io.count: outcome`), by catalog short
+# name: {"lo-hi": weight}. A range is picked by weight, then a count uniformly inside it. Seeded per call.
+counts:
+  search: {"1-3": 0.15, "4-12": 0.45, "13-40": 0.30, "41-150": 0.10}
+  ask:    {"1-4": 1.0}               # ask_gallery returns at most top_k (4) photos
+
+# ask_gallery's answer when none is forced (/outcome answer="...")
+ask_answer: "Yes, a few photos show that."
+
+# Every other tool gets its happy-path outcome (registry `spec_outcome`): deletes confirmed, collages and
+# effect copies created, a move creates the album unless the persona already has it.
+
+sessions: data/interactive/sessions.jsonl
+max_new_tokens: 256                  # local model only (a vLLM role uses config/llm.yaml `student`)
